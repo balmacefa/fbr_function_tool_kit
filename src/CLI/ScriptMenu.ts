@@ -2,7 +2,6 @@ import { execa } from 'execa';
 import inquirer from 'inquirer';
 import { MainUtils } from '../main_utils';
 
-// TODO: crea a go back submenu and exit options
 
 interface PackageJson {
     scripts: Record<string, string>;
@@ -51,6 +50,7 @@ class ScriptExecutor {
     private async buildCategoryMenu() {
         const categories = this.categorizeScripts(this.packageJson.scripts);
 
+        // TODO: separate into small func, them create a dynamic script excution, this fill excuemt a comand of tsx [path, ...args]
         const categoryChoices = [
             ...Object.keys(categories).map(category => ({
                 name: category,
@@ -78,7 +78,7 @@ class ScriptExecutor {
         const scriptChoices = [
             ...categories[category],
             new inquirer.Separator(),
-            { name: '🙃🫣 <-- Go Back to main menu', value: 'goBack' }
+            { name: '🙃🫣 <-- Go Back to main', value: 'goBack' }
         ];
 
         const scriptAnswer = await inquirer.prompt([

@@ -10,12 +10,8 @@ export class MainUtils {
     static root_directory(append_path = ''): string {
 
         if (MainUtils.root_path === '') {
+            // Todo: change to .evn config
             MainUtils.root_path = 'D:\\1FullFramework\\fbr_function_tool_kit';
-        }
-
-        if (append_path.startsWith('src/')) {
-            console.log('append_path', append_path);
-            append_path = append_path.replace('src/', '/');
         }
 
         return path.join(MainUtils.root_path, append_path);
@@ -33,7 +29,10 @@ export class MainUtils {
         fs.writeFileSync(filePath, fileContent);
     }
 
-    static read_directory_by_ext(dir: string, ext: string): string[] {
+    static read_directory_by_ext(ext: string, dir?: string): string[] {
+        if (dir === '' || dir === undefined) {
+            dir = MainUtils.root_directory();
+        }
         const files = fs.readdirSync(dir);
         return files.filter(file => file.endsWith(ext));
     }
@@ -78,4 +77,9 @@ export class MainUtils {
             throw error;
         }
     }
+
+    static findCliScripts(): string[] {
+        return MainUtils.read_directory_by_ext('.cli.ts');
+    }
+
 }
