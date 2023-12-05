@@ -9,6 +9,9 @@ module.exports = {
   plugins: ["@typescript-eslint"],
   root: true,
   rules: {
-    "no-async-without-await": "error", // or "warn" depending on your preference
+    "require-await": "warn",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-unused-vars": "off",
+    // ... other rules ...
   },
 };

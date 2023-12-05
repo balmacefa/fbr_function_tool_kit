@@ -9,7 +9,7 @@ import { set_fastify_route_sessionStatus } from './set_fastify_route_sessionStat
 export class AssistantsAPIBaseManager {
     // Create endpoints for chat lifecycle, 1 create session, 2 send message, 3 update session, 4 delete session.
     // Store the agent session id map to taskmarter agent instances
-    public static mapSessionIdToAgent: Map<string, TaskMasterAI> = new Map();
+    public static mapSessionIdToAgent = new Map<string, TaskMasterAI>();
     static singleton: AssistantsAPIBaseManager = new AssistantsAPIBaseManager();
     static get_instance() {
         return this.singleton;
@@ -31,7 +31,7 @@ export class AssistantsAPIBaseManager {
         } else {
             return agent;
         }
-    };
+    }
 
 
     public async set_fastify_routes(fastify: FastifyInstance, registry: OpenAPIRegistry) {

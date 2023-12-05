@@ -4,7 +4,7 @@ import path from "path";
 const { __dirname, __filename } = getGlobals(import.meta.url)
 
 export const MainUtils = {
-    root_directory: (append_path: string = '') => {
+    root_directory: (append_path = '') => {
         // This is the root directory of execution of the server
         // It is used to find the .env file server\Browser\Browser.ts
         if (append_path === '') {

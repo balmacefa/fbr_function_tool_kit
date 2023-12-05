@@ -14,10 +14,10 @@ import { FunctionParameters } from "openai/resources";
  *  
 */
 
-import { AnyZodObject } from "zod";
+import { anyZodObject } from "zod";
 import zodToJsonSchema from "zod-to-json-schema";
 
-export function convertZodToFunctionParameters(zodSchema: AnyZodObject): FunctionParameters {
+export function convertZodToFunctionParameters(zodSchema: anyZodObject): FunctionParameters {
     const jsonSchema = zodToJsonSchema(zodSchema, "my_schema");
 
     return jsonSchema.definitions?.my_schema as FunctionParameters;

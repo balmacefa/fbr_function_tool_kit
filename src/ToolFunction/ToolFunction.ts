@@ -1,4 +1,4 @@
-import { AnyZodObject, infer as zInfer } from "zod";
+import { AnyZodObject, infer as zInfer } from 'zod';
 
 export class ToolFunction<TInputSchema extends AnyZodObject = AnyZodObject, TResponseSchema extends AnyZodObject = AnyZodObject> {
     name: string;

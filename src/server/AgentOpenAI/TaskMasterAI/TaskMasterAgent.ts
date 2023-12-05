@@ -1,5 +1,5 @@
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
-import { AnyZodObject } from 'zod';
+import { anyZodObject } from 'zod';
 import { Response403 } from '../../SwaggerDocs/SwaggerDocs.exclude';
 import { AssistantsAPIBase, AssistantsAPIBaseArgs } from "../AssistantBase";
 import { ToolDirectoryVisualization, ToolFileContent } from './ToolsSets/Directory.tools';
@@ -29,14 +29,14 @@ export class TaskMasterAI extends AssistantsAPIBase {
     }
 }
 
-export type get_openapi_schema_type = {
+export interface get_openapi_schema_type {
     operationId: string;
     path: string;
     description: string;
     tags: string[];
-    input_schema: AnyZodObject;
-    response_schema: AnyZodObject;
-};
+    input_schema: anyZodObject;
+    response_schema: anyZodObject;
+}
 
 
 export const get_openapi_schema = (registry: OpenAPIRegistry,

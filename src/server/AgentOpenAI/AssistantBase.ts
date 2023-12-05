@@ -35,7 +35,7 @@ export abstract class AssistantsAPIBase {
     run_list: OpenAI.Beta.Threads.Run[] = [];
 
     // Tool map, tool name to tool
-    tool_map: Map<string, FunctionalTool> = new Map();
+    tool_map = new Map<string, FunctionalTool>();
     last_run_status: OpenAI.Beta.Threads.Runs.Run | undefined;
     last_run_messages: OpenAI.Beta.Threads.Messages.ThreadMessagesPage | undefined;
 
@@ -117,7 +117,7 @@ export abstract class AssistantsAPIBase {
 
     async manageAssistantCreation(instructions_encoded: string, clean_instructions: string, current_hash: string) {
 
-        let hash_found = instructions_encoded.match(this.file_hash_regex);
+        const hash_found = instructions_encoded.match(this.file_hash_regex);
         let create_new_assistant = false;
         if (!hash_found || hash_found[0].split(" ")[2] !== current_hash) {
             const new_line = `# FILE_HASH: ${current_hash}`;
@@ -126,7 +126,7 @@ export abstract class AssistantsAPIBase {
         }
 
 
-        let assistant_id_found = instructions_encoded.match(this.assistant_id_regex);
+        const assistant_id_found = instructions_encoded.match(this.assistant_id_regex);
         if (!assistant_id_found || create_new_assistant) {
             const assistant_id = await this.createNewAssistant(clean_instructions);
             const new_line = `# ASSISTANT ID: ${assistant_id}`;
@@ -295,7 +295,7 @@ export abstract class AssistantsAPIBase {
         if (!this.last_run) {
             throw new Error("Run not created yet");
         }
-        const t_results: Array<RunSubmitToolOutputsParams.ToolOutput> = await Promise.all(
+        const t_results: RunSubmitToolOutputsParams.ToolOutput[] = await Promise.all(
             tool_calls.map(async call => {
                 // Execute the function based on call details
                 // Example: if(call.function.name === "getCurrentWeather") { ... }

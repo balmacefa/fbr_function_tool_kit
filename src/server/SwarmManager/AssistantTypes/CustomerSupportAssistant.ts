@@ -1,9 +1,9 @@
-import { Assistant } from 'openai';
-import { OpenAIClient } from '../../client/OpenAIClient';
-import AssistantBase from '../AssistantBase';
+import { Assistant } from 'openai/resources/beta/assistants/assistants';
+import { OpenAPIClient } from 'openapi-client-axios';
+import AssistantBase from '../assistants/AssistantBase';
 
 class CustomerSupportAssistant extends AssistantBase {
-    constructor(client: OpenAIClient) {
+    constructor(client: OpenAPIClient) {
         super(client, "CustomerSupportAssistant");
     }
 
@@ -12,10 +12,6 @@ class CustomerSupportAssistant extends AssistantBase {
         return this.client.createAssistant({ /* opciones específicas del asistente de soporte */ });
     }
 
-    // Métodos específicos del asistente de soporte al cliente
-    handleSupportQuery(query: string): Promise<string> {
-        // Lógica para manejar consultas de soporte al cliente
-    }
 }
 
 export default CustomerSupportAssistant;

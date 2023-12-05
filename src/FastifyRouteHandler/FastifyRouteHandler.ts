@@ -35,13 +35,7 @@ export class FastifyRouteHandler {
         fastify.post(toolFunction.get_operation_id(), opts, async (request, reply) => {
             return { hello: 'world' }
         })
-
-        fastify.post(toolFunction.get_operation_id(),
-
-            (req,) => {
-
-            }
-        );
+        // TODO: FIX FUNCTIONS
     }
 }
 
