@@ -5,8 +5,10 @@ module.exports = {
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/stylistic",
   ],
-  "no-async-without-await": true,
   parser: "@typescript-eslint/parser",
   plugins: ["@typescript-eslint"],
   root: true,
+  rules: {
+    "no-async-without-await": "error", // or "warn" depending on your preference
+  },
 };
