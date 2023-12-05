@@ -48,37 +48,62 @@ class ScriptExecutor {
         return categories;
     }
 
-    public async createScriptsMenu() {
+    private async buildCategoryMenu() {
         const categories = this.categorizeScripts(this.packageJson.scripts);
 
-        const categoryChoices = Object.keys(categories).map(category => ({
-            name: category,
-            value: category
-        }));
+        const categoryChoices = [
+            ...Object.keys(categories).map(category => ({
+                name: category,
+                value: category
+            })),
+            new inquirer.Separator(),
+            { name: '--> Exit --> 👨‍🚒🧯🔥', value: 'exit' }
+        ];
 
         const categoryAnswer = await inquirer.prompt([
             {
                 type: 'list',
                 name: 'selectedCategory',
-                message: 'Select a category:',
+                message: 'Select a category or exit:',
                 choices: categoryChoices
             }
         ]);
 
-        const selectedCategory = categoryAnswer.selectedCategory;
-        const scriptChoices = categories[selectedCategory];
+        return categoryAnswer.selectedCategory;
+    }
+
+    private async buildScriptMenu(category: string) {
+        const categories = this.categorizeScripts(this.packageJson.scripts);
+
+        const scriptChoices = [
+            ...categories[category],
+            new inquirer.Separator(),
+            { name: '🙃🫣 <-- Go Back to main menu', value: 'goBack' }
+        ];
 
         const scriptAnswer = await inquirer.prompt([
             {
                 type: 'list',
                 name: 'selectedScript',
-                message: `Select a script from ${selectedCategory}:`,
+                message: `Select a script from ${category} or go back:`,
                 choices: scriptChoices
             }
         ]);
 
-        const selectedScript = scriptAnswer.selectedScript;
-        if (selectedScript && this.packageJson.scripts[selectedScript]) {
+        return scriptAnswer.selectedScript;
+    }
+    public async createScriptsMenu(): Promise<any> {
+        const selectedCategory = await this.buildCategoryMenu();
+
+        if (selectedCategory === 'exit') {
+            return;
+        }
+
+        const selectedScript = await this.buildScriptMenu(selectedCategory);
+
+        if (selectedScript === 'goBack') {
+            return this.createScriptsMenu();
+        } else if (selectedScript && this.packageJson.scripts[selectedScript]) {
             await this.executeScript(selectedScript, this.packageJson.scripts[selectedScript]);
         }
     }
