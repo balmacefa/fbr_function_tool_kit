@@ -3,8 +3,8 @@ import OpenAI from "openai";
 import { MessageCreateParams } from 'openai/resources/beta/threads/messages/messages';
 import { RunSubmitToolOutputsParams } from 'openai/resources/beta/threads/runs/runs';
 import { Md5 } from 'ts-md5';
-import { MainUtils } from '../../main_utils';
-import { FunctionalTool } from './FunctionalTool';
+import { ToolFunction as FunctionalTool } from '../ToolFunction';
+import { MainUtils } from '../main_utils';
 
 const openai = new OpenAI(
     {

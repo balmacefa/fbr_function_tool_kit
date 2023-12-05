@@ -7,7 +7,20 @@ extendZodWithOpenApi(z);
 
 
 export class OpenAPISchemaGenerator {
+    // TODO: create singleton instance
+    private static instance: OpenAPISchemaGenerator;
 
+    private constructor() {
+        // Private constructor ensures that a new instance is not created outside the class
+    }
+
+    public static getInstance(): OpenAPISchemaGenerator {
+        if (!OpenAPISchemaGenerator.instance) {
+            OpenAPISchemaGenerator.instance = new OpenAPISchemaGenerator();
+        }
+
+        return OpenAPISchemaGenerator.instance;
+    }
     public static Response403 = {
         403: {
             description: 'Error: not allowed to perform this action',

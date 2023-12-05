@@ -1,7 +1,8 @@
 import {
+    OpenAPIRegistry,
+    OpenApiGeneratorV3,
     extendZodWithOpenApi
 } from '@asteasolutions/zod-to-openapi';
-// import { Express, Request, Response } from "express";
 // import swaggerUi from "swagger-ui-express";
 import { z } from 'zod';
 // import { mainChatGPTActions } from './ChatGPTActions';
@@ -102,62 +103,52 @@ export const Response403 = {
 //     })
 // });
 
-// async function getOpenApiDocumentation() {
+export function getOpenApiDocumentation() {
 
-//     const registry = new OpenAPIRegistry();
-
-
-//     const bearerAuth = registry.registerComponent('securitySchemes', 'Authorization', {
-//         type: 'apiKey',
-//         // scheme: 'bearer',
-//         // bearerFormat: 'JWT',
-//         in: 'header',
-//         name: 'Authorization',
-//         description: 'apps API-Key ${token}. Example: apps API-Key b70bedaf-3349-4aca-ae53-1ad8afcd9f1c',
-//     });
+    const registry = new OpenAPIRegistry();
 
 
-//     // add Routes
-//     mainChatGPTActions(registry);
-//     // mainDocsApps(registry);
-//     // mainDocsUsers(registry);
-//     // mainDocsOrganizations(registry);
-//     // mainDocsStaticQr(registry);
-//     // mainDocsSmsListener(registry);
+    const bearerAuth = registry.registerComponent('securitySchemes', 'Authorization', {
+        type: 'apiKey',
+        // scheme: 'bearer',
+        // bearerFormat: 'JWT',
+        in: 'header',
+        name: 'Authorization',
+        description: 'apps API-Key ${token}. Example: apps API-Key b70bedaf-3349-4aca-ae53-1ad8afcd9f1c',
+    });
 
 
-//     const generator = new OpenApiGeneratorV3(registry.definitions);
+    // TODO: Create a static func, to auto register route and filter base on tags[]
+    // add Routes
+    // mainChatGPTActions(registry);
+    // mainDocsApps(registry);
+    // mainDocsUsers(registry);
+    // mainDocsOrganizations(registry);
+    // mainDocsStaticQr(registry);
+    // mainDocsSmsListener(registry);
 
-//     return generator.generateDocument({
-//         openapi: '3.0.0',
-//         info: {
-//             version: '1.0.0',
-//             title: 'My API',
-//             description: 'Base URL: https://iiresodh-siaj.onrender.com/',
 
-//         },
-//         servers: [
-//             { url: 'https://iiresodh-siaj.onrender.com' },
+    const generator = new OpenApiGeneratorV3(registry.definitions);
 
-//             // { url: 'http://localhost:5000' }
-//         ], // Set the base URL for your API
-//     });
-// }
+    return generator.generateDocument({
+        openapi: '3.0.0',
+        info: {
+            version: '1.0.0',
+            title: 'My API',
+            description: 'Base URL: https://iiresodh-siaj.onrender.com/',
 
-// // function writeDocumentation(payload: Payload) {
-// //     // OpenAPI JSON
-// //     const docs = getOpenApiDocumentation(payload);
+        },
+        servers: [
+            { url: 'https://iiresodh-siaj.onrender.com' },
 
-// //     // YAML equivalent
-// //     const fileContent = yaml.stringify(docs);
+            // { url: 'http://localhost:5000' }
+        ], // Set the base URL for your API
+    });
+}
 
-// //     fs.writeFileSync(`${__dirname}/openapi-docs.yml`, fileContent, {
-// //         encoding: 'utf-8',
-// //     });
-// // }
 
-// // This code serves the Swagger UI page and the Swagger JSON document. It is used
-// // to display the Swagger documentation for the API.
+// This code serves the Swagger UI page and the Swagger JSON document. It is used
+// to display the Swagger documentation for the API.
 // export async function DisplaySwaggerDocs(app: Express) {
 
 //     try {
@@ -172,7 +163,7 @@ export const Response403 = {
 //         app.use('/docs', swaggerUi.serve, swaggerUi.setup(SwaggerSpec));
 
 //         // Serve the Swagger JSON document
-//         app.get("/docs.json", (req: Request, res: Response) => {
+//         app.get("/open_api.json", (req: Request, res: Response) => {
 //             res.setHeader("Content-Type", "application/json");
 //             res.send(SwaggerSpec);
 //         });
@@ -182,3 +173,5 @@ export const Response403 = {
 //     }
 //     // Serve the Swagger UI page
 // }
+
+// TODO: create func to save file open_api.json

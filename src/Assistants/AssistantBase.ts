@@ -1,5 +1,3 @@
-import { Assistant } from 'openai';
-import { OpenAIClient } from '../client/OpenAIClient';
 
 abstract class AssistantBase {
     protected client: OpenAIClient;
