@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "lib": ["esnext", "dom"],
+    "target": "ESNext",
+    "module": "ES2020",
+    "esModuleInterop": true,
+    "strict": true,
+    "moduleResolution": "node",
+    "noEmit": true,
+    // "types": ["jest"],
+    "jsx": "react",
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src", "openapi"],
+  "exclude": ["node_modules"]
+}
