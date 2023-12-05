@@ -1,26 +1,29 @@
-import { getGlobals } from 'common-es';
 import fs from "fs";
 import path from "path";
 import { MaybePromise } from './types';
-const { __dirname } = getGlobals(import.meta.url);
+// const { __dirname } = getGlobals(import.meta.url);
 const FindFiles = require('file-regex');
 
 export class MainUtils {
+
+    public static root_path = '';
     static root_directory(append_path = ''): string {
-        if (append_path === '') {
-            return __dirname;
+
+        if (MainUtils.root_path === '') {
+            MainUtils.root_path = 'D:\\1FullFramework\\fbr_function_tool_kit';
         }
+
         if (append_path.startsWith('src/')) {
+            console.log('append_path', append_path);
             append_path = append_path.replace('src/', '/');
         }
-        console.log('append_path', append_path);
-        const root_directory = path.join(__dirname, '../../');
-        console.log('root_directory', root_directory);
-        return path.join(__dirname, append_path);
+
+        return path.join(MainUtils.root_path, append_path);
     }
 
     static read_file_from_root(append_path: string): { fileContent: string } {
-        const filePath = MainUtils.root_directory(append_path);
+        const rootPath = MainUtils.root_directory();
+        const filePath = path.join(rootPath, append_path);
         const fileContent = fs.readFileSync(filePath, 'utf8');
         return { fileContent };
     }

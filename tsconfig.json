@@ -2,7 +2,7 @@
   "compilerOptions": {
     "lib": ["esnext", "dom"],
     "target": "ESNext",
-    "module": "ES2020",
+    "module": "CommonJS",
     "esModuleInterop": true,
     "strict": true,
     "moduleResolution": "node",
@@ -11,6 +11,11 @@
     "jsx": "react",
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src", "openapi"],
+  "include": [
+    "src",
+    "openapi",
+    "libs_types/openapi.d.ts",
+    "libs_types/cli-menu.d.ts"
+  ],
   "exclude": ["node_modules"]
 }

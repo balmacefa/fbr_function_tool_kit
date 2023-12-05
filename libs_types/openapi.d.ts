@@ -6,6 +6,7 @@ import type {
   UnknownParamsObject,
 } from 'openapi-client-axios';
 
+// TODO: Create a script to auto generate again this file 
 declare namespace Paths {
   namespace AssistantsManagerCreateSession {
     export interface RequestBody {
