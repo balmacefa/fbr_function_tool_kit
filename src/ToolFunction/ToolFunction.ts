@@ -21,7 +21,7 @@ export class ToolFunction<TInputSchema extends AnyZodObject = AnyZodObject, TRes
         this.responseSchema = responseSchema;
     }
 
-    async execute(input: zInfer<TInputSchema>): Promise<zInfer<TResponseSchema>> {
+    execute(input: zInfer<TInputSchema>): Promise<zInfer<TResponseSchema>> {
         return this.toolFn(input);
     }
 

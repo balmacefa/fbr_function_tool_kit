@@ -16,6 +16,7 @@ const responseSchema = z.object({
 const myToolFunction = new ToolFunction(
     "MyToolFunction",
     "Description of my tool function",
+    // eslint-disable-next-line require-await
     async (input) => {
         // ... function logic using input.param1, etc.
         return { result: 42 };

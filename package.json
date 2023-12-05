@@ -10,7 +10,7 @@
   "scripts": {
     "dev:updates_check": "npx ncu",
     "dev:updates_apply": "npx ncu -u",
-    "build": "tsup src/server/index.ts --format cjs,esm --dts",
+    "build": "tsup && tsc --emitDeclarationOnly --declaration",
     "release": "pnpm run build && changeset publish",
     "_dev:server": "tsx watch src/server/index.ts",
     "dev:server_taskmaster": "tsx watch src/server/AgentOpenAI/TaskMasterAI/server.ts",

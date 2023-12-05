@@ -3,6 +3,10 @@ import fs from "fs";
 import path from "path";
 const { __dirname, __filename } = getGlobals(import.meta.url)
 
+// TODO: Convert this into a class
+
+// TODO: export an string array of paths base on the current directory folders,
+// and look for index.ts, copy the path into the array.
 export const MainUtils = {
     root_directory: (append_path = '') => {
         // This is the root directory of execution of the server
