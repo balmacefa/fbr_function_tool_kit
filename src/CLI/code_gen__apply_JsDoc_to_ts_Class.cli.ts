@@ -1,4 +1,5 @@
 import { ClassDeclaration, MethodDeclaration, Project } from "ts-morph";
+import { MainUtils } from '../main_utils';
 
 /**
  * A class responsible for applying JSDoc comments from a documentation file to a source file.
@@ -15,8 +16,8 @@ class JsDocApplier {
      */
     constructor(sourceFilePath: string, docFilePath: string) {
         this.project = new Project();
-        this.sourceFile = this.project.addSourceFileAtPath(sourceFilePath);
-        this.docFile = this.project.addSourceFileAtPath(docFilePath);
+        this.sourceFile = this.project.addSourceFileAtPath(MainUtils.root_directory(sourceFilePath));
+        this.docFile = this.project.addSourceFileAtPath(MainUtils.root_directory(docFilePath));
     }
 
     /**
@@ -37,6 +38,26 @@ class JsDocApplier {
     private applyJsDoc(node: ClassDeclaration | MethodDeclaration, jsDoc: string): void {
         if (jsDoc) {
             node.addJsDoc(jsDoc);
+        }
+    }
+    // 
+    public static applyAndRemoveDocTmpFiles() {
+        try {
+            const docTmpFiles = MainUtils.read_directory_by_ext('.doc_tmp.ts');
+
+            for (const docFilePath of docTmpFiles) {
+                const sourceFilePath = docFilePath.replace('.doc_tmp.ts', '.ts');
+
+                // Apply JSDoc comments
+                const jsDocApplier = new JsDocApplier(sourceFilePath, docFilePath);
+                jsDocApplier.applyDocsToSource();
+                jsDocApplier.saveSourceFile();
+
+                // Remove the .doc_tmp file
+                // MainUtils.removeFile(docFilePath);
+            }
+        } catch (error) {
+            console.error('Error in applying and removing .doc_tmp files:', error);
         }
     }
 
@@ -71,7 +92,9 @@ class JsDocApplier {
     }
 }
 
+// TODO: look for all doc_tmp.ts then apply it, then remove the .doc_tmp file if operation succeed
+// Use MainUtils.read_directory_by_ext ('.doc_tmp.ts')
 // Example usage
-// const jsDocApplier = new JsDocApplier("path/to/your/original/file.ts", "path/to/main_utils.doc_tmp.ts");
-// jsDocApplier.applyDocsToSource();
-// jsDocApplier.saveSourceFile();
+const jsDocApplier = new JsDocApplier("src/main_utils.ts", "src/main_utils.doc_tmp.ts");
+jsDocApplier.applyDocsToSource();
+jsDocApplier.saveSourceFile();

@@ -82,4 +82,17 @@ export class MainUtils {
         return MainUtils.read_directory_by_ext('.cli.ts');
     }
 
+    /**
+     * Removes a file from the file system.
+     * @param filePath The path of the file to be removed.
+     */
+    static removeFile(filePath: string): void {
+        try {
+            fs.unlinkSync(filePath);
+        } catch (error) {
+            console.error(`Error removing file ${filePath}:`, error);
+            throw error; // Re-throw the error for external handling, if necessary
+        }
+    }
+
 }

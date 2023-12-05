@@ -19,17 +19,17 @@ class ScriptExecutor {
         return JSON.parse(data);
     }
 
-    private async executeScript(scriptName: string, scriptCommand: string) {
+    private async executeScript(script: string, args: string[] = []) {
         try {
             console.log('-------------------------------------*');
-            console.log(`Executing package.json script: "${scriptName}": "${scriptCommand}"`);
+            console.log(`Executing command: "${script} ${args.join(' ')}"`);
             console.log('-------------------------------------*');
             console.log('**-------------------------------------**');
-            const result = await execa('pnpm', [scriptName]);
+            const result = await execa(script, args);
             console.log(result.stdout);
             console.log('**-------------------------------------**');
         } catch (error) {
-            console.error(`Error executing script: ${scriptName}\n`, error);
+            console.error(`Error executing script: ${script}\n`, error);
         }
     }
 
@@ -46,25 +46,28 @@ class ScriptExecutor {
 
         return categories;
     }
-
-    private async buildCategoryMenu() {
-        const categories = this.categorizeScripts(this.packageJson.scripts);
-
-        // TODO: separate into small func, them create a dynamic script excution, this fill excuemt a comand of tsx [path, ...args]
-        const categoryChoices = [
+    private generateCategoryChoices(categories: any) {
+        return [
             ...Object.keys(categories).map(category => ({
                 name: category,
                 value: category
             })),
             new inquirer.Separator(),
+            { name: '--> Custom Command --> 🛠️', value: 'customCommand' },
+            new inquirer.Separator(),
             { name: '--> Exit --> 👨‍🚒🧯🔥', value: 'exit' }
         ];
+    }
+
+    private async buildCategoryMenu() {
+        const categories = this.categorizeScripts(this.packageJson.scripts);
+        const categoryChoices = this.generateCategoryChoices(categories);
 
         const categoryAnswer = await inquirer.prompt([
             {
                 type: 'list',
                 name: 'selectedCategory',
-                message: 'Select a category or exit:',
+                message: 'Select a category, execute a custom command, or exit:',
                 choices: categoryChoices
             }
         ]);
@@ -99,12 +102,35 @@ class ScriptExecutor {
             return;
         }
 
+        // TODO: separate into small func
+        if (selectedCategory === 'customCommand') {
+            const command = await inquirer.prompt([
+                {
+                    type: 'input',
+                    name: 'command',
+
+                    // TODO: Change this to a list of sub_menu options reading file with extesion using MainUtils to get file with extesion .cli.ts
+                    // And then excute the command using tsx
+                    message: 'Enter the command to execute:'
+                }
+            ]);
+            const args = await inquirer.prompt([
+                {
+                    type: 'input',
+                    name: 'args',
+                    message: 'Enter the arguments (separate with space):'
+                }
+            ]);
+            await this.executeScript(command.command, args.args.split(' '));
+            return;
+        }
+
         const selectedScript = await this.buildScriptMenu(selectedCategory);
 
         if (selectedScript === 'goBack') {
             return this.createScriptsMenu();
         } else if (selectedScript && this.packageJson.scripts[selectedScript]) {
-            await this.executeScript(selectedScript, this.packageJson.scripts[selectedScript]);
+            await this.executeScript('pnpm', [selectedScript]);
         }
     }
 }
