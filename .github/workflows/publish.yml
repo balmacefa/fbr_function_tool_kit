@@ -27,6 +27,7 @@ jobs:
       - run: pnpm install --no-frozen-lockfile
       - run: pnpm release
       - run: pnpm build
+      - run: npm adduser
       - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
