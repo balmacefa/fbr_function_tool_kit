@@ -43,6 +43,4 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       - run: pnpm release
-        env:
-          npm adduser: ${{secrets.NPM_TOKEN}}
 
