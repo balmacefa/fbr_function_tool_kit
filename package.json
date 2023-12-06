@@ -1,12 +1,14 @@
 {
-  "name": "fbr_function_tool_kit",
+  "name": "@balmacefa/function_tool_kit",
   "version": "1.0.2",
-  "private": false,
   "type": "commonjs",
   "license": "MIT",
   "main": "dist/lib_index.js",
   "module": "dist/lib_index.mjs",
   "types": "dist/lib_index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "menu": "tsx src/CLI/ScriptMenu.ts",
     "dev:apply_docs": "tsx src/CLI/code_gen__apply_JsDoc_to_ts_Class.cli.ts",
@@ -88,8 +90,5 @@
     "fastify": "^4.24.3",
     "openai": "^4.20.0",
     "openapi-client-axios": "^7.4.0"
-  },
-  "publishConfig": {
-    "access": "restricted"
   }
 }
