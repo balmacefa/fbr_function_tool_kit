@@ -27,7 +27,7 @@ jobs:
       - run: pnpm install --no-frozen-lockfile
       - run: pnpm release
       - run: pnpm build
-        
-      - uses: JS-DevTools/npm-publish@v3
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
