@@ -17,5 +17,5 @@
     "libs_types/openapi.d.ts",
     "libs_types/cli-menu.d.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "build", "dist", "example", "rollup.config.js"]
 }

@@ -5,10 +5,13 @@
   "license": "MIT",
   "main": "dist/lib_index.js",
   "module": "dist/lib_index.mjs",
-  "types": "dist/lib_index.d.ts",
+  "types": "dist/types/lib_index.d.ts",
   "publishConfig": {
     "access": "public"
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "menu": "tsx src/CLI/ScriptMenu.ts",
     "dev:apply_docs": "tsx src/CLI/code_gen__apply_JsDoc_to_ts_Class.cli.ts",

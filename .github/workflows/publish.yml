@@ -39,8 +39,11 @@ jobs:
       - run: npm set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }}
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-      - run: npm publish --access public
+      # Run this the first time
+      # - run: npm publish --access public
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - run: pnpm release
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-      - run: pnpm release
 
