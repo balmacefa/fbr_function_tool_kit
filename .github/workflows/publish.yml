@@ -22,8 +22,19 @@ jobs:
         with:
           node-version: 18.x
           cache: "pnpm"
+          registry-url: "https://registry.npmjs.org/"
 
-      - run: pnpm install --no-frozen-lockfile
+
+            # Cache PNPM modules
+      - name: Cache PNPM modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
+
+      - run: pnpm install --frozen-lockfile
       - run: pnpm build
       - run: npm set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }}
         env:
