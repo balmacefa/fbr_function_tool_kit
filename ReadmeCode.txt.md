@@ -1,6 +1,8 @@
 # TODO: create utilis for this libs:
 
-- [] 
+- [] implemetn A lightweight interface for running git commands in any node.js application.
+
+https://npm.io/package/simple-git
 
 # Ideas: of API tools sets for libs:
 
