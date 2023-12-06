@@ -25,12 +25,12 @@ jobs:
 
       - run: pnpm install --no-frozen-lockfile
       - run: pnpm build
-      - run: npm adduser
+      - run: npm set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }}
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       - run: pnpm release
         env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          npm adduser: ${{secrets.NPM_TOKEN}}
       - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
