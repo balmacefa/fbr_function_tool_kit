@@ -1,6 +1,6 @@
 {
   "name": "@balmacefa/function_tool_kit",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "type": "commonjs",
   "license": "MIT",
   "main": "dist/lib_index.js",

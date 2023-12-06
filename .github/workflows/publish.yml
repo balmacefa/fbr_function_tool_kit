@@ -22,8 +22,8 @@ jobs:
         with:
           node-version: 18.x
           cache: "pnpm"
-          registry-url: "https://registry.npmjs.org/"
-
+          registry-url:
+            "https://registry.npmjs.org/"
 
             # Cache PNPM modules
       - name: Cache PNPM modules
@@ -39,11 +39,9 @@ jobs:
       - run: npm set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }}
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-      # Run this the first time
-      # - run: npm publish --access public
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-      - run: pnpm release
+      - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-
+      # - run: pnpm release
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
