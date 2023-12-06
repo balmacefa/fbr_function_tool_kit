@@ -1,5 +1,3 @@
-/* eslint-disable require-await */
-
 import { MaybePromise } from "./types";
 
 /**
