@@ -1,7 +1,7 @@
 {
   "name": "fbr_function_tool_kit",
   "version": "1.0.2",
-  "private": true,
+  "private": false,
   "type": "commonjs",
   "license": "MIT",
   "main": "dist/lib_index.js",
