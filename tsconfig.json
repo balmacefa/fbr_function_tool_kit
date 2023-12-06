@@ -8,7 +8,7 @@
     "moduleResolution": "node",
     // "noEmit": true,
     // "types": ["jest"],
-    "jsx": "react",
+    // "jsx": "react",
     "forceConsistentCasingInFileNames": true
   },
   "include": [

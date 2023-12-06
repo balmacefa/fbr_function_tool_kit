@@ -3,14 +3,12 @@
   "version": "2.0.0",
   "type": "commonjs",
   "license": "MIT",
-  "main": "dist/lib_index.js",
-  "module": "dist/lib_index.mjs",
-  "types": "dist/types/lib_index.d.ts",
+  "main": "src/lib_index.ts",
   "publishConfig": {
     "access": "public"
   },
   "files": [
-    "dist"
+    "src"
   ],
   "scripts": {
     "menu": "tsx src/CLI/ScriptMenu.ts",
@@ -18,8 +16,9 @@
     "dev:updates_check": "npx ncu",
     "dev:updates_apply": "npx ncu -u",
     "dev:gen_npm_types": "npx dts-gen -m",
-    "dev:new_relase": "changeset add",
-    "dev:changeset": "changeset",
+    "dev:changeset_new_relase": "changeset add",
+    "dev:changeset_new_version": "changeset version",
+    "dev:changeset_main": "changeset",
     "build": "rollup -c --bundleConfigAsCjs",
     "release": "changeset publish",
     "_dev:server": "tsx watch src/server/index.ts",
