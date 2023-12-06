@@ -1,4 +1,5 @@
-// TODO: use main)utils class to
-// export an string array of paths base on the current directory folders,
-// and look for index.ts, copy the path into the array.
+// TODO: treeshake using roller up
+export * from './HostMachine';
+export * from './OpenAPISchemaGenerator';
 export * from './ToolFunction';
+// export * from ;
