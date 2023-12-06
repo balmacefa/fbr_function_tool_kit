@@ -13,6 +13,7 @@
     "dev:updates_check": "npx ncu",
     "dev:updates_apply": "npx ncu -u",
     "dev:gen_npm_types": "npx dts-gen -m",
+    "de:new_relase🫣🔥": "changeset add",
     "build": "rollup -c --bundleConfigAsCjs",
     "release": "pnpm run build && changeset publish",
     "_dev:server": "tsx watch src/server/index.ts",
