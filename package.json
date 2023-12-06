@@ -9,6 +9,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "menu": "tsx src/CLI/ScriptMenu.ts",
+    "dev:apply_docs": "tsx src/CLI/code_gen__apply_JsDoc_to_ts_Class.cli.ts",
     "dev:updates_check": "npx ncu",
     "dev:updates_apply": "npx ncu -u",
     "dev:gen_npm_types": "npx dts-gen -m",

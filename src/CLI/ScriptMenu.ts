@@ -7,6 +7,16 @@ interface PackageJson {
     scripts: Record<string, string>;
 }
 
+// TODO: create a similar concept of game loop, to easy check for go back option or exit, 
+// to easy check command excution type based on string key like s3 does you know.
+// this way we don need to reed to the enteries logic process
+/**<fbr_auto_gen id='uuid@' > >>
+cual quier cose 
+</fbr_auto_gen>
+**/
+
+// TODO: convert to regex<fbr_auto_gen id='uuid@'> any character...
+
 class ScriptExecutor {
     private packageJson: PackageJson;
 
@@ -95,6 +105,7 @@ class ScriptExecutor {
 
         return scriptAnswer.selectedScript;
     }
+
     public async createScriptsMenu(): Promise<any> {
         const selectedCategory = await this.buildCategoryMenu();
 
@@ -102,26 +113,8 @@ class ScriptExecutor {
             return;
         }
 
-        // TODO: separate into small func
         if (selectedCategory === 'customCommand') {
-            const command = await inquirer.prompt([
-                {
-                    type: 'input',
-                    name: 'command',
-
-                    // TODO: Change this to a list of sub_menu options reading file with extesion using MainUtils to get file with extesion .cli.ts
-                    // And then excute the command using tsx
-                    message: 'Enter the command to execute:'
-                }
-            ]);
-            const args = await inquirer.prompt([
-                {
-                    type: 'input',
-                    name: 'args',
-                    message: 'Enter the arguments (separate with space):'
-                }
-            ]);
-            await this.executeScript(command.command, args.args.split(' '));
+            await this.executeCliScriptMenu();
             return;
         }
 
@@ -133,6 +126,51 @@ class ScriptExecutor {
             await this.executeScript('pnpm', [selectedScript]);
         }
     }
+
+    private async executeCliScriptMenu() {
+        const cliChoices = this.generateCliScriptChoices();
+        const cliScriptAnswer = await inquirer.prompt([
+            {
+                type: 'list',
+                name: 'selectedCliScript',
+                message: 'Select a CLI script to execute:',
+                choices: cliChoices
+            }
+        ]);
+
+        if (cliScriptAnswer.selectedCliScript !== 'goBack') {
+            await this.executeCliScript(cliScriptAnswer.selectedCliScript);
+        }
+    }
+
+    private generateCliScriptChoices() {
+        // ... implementation to generate CLI script choices ...
+        // Todo: fix
+        const file_path_list = MainUtils.by_extesion('.cli.ts')
+        // Todo: show the UI option and excution
+        const options = [
+            new inquirer.Separator(),
+            { name: '--> Exit main menu todu --> 👨‍🚒🧯🔥', value: 'exit' },
+            new inquirer.Separator(),
+        ];
+        // TODO: add goBack option 
+        for (const path of file_path_list) {
+            console.log(path);
+            options.push(
+                new inquirer.Separator(),
+            )
+            options.push(
+                { name: '--> Custom Command --> 🛠️', value: `customCommand__${path}` },
+            )
+        }
+        return options;
+    }
+
+    private async executeCliScript(cliScript: string) {
+        // Assuming CLI scripts can be executed with a specific command, like ts-node
+        await this.executeScript('tsx', [cliScript]);
+    }
+
 }
 
 (async () => {

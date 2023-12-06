@@ -1,8 +1,3 @@
-import { getGlobals } from 'common-es';
-import { MaybePromise } from './types';
-const { __dirname } = getGlobals(import.meta.url);
-const FindFiles = require('file-regex');
-
 /**
  * @class MainUtils
  * @description Utility class providing various file and directory operations.

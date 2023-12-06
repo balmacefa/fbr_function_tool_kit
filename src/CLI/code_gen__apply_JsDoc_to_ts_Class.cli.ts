@@ -1,4 +1,4 @@
-import { ClassDeclaration, MethodDeclaration, Project } from "ts-morph";
+import { ClassDeclaration, MethodDeclaration, Project, SourceFile } from "ts-morph";
 import { MainUtils } from '../main_utils';
 
 /**
@@ -6,8 +6,8 @@ import { MainUtils } from '../main_utils';
  */
 class JsDocApplier {
     private project: Project;
-    private sourceFile: any;
-    private docFile: any;
+    private sourceFile: SourceFile;
+    private docFile: SourceFile;
 
     /**
      * Initializes a new instance of the JsDocApplier class.
@@ -18,6 +18,7 @@ class JsDocApplier {
         this.project = new Project();
         this.sourceFile = this.project.addSourceFileAtPath(MainUtils.root_directory(sourceFilePath));
         this.docFile = this.project.addSourceFileAtPath(MainUtils.root_directory(docFilePath));
+        console.log('constructe doc files')
     }
 
     /**
@@ -40,36 +41,40 @@ class JsDocApplier {
             node.addJsDoc(jsDoc);
         }
     }
-    // 
-    public static applyAndRemoveDocTmpFiles() {
+    //
+
+
+
+    static applyDocTmpFiles() {
         try {
             const docTmpFiles = MainUtils.read_directory_by_ext('.doc_tmp.ts');
-
             for (const docFilePath of docTmpFiles) {
                 const sourceFilePath = docFilePath.replace('.doc_tmp.ts', '.ts');
-
-                // Apply JSDoc comments
                 const jsDocApplier = new JsDocApplier(sourceFilePath, docFilePath);
-                jsDocApplier.applyDocsToSource();
-                jsDocApplier.saveSourceFile();
 
-                // Remove the .doc_tmp file
-                // MainUtils.removeFile(docFilePath);
+                try {
+                    jsDocApplier.applyDocsToSource();
+                    MainUtils.removeFile(docFilePath); // Remove the .doc_tmp file after successful application
+                } catch (applyError) {
+                    console.error(`Error applying docs for ${docFilePath}:`, applyError);
+                    // Optionally handle specific cleanup or rollback actions here
+                }
             }
         } catch (error) {
-            console.error('Error in applying and removing .doc_tmp files:', error);
+            console.error('Error in processing .doc_tmp files:', error);
         }
     }
 
-    /**
-     * Applies JSDoc comments from the documentation file to the corresponding classes and methods in the source file.
-     */
+
     public applyDocsToSource(): void {
         this.docFile.getClasses().forEach((docClass: ClassDeclaration) => {
             const className = docClass.getName() as string;
             const sourceClass = this.sourceFile.getClass(className);
 
             if (sourceClass) {
+                // TODO: review this code, this seams to be faing, the this.docFile, may have sintaye error and is ok, we only care about the 
+                // jsdoc comments, class, and methods names.
+                console.log('class found!', sourceClass);
                 this.applyJsDoc(sourceClass, this.getJsDoc(docClass));
 
                 docClass.getMethods().forEach((docMethod: MethodDeclaration) => {
@@ -77,24 +82,64 @@ class JsDocApplier {
                     const sourceMethod = sourceClass.getMethod(methodName);
 
                     if (sourceMethod) {
+                        console.log('sourceMethod found!', sourceMethod);
                         this.applyJsDoc(sourceMethod, this.getJsDoc(docMethod));
                     }
                 });
             }
+
+            //save to file
+            const patch_content = this.docFile.getFullText();
+            MainUtils.save_file(this.sourceFile.getFilePath(), patch_content);
         });
     }
+    public mergeJSDocComments() {
 
-    /**
-     * Saves the updated source file.
-     */
-    public saveSourceFile(): void {
+        this.docFile.getClasses().forEach(docClass => {
+            const sourceClass = this.sourceFile.getClass(`${docClass.getName()}`);
+            if (sourceClass) {
+
+                // get from .docFileClass
+                const temp_file_class = this.sourceFile.getClass(`${docClass.getName()}`);
+                if (temp_file_class) {
+                    sourceClass.addJsDoc(sourceClass.getJsDocs().toString());
+                }
+
+                docClass.getMethods().forEach(docMethod => {
+                    const sourceMethod = sourceClass.getMethod(docMethod.getName());
+                    if (sourceMethod) {
+                        // get from .docFileClass
+                        // 
+                        const temp_method = (temp_file_class as ClassDeclaration).getMethod(`${docMethod.getName()}`);
+                        if (temp_method) {
+                            sourceMethod.addJsDoc(temp_method.getJsDocs().toString());
+                            console.log('completed! ');
+                        }
+                    }
+                });
+            }
+        });
+
+        // Save changes to the source file
         this.sourceFile.saveSync();
     }
+
+
 }
 
 // TODO: look for all doc_tmp.ts then apply it, then remove the .doc_tmp file if operation succeed
 // Use MainUtils.read_directory_by_ext ('.doc_tmp.ts')
 // Example usage
-const jsDocApplier = new JsDocApplier("src/main_utils.ts", "src/main_utils.doc_tmp.ts");
-jsDocApplier.applyDocsToSource();
-jsDocApplier.saveSourceFile();
+// or:
+
+
+(async () => {
+    // JsDocApplier.applyDocTmpFiles();
+    // console.log('done');
+    const jsDocApplier = new JsDocApplier("src/main_utils.ts", "src/main_utils.doc_tmp.ts");
+    jsDocApplier.mergeJSDocComments();
+    console.log('done 2');
+
+
+})();
+

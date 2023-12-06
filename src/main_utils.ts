@@ -4,19 +4,28 @@ import { MaybePromise } from './types';
 // const { __dirname } = getGlobals(import.meta.url);
 const FindFiles = require('file-regex');
 
+/** */
 export class MainUtils {
 
     public static root_path = '';
+
+    // dic_map
+    static by_extesion = MainUtils.read_directory_by_ext;
+
+    // save_file
+    static save_file = MainUtils.write_file_from_root;
+    /** */
     static root_directory(append_path = ''): string {
 
         if (MainUtils.root_path === '') {
-            // Todo: change to .evn config
+            // Todu: change to .evn config
             MainUtils.root_path = 'D:\\1FullFramework\\fbr_function_tool_kit';
         }
 
         return path.join(MainUtils.root_path, append_path);
     }
 
+    /** */
     static read_file_from_root(append_path: string): { fileContent: string } {
         const rootPath = MainUtils.root_directory();
         const filePath = path.join(rootPath, append_path);
@@ -24,11 +33,13 @@ export class MainUtils {
         return { fileContent };
     }
 
+    /** */
     static write_file_from_root(append_path: string, fileContent: string): void {
         const filePath = MainUtils.root_directory(append_path);
         fs.writeFileSync(filePath, fileContent);
     }
 
+    /** */
     static read_directory_by_ext(ext: string, dir?: string): string[] {
         if (dir === '' || dir === undefined) {
             dir = MainUtils.root_directory();
@@ -37,21 +48,25 @@ export class MainUtils {
         return files.filter(file => file.endsWith(ext));
     }
 
+    /** */
     static flat_tree_from_files(files: string[]): string[] {
         return files.map(file => path.basename(file));
     }
 
+    /** */
     static flat_tree_from_path(dir: string): string[] {
         const files = MainUtils.read_directory(dir);
         return MainUtils.flat_tree_from_files(files);
     }
 
+    /** */
     static read_directory(dir: string): string[] {
         return fs.readdirSync(dir, { withFileTypes: true })
             .filter(dirent => dirent.isDirectory())
             .map(dirent => path.join(dir, dirent.name));
     }
 
+    /** */
     static getIndexPaths(): MaybePromise<string[]> {
         const rootDir = MainUtils.root_directory();
         const directories = fs.readdirSync(rootDir, { withFileTypes: true })
@@ -68,6 +83,7 @@ export class MainUtils {
         return indexPaths;
     }
 
+    /** */
     static async findFilesByRegex(dir: string, pattern: RegExp): Promise<string[]> {
         try {
             const result = await FindFiles(dir, pattern, 0, { concurrency: 10 });
@@ -94,5 +110,7 @@ export class MainUtils {
             throw error; // Re-throw the error for external handling, if necessary
         }
     }
+
+    // save_file
 
 }
