@@ -30,7 +30,7 @@ export default (commandLineArgs) => {
     // Configuration for generating .d.ts files
     {
       input: "src/lib_index.ts",
-      output: [{ file: "dist/types/index.d.ts", format: "es" }],
+      output: [{ file: "dist/types/lib_index.d.ts", format: "es" }],
       plugins: [dts()],
     },
   ];

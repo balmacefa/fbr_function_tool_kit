@@ -1,6 +1,6 @@
 {
   "name": "@balmacefa/function_tool_kit",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "type": "commonjs",
   "license": "MIT",
   "main": "dist/lib_index.js",
@@ -19,6 +19,7 @@
     "dev:updates_apply": "npx ncu -u",
     "dev:gen_npm_types": "npx dts-gen -m",
     "dev:new_relase": "changeset add",
+    "dev:changeset": "changeset",
     "build": "rollup -c --bundleConfigAsCjs",
     "release": "changeset publish",
     "_dev:server": "tsx watch src/server/index.ts",
