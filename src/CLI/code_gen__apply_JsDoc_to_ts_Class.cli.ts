@@ -1,5 +1,5 @@
 import { ClassDeclaration, MethodDeclaration, Project, SourceFile } from "ts-morph";
-import { MainUtils } from '../main_utils';
+import { MainUtils } from '../HostMachine/main_utils';
 
 /**
  * A class responsible for applying JSDoc comments from a documentation file to a source file.

@@ -1,6 +1,6 @@
 import { execa } from 'execa';
 import inquirer from 'inquirer';
-import { MainUtils } from '../main_utils';
+import { MainUtils } from '../HostMachine/main_utils';
 
 
 interface PackageJson {

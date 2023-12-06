@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { MaybePromise } from './types';
+import { MaybePromise } from '../types';
 // const { __dirname } = getGlobals(import.meta.url);
 const FindFiles = require('file-regex');
 
