@@ -24,12 +24,13 @@ jobs:
           cache: "pnpm"
 
       - run: pnpm install --no-frozen-lockfile
-      - run: pnpm release
+        with:
+          cache: "pnpm install --no-frozen-lockfile"
       - run: pnpm build
       - run: npm adduser
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-      - run: npm publish --access public
+      - run: pnpm release
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
