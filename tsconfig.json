@@ -6,7 +6,7 @@
     "esModuleInterop": true,
     "strict": true,
     "moduleResolution": "node",
-    "noEmit": true,
+    // "noEmit": true,
     // "types": ["jest"],
     "jsx": "react",
     "forceConsistentCasingInFileNames": true

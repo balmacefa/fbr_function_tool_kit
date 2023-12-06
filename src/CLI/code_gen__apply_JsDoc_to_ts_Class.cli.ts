@@ -93,7 +93,7 @@ class JsDocApplier {
             MainUtils.save_file(this.sourceFile.getFilePath(), patch_content);
         });
     }
-    public mergeJSDocComments() {
+    public async mergeJSDocComments() {
 
         this.docFile.getClasses().forEach(docClass => {
             const sourceClass = this.sourceFile.getClass(`${docClass.getName()}`);
@@ -121,7 +121,7 @@ class JsDocApplier {
         });
 
         // Save changes to the source file
-        this.sourceFile.saveSync();
+        await this.sourceFile.saveSync();
     }
 
 
@@ -133,7 +133,7 @@ class JsDocApplier {
 // or:
 
 
-(async () => {
+(() => {
     // JsDocApplier.applyDocTmpFiles();
     // console.log('done');
     const jsDocApplier = new JsDocApplier("src/main_utils.ts", "src/main_utils.doc_tmp.ts");
