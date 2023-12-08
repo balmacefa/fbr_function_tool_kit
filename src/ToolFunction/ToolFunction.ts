@@ -1,18 +1,18 @@
-import { AnyZodObject, infer as zInfer } from 'zod';
+import { AnyZodObject } from 'zod';
 
-export class ToolFunction<TInputSchema extends AnyZodObject = AnyZodObject, TResponseSchema extends AnyZodObject = AnyZodObject> {
+export class ToolFunction<TI = any, TO = any> {
     name: string;
     description: string;
-    toolFn: (input: zInfer<TInputSchema>) => Promise<zInfer<TResponseSchema>>;
-    inputSchema: TInputSchema;
-    responseSchema: TResponseSchema;
+    toolFn: (input: TI) => TO;
+    inputSchema: AnyZodObject;
+    responseSchema: AnyZodObject;
 
     constructor(
         name: string,
         description: string,
-        toolFn: (input: zInfer<TInputSchema>, ctx?: any) => Promise<zInfer<TResponseSchema>>,
-        inputSchema: TInputSchema,
-        responseSchema: TResponseSchema
+        toolFn: (input: TI) => TO,
+        inputSchema: AnyZodObject,
+        responseSchema: AnyZodObject
     ) {
         this.name = name;
         this.description = description;
@@ -21,7 +21,7 @@ export class ToolFunction<TInputSchema extends AnyZodObject = AnyZodObject, TRes
         this.responseSchema = responseSchema;
     }
 
-    execute(input: zInfer<TInputSchema>): Promise<zInfer<TResponseSchema>> {
+    execute(input: TI): TO {
         return this.toolFn(input);
     }
 
@@ -30,5 +30,13 @@ export class ToolFunction<TInputSchema extends AnyZodObject = AnyZodObject, TRes
     }
     get_operation_id() {
         return `/${this.name}`;
+    }
+
+    validate_input(data: any) {
+        return this.inputSchema.safeParse(data);
+    }
+
+    validate_output(data: any) {
+        return this.responseSchema.safeParse(data);
     }
 }

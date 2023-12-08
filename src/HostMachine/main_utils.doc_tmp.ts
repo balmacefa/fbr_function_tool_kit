@@ -1,4 +1,4 @@
-import { MaybePromise } from "./types";
+import { MaybePromise } from "../types";
 
 /**
  * @class MainUtils
