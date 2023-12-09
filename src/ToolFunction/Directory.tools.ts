@@ -12,11 +12,11 @@ export const ToolDirectoryVisualization = (): ToolFunction => {
 
 
     const input_schema = z.object({
-        directoryPath: z.string().describe('Path to the directory to visualize'),
+        directoryPath: z.string().describe('Path to the directory to visualize').default(""),
         // fileFilter: z.string().optional().describe(`Filter for files, examples: '*.js', '*.txt', '*.md', etc...`),
         // fileFilter and directoryFilter is string or array of strings
         depth: z.number().optional()
-            .default(12).describe(`Depth of the directory tree to visualize, default is 12`),
+            .default(3).describe(`Depth of the directory tree to visualize`),
         directoryFilter: z.union([z.string(), z.array(z.string())]).optional()
             .default(['!.git', '!*modules',]).describe(`Filter for directories, examples: '!.git', '!*modules', etc...`),
         // fileFilter: z.union([z.string(), z.array(z.string())]).optional().describe(`Filter for files, examples: '*.js', '*.txt', '*.md', etc...`),

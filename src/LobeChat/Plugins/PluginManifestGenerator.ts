@@ -10,7 +10,7 @@ export class PluginManifest {
     public gateway?: string;
     public version: string;
     public settings?: SchemaObject;
-
+    public host: string;
     constructor(
         args: {
             functions: ToolFunction[],
@@ -19,6 +19,7 @@ export class PluginManifest {
             gateway: string,
             version: string,
             settings?: SchemaObject;
+            host?: string;
         }
     ) {
         this.functions = args.functions;
@@ -26,6 +27,7 @@ export class PluginManifest {
         this.ui = args.ui;
         this.gateway = args.gateway;
         this.version = args.version;
+        args.host ? this.host = args.host : this.host = 'http://localhost:3000'
         if (args.settings) { this.settings = args.settings; }
     }
 
@@ -34,15 +36,16 @@ export class PluginManifest {
             identifier: this.identifier,
             api: this.generateApiSection(),
             ui: this.ui,
-            gateway: this.gateway,
+            // gateway: this.gateway,
             version: this.version,
-            settings: this.settings
+            settings: this.settings,
+            "gateway": "http://localhost:3000/api_gateway",
         };
     }
 
     public generateApiSection(): any[] {
         return this.functions.map(func => ({
-            url: func.get_path(),
+            url: func.get_path(this.host),
             name: func.name,
             description: func.description,
             parameters: this.extractSchemaProperties(func)
@@ -70,7 +73,7 @@ export class PluginManifest {
 
         return schemaJson;
     }
-    
+
 
 }
 

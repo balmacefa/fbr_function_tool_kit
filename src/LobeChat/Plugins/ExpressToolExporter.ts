@@ -1,9 +1,12 @@
+import { createLobeChatPluginGateway } from '@lobehub/chat-plugins-gateway';
 import { Express } from "express";
+import morgan from 'morgan';
 import { OpenAPISchemaGenerator } from "../../OpenAPISchemaGenerator";
 import { OpenApiSwaggerDocsExpress } from '../../OpenAPISchemaGenerator/OpenApiSwaggerDocsExpress';
 import { ToolFunction } from "../../ToolFunction";
 import { ToolDirectoryVisualization, ToolFileContent } from "../../ToolFunction/Directory.tools";
 import { PluginManifest } from "./PluginManifestGenerator";
+
 
 export class ExpressToolExporter {
 
@@ -53,6 +56,34 @@ export class ExpressToolExporter {
         })
 
     }
+    static routePluginGateway(args: { manifest: PluginManifest, app: Express }) {
+
+
+        // Convert the request and response to the expected format
+
+        args.app.options('/api_gateway', async (req, res) => {
+            const fakeRequest = {
+                method: req.method,
+                json: () => Promise.resolve(req.body),
+                headers: {
+                    get: (headerName: string) => req.headers[headerName.toLowerCase()],
+                    // Add other header methods if needed by your original function
+                },
+            };
+
+            const fakeResponse = await createLobeChatPluginGateway()(fakeRequest as Request);
+
+            // Assuming fakeResponse is similar to a Fetch API Response
+            if (fakeResponse.ok) {
+                const responseBody = await fakeResponse.json(); // or .json()
+
+                res.status(fakeResponse.status).send(responseBody);
+            } else {
+                res.status(fakeResponse.status).send(fakeResponse.statusText);
+            }
+        });
+
+    }
 
     static setupOpenAPISwaggerDocs(app: Express, functions: ToolFunction[]) {
         const open_api = new OpenAPISchemaGenerator({
@@ -84,6 +115,11 @@ export class ExpressToolExporter {
             manifest: args.manifest
         });
 
+        this.routePluginGateway({
+            app: args.app,
+            manifest: args.manifest
+        })
+
         this.setupOpenAPISwaggerDocs(args.app, args.manifest.functions);
     }
 }
@@ -93,8 +129,22 @@ export class ExpressToolExporter {
 if (typeof require !== 'undefined' && require.main === module) {
     import('express')
         .then(express => {
+
+
+
+
             const app = express.default(); // Note the use of .default here
             app.use(express.json()); // To support JSON-encoded bodies
+            app.use(function (req, res, next) {
+                res.header("Access-Control-Allow-Origin", "*");
+                res.header("Access-Control-Allow-Headers", "X-Requested-With");
+                res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+                next();
+            });
+
+            app.use(
+                morgan(":method :url :status :res[content-length] - :response-time ms")
+            );
 
             // Create PluginManifest instance
             const plugin = new PluginManifest({
@@ -104,7 +154,8 @@ if (typeof require !== 'undefined' && require.main === module) {
                 functions: [
                     ToolDirectoryVisualization(),
                     ToolFileContent()
-                ]
+                ],
+                host: 'http://localhost:3000'
             });
             // Initialize all Express tool exporter functionalities
             ExpressToolExporter.initializeExpressToolExport({
