@@ -1,13 +1,14 @@
 import { Express } from "express";
+import { OpenAPISchemaGenerator } from "../../OpenAPISchemaGenerator";
+import { OpenApiSwaggerDocsExpress } from '../../OpenAPISchemaGenerator/OpenApiSwaggerDocsExpress';
 import { ToolFunction } from "../../ToolFunction";
 import { ToolDirectoryVisualization, ToolFileContent } from "../../ToolFunction/Directory.tools";
 import { PluginManifest } from "./PluginManifestGenerator";
 
-export class PluginManifestExporter {
+export class ExpressToolExporter {
 
     static exportPluginManifest(args: {
         app: Express,
-        url_prefix: string,
         functions: ToolFunction[]// Replace 'any' with the appropriate type for your plugin manifest
     }) {
         args.functions.forEach(fnt => {
@@ -45,6 +46,46 @@ export class PluginManifestExporter {
         });
     }
 
+    static routePluginManifestDotJson(args: { manifest: PluginManifest, app: Express }) {
+        const jsonData = args.manifest.generateManifest();
+        args.app.get('lobe_chat_plugins/' + args.manifest.identifier + '.json', (req, res) => {
+            res.status(201).json(jsonData);
+        })
+
+    }
+
+    static setupOpenAPISwaggerDocs(app: Express, functions: ToolFunction[]) {
+        const open_api = new OpenAPISchemaGenerator({
+            description: 'open_api_functool',
+            title: 'FN tools',
+            url: 'http://localhost:3000',
+            version: '1.0.0',
+        });
+
+        open_api.a1_step_register_tools(functions);
+
+        OpenApiSwaggerDocsExpress.displaySwaggerDocs({
+            app,
+            open_api,
+        });
+    }
+
+    static initializeExpressToolExport(args: {
+        app: Express,
+        manifest: PluginManifest
+    }) {
+        this.exportPluginManifest({
+            app: args.app,
+            functions: args.manifest.functions
+        });
+
+        this.routePluginManifestDotJson({
+            app: args.app,
+            manifest: args.manifest
+        });
+
+        this.setupOpenAPISwaggerDocs(args.app, args.manifest.functions);
+    }
 }
 
 
@@ -53,7 +94,6 @@ if (typeof require !== 'undefined' && require.main === module) {
     import('express')
         .then(express => {
             const app = express.default(); // Note the use of .default here
-
             app.use(express.json()); // To support JSON-encoded bodies
 
             // Create PluginManifest instance
@@ -66,18 +106,28 @@ if (typeof require !== 'undefined' && require.main === module) {
                     ToolFileContent()
                 ]
             });
-
-            // Export the plugin manifest routes into the Express application
-            PluginManifestExporter.exportPluginManifest({
+            // Initialize all Express tool exporter functionalities
+            ExpressToolExporter.initializeExpressToolExport({
                 app: app,
-                url_prefix: '/api', // Example URL prefix
-                functions: plugin.functions
+                manifest: plugin
             });
+
 
             // Start the server
             const port = 3000; // Replace with your desired port
             app.listen(port, () => {
                 console.log(`Server running on port ${port}`);
+
+                app._router.stack.forEach((middleware: any) => {
+                    if (middleware.route) { // if it's a route middleware
+                        const methods = Object.keys(middleware.route.methods)
+                            .map(method => method.toUpperCase())
+                            .join(', ');
+
+                        console.log(`${methods} ${middleware.route.path}`);
+                    }
+                });
+
             });
         });
 

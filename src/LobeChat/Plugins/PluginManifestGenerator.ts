@@ -70,6 +70,7 @@ export class PluginManifest {
 
         return schemaJson;
     }
+    
 
 }
 

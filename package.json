@@ -24,7 +24,7 @@
     "_dev:server": "tsx watch src/server/index.ts",
     "dev:server_taskmaster": "tsx watch src/server/AgentOpenAI/TaskMasterAI/server.ts",
     "dev:client": "wait-port 2022 && tsx watch src/client",
-    "dev": "tsx watch src/LobeChat/Plugins/PluginManifestGenerator.ts",
+    "dev": "tsx watch src/LobeChat/Plugins/ExpressToolExporter.ts",
     "_dev": "run-p dev:* --print-label",
     "gen:openapi": "npx openapicmd typegen ./docs.json > src/openapi.d.ts",
     "lint": "eslint --cache --ext \".js,.ts,.tsx\" --report-unused-disable-directives src",

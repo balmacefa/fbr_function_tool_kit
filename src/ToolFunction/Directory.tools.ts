@@ -41,7 +41,7 @@ export const ToolDirectoryVisualization = (): ToolFunction => {
             console.log('path', path);
 
             const entries = await readdirp.promise(path, {
-                fileFilter: fileFilter,
+                // fileFilter: fileFilter,
                 directoryFilter: directoryFilter,
                 type: 'all',
                 depth: depth,

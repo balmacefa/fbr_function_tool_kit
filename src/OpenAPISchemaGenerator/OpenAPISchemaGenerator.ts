@@ -19,11 +19,11 @@ export class OpenAPISchemaGenerator {
 
 
     constructor(args: {
-        registry?: OpenAPIRegistry,
         version: string,
         title: string,
         description: string,
-        url: string
+        url: string,
+        registry?: OpenAPIRegistry,
     }
     ) {
         const { title, description, url, version, registry } = args;
@@ -109,10 +109,18 @@ export class OpenAPISchemaGenerator {
         );
     }
 
+    public registerToolFunctionsSchemas(toolFunctionList: ToolFunction[]) {
+        toolFunctionList.forEach(fnt => {
+            this.registerToolFunctionSchema(fnt);
+        });
+    }
+
     public saveDocumentationToFile(filename = 'open_api.json') {
         const swaggerSpec = this.generateDocumentation();
         writeFileSync(filename, JSON.stringify(swaggerSpec, null, 2));
         console.log(`OpenAPI documentation saved to ${filename}`);
     }
+
+    public a1_step_register_tools = this.registerToolFunctionsSchemas
 
 }

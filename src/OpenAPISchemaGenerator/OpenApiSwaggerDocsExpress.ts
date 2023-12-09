@@ -7,12 +7,12 @@ export class OpenApiSwaggerDocsExpress {
     static displaySwaggerDocs(args:
         {
             app: Express,
-            url_prefix: string,
-            openApi: OpenAPISchemaGenerator
+            url_prefix?: string,
+            open_api: OpenAPISchemaGenerator
         }) {
         try {
-            const swaggerSpec = args.openApi.generateDocumentation();
-            args.app.use('/docs', SwaggerUi.serve, SwaggerUi.setup(swaggerSpec));
+            const swaggerSpec = args.open_api.generateDocumentation();
+            args.app.use('/swagger', SwaggerUi.serve, SwaggerUi.setup(swaggerSpec));
 
             // Serve the Swagger JSON document
             args.app.get(args.url_prefix ? args.url_prefix : '' + "/open_api.json",
