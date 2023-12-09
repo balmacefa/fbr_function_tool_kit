@@ -48,7 +48,7 @@ export class ExpressToolExporter {
 
     static routePluginManifestDotJson(args: { manifest: PluginManifest, app: Express }) {
         const jsonData = args.manifest.generateManifest();
-        args.app.get('lobe_chat_plugins/' + args.manifest.identifier + '.json', (req, res) => {
+        args.app.get('/lobe_chat_plugins/' + args.manifest.identifier + '.json', (req, res) => {
             res.status(201).json(jsonData);
         })
 

@@ -3,7 +3,10 @@ import { z } from 'zod';
 import { MainUtils } from '../HostMachine';
 import { ToolFunction } from './ToolFunction';
 
+import { extendZodWithOpenApi } from "@asteasolutions/zod-to-openapi";
 
+
+extendZodWithOpenApi(z);
 
 export const ToolDirectoryVisualization = (): ToolFunction => {
 
@@ -16,7 +19,16 @@ export const ToolDirectoryVisualization = (): ToolFunction => {
             .default(12).describe(`Depth of the directory tree to visualize, default is 12`),
         directoryFilter: z.union([z.string(), z.array(z.string())]).optional()
             .default(['!.git', '!*modules',]).describe(`Filter for directories, examples: '!.git', '!*modules', etc...`),
-        fileFilter: z.union([z.string(), z.array(z.string())]).optional().describe(`Filter for files, examples: '*.js', '*.txt', '*.md', etc...`),
+        // fileFilter: z.union([z.string(), z.array(z.string())]).optional().describe(`Filter for files, examples: '*.js', '*.txt', '*.md', etc...`),
+    }).openapi({
+        example: {
+            directoryPath: '',
+            depth: 1,
+            directoryFilter: [
+                "!.git",
+                "!*modules"
+            ],
+        }
     });
     const response_schema = z.object({
         result: z.array(z.string()).describe('Textual or graphical representation of the directory structure'),
@@ -36,7 +48,7 @@ export const ToolDirectoryVisualization = (): ToolFunction => {
 
         try {
 
-            const { directoryPath, depth, directoryFilter, fileFilter } = input_validated.data;
+            const { directoryPath, depth, directoryFilter } = input_validated.data;
             const path = MainUtils.root_directory(directoryPath);
             console.log('path', path);
 
