@@ -4,7 +4,7 @@ import { OpenAPISchemaGenerator } from './OpenAPISchemaGenerator';
 
 export class OpenApiSwaggerDocsExpress {
 
-    static displaySwaggerDocs(args:
+    static add_swagger_route(args:
         {
             app: Express,
             url_prefix?: string,

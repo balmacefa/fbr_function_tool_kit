@@ -1,16 +1,13 @@
 import type { SchemaObject } from 'openapi3-ts/oas30';
-import { OpenAPISchemaGenerator } from "../../OpenAPISchemaGenerator";
 import { ToolFunction } from "../../ToolFunction";
-import { ToolDirectoryVisualization, ToolFileContent } from "../../ToolFunction/Directory.tools";
+import { BaseToolPlugin } from '../../ToolFunction/BaseToolPlugin';
+import { ToolDirectoryVisualization, ToolFileContent } from '../../ToolFunction/Directory.tools';
 
-export class PluginManifest {
-    public functions: ToolFunction[];
-    public identifier: string;
+export class PluginManifest extends BaseToolPlugin {
     public ui?: { url: string; height: number };
     public gateway?: string;
-    public version: string;
     public settings?: SchemaObject;
-    public host: string;
+
     constructor(
         args: {
             functions: ToolFunction[],
@@ -18,28 +15,29 @@ export class PluginManifest {
             ui?: { url: string; height: number },
             gateway: string,
             version: string,
-            settings?: SchemaObject;
-            host?: string;
+            settings?: SchemaObject,
+            host?: string
         }
     ) {
-        this.functions = args.functions;
-        this.identifier = args.identifier;
+        super({
+            functions: args.functions,
+            host: args.host || "http://localhost:3000",
+            identifier: args.identifier,
+            version: args.version,
+        });
         this.ui = args.ui;
         this.gateway = args.gateway;
-        this.version = args.version;
-        args.host ? this.host = args.host : this.host = 'http://localhost:3000'
-        if (args.settings) { this.settings = args.settings; }
+        this.settings = args.settings;
     }
 
-    generateManifest(): object {
+    public generateManifest(): object {
         return {
             identifier: this.identifier,
             api: this.generateApiSection(),
             ui: this.ui,
-            // gateway: this.gateway,
+            gateway: this.gateway || "http://localhost:3000/api_gateway",
             version: this.version,
             settings: this.settings,
-            "gateway": "http://localhost:3000/api_gateway",
         };
     }
 
@@ -52,31 +50,8 @@ export class PluginManifest {
         }));
     }
 
-    public extractSchemaProperties(TF: ToolFunction) {
-        const openschema = new OpenAPISchemaGenerator({
-            title: 'TF',
-            description: 'desc',
-            url: './',
-            version: '1.0.0'
-        });
-
-        openschema.registerToolFunctionSchema(TF);
-        const swaggerSpec = openschema.generateDocumentation();
-
-        // Get the correct path
-        const funcPath = TF.get_path();
-        const pathObject = swaggerSpec.paths[funcPath];
-        // Assuming the parameters are in the POST method of the path
-        // Adjust according to your API specification
-        const TF_request_body = pathObject.post?.requestBody as any;
-        const schemaJson = TF_request_body['content']['application/json'].schema;
-
-        return schemaJson;
-    }
-
 
 }
-
 
 if (typeof require !== 'undefined' && require.main === module) {
     console.log("Hello, FastifyRouteHandler!");
