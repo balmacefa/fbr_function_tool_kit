@@ -1,6 +1,8 @@
 import { OpenAPISchemaGenerator } from "../OpenAPISchemaGenerator";
+import { ToolDirectoryVisualization, ToolFileContent } from "./Directory.tools";
 import { ToolFunction } from "./ToolFunction";
 
+type plugin_names = '1' | '2';
 export class BaseToolPlugin {
     public functions: ToolFunction[];
 
@@ -55,4 +57,20 @@ export class BaseToolPlugin {
     }
 
     // Aquí podrían agregarse más métodos comunes si son necesarios
+
+
+    public static factory_plugin(name: plugin_names): BaseToolPlugin {
+        // TODO: use factory patter, with all the class that inhert from BaseToolPlugin
+        const plugin = new BaseToolPlugin({
+            identifier: 'fbr_BaseToolPlugin_01',
+            version: '1.0.0',
+            functions: [
+                // TODO: use factory patter, to get this function tool, base on herent from ToolFunction
+                ToolDirectoryVisualization(),
+                ToolFileContent()
+            ],
+            host: 'http://localhost:3000'
+        });
+        return plugin;
+    }
 }

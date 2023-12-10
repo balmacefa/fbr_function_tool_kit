@@ -1,17 +1,27 @@
 import { Express } from "express";
-import { ToolFunction } from ".";
+import localtunnel from 'localtunnel';
+import morgan from "morgan";
 import { OpenAPISchemaGenerator } from "../OpenAPISchemaGenerator";
 import { OpenApiSwaggerDocsExpress } from '../OpenAPISchemaGenerator/OpenApiSwaggerDocsExpress';
 import { BaseToolPlugin } from './BaseToolPlugin';
 
 export class ExpressToolExporter {
+    public app: Express;
+    public base_tool_plugin: BaseToolPlugin;
 
-    static export_tools_routes(args: {
-        app: Express,
-        functions: ToolFunction[]// Replace 'any' with the appropriate type for your plugin manifest
-    }) {
-        args.functions.forEach(fnt => {
-            args.app.post(fnt.get_path(), async (req, res) => {
+    constructor(
+        args: {
+            app: Express;
+            base_tool_plugin: BaseToolPlugin;
+        }
+    ) {
+        this.app = args.app;
+        this.base_tool_plugin = args.base_tool_plugin;
+    }
+
+    public export_tools_routes() {
+        this.base_tool_plugin.functions.forEach(fnt => {
+            this.app.post(fnt.get_path(), async (req, res) => {
                 try {
                     // Validate request parameters against the schema
                     const validationResult = fnt.inputSchema.safeParse(req.body);
@@ -44,31 +54,75 @@ export class ExpressToolExporter {
 
         });
     }
-    static setupOpenAPISwaggerDocs(app: Express, functions: ToolFunction[]) {
+    public setupOpenAPISwaggerDocs() {
         const open_api = new OpenAPISchemaGenerator({
             description: 'open_api_functool',
             title: 'FN tools',
             url: 'http://localhost:3000',
+
             version: '1.0.0',
         });
 
-        open_api.a1_step_register_tools(functions);
+        open_api.a1_step_register_tools(this.base_tool_plugin.functions);
 
         OpenApiSwaggerDocsExpress.add_swagger_route({
-            app,
+            app: this.app,
             open_api,
         });
     }
 
-    static initializeExpressToolExport(args: {
-        app: Express,
-        base_tool_plugin: BaseToolPlugin,
-    }) {
-        this.export_tools_routes({
-            app: args.app,
-            functions: args.base_tool_plugin.functions
-        });
+    public initializeExpressToolExport() {
+        this.export_tools_routes();
 
-        this.setupOpenAPISwaggerDocs(args.app, args.base_tool_plugin.functions);
+        this.setupOpenAPISwaggerDocs();
+    }
+
+    public static default_server(base_tool_plugin: BaseToolPlugin) {
+        import('express')
+            .then(express => {
+                const app = express.default(); // Note the use of .default here
+                app.use(express.json()); // To support JSON-encoded bodies
+                app.use(function (req, res, next) {
+                    res.header("Access-Control-Allow-Origin", "*");
+                    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+                    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+                    next();
+                });
+                app.use(
+                    morgan(":method :url :status :res[content-length] - :response-time ms")
+                );
+                // Initialize all Express tool exporter functionalities
+                const express_exporter = new ExpressToolExporter({
+                    app: app,
+                    base_tool_plugin: base_tool_plugin
+                });
+                express_exporter.initializeExpressToolExport();
+
+                // Start the server
+                const port = 3000; // Replace with your desired port
+                app.listen(port, () => {
+                    console.log(`Server running on port ${port}`);
+
+                    express_exporter.initializeLocaltunnel()
+                });
+            });
+    }
+
+    public async initializeLocaltunnel(subdomain?: string, port = 3000) {
+        const tunnel = await localtunnel({ port, subdomain });
+
+        console.log(`Localtunnel established at: ${tunnel.url}`);
+
+        // Opcional: manejo de cierre del túnel
+        tunnel.on('close', () => {
+            console.log('Localtunnel closed');
+        });
     }
 }
+
+
+
+if (typeof require !== 'undefined' && require.main === module) {
+
+}
+

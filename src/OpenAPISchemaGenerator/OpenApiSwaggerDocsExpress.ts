@@ -15,7 +15,10 @@ export class OpenApiSwaggerDocsExpress {
             args.app.use('/swagger', SwaggerUi.serve, SwaggerUi.setup(swaggerSpec));
 
             // Serve the Swagger JSON document
-            args.app.get(args.url_prefix ? args.url_prefix : '' + "/open_api.json",
+            const open_api_json_url = args.url_prefix ? args.url_prefix : '' + "/open_api.json";
+            console.log('open_api_json_url', open_api_json_url);
+
+            args.app.get(open_api_json_url,
                 (req: Request, res: Response) => {
                     res.setHeader("Content-Type", "application/json");
                     res.send(swaggerSpec);

@@ -3,6 +3,8 @@ import { ToolFunction } from "../../ToolFunction";
 import { BaseToolPlugin } from '../../ToolFunction/BaseToolPlugin';
 import { ToolDirectoryVisualization, ToolFileContent } from '../../ToolFunction/Directory.tools';
 
+
+
 export class PluginManifest extends BaseToolPlugin {
     public ui?: { url: string; height: number };
     public gateway?: string;
