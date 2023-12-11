@@ -20,7 +20,7 @@ export const ToolExecuteGitCommand = (): ToolFunction => {
             const { gitCommand } = input;
             const fullGitCommand = `git ${gitCommand}`; // Add "git" prefix
             const rootPath = MainUtils.root_path;
-
+            console.log('try command ', fullGitCommand)
             const { stdout, stderr } = await execa(fullGitCommand, {
                 cwd: rootPath,
                 shell: true,
