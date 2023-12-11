@@ -10,6 +10,7 @@ export class ExpressToolExporter {
     public base_tool_plugin: BaseToolPlugin;
 
     public open_api_url: string;
+    public validate_ouput_schema = false;
 
     constructor(
         args: {
@@ -38,14 +39,18 @@ export class ExpressToolExporter {
                     try {
                         const output = await fnt.execute(validationResult.data); // Assuming fnt.execute() returns a Promise
 
-                        // Validate the function's output
-                        const outputValidation = fnt.responseSchema.safeParse(output);
-                        if (!outputValidation.success) {
-                            return res.status(500).json({ error: 'Function execution failed', details: outputValidation.error });
+                        if (this.validate_ouput_schema) {
+                            // Validate the function's output
+                            const outputValidation = fnt.responseSchema.safeParse(output);
+                            if (!outputValidation.success) {
+                                return res.status(500).json({ error: 'Function execution failed', details: outputValidation.error });
+                            }
+
+                            res.status(201).json(outputValidation.data);
                         }
+                        res.status(201).json(output);
 
                         // If everything is OK, send the successful response
-                        res.status(201).json(outputValidation.data);
                     } catch (executionError) {
                         // Handle errors that might occur during function execution
                         return res.status(500).json({ error: 'Error during function execution', details: executionError });
