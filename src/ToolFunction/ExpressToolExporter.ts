@@ -104,7 +104,7 @@ export class ExpressToolExporter {
                 const express_exporter = new ExpressToolExporter({
                     app: app,
                     base_tool_plugin: base_tool_plugin,
-                    open_api_url: 'https://14b5-190-113-103-194.ngrok-free.app'
+                    open_api_url: 'https://d941-190-113-103-194.ngrok-free.app'
                 });
                 express_exporter.initializeExpressToolExport();
 
