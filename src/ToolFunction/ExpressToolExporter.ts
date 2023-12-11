@@ -1,22 +1,26 @@
 import { Express } from "express";
-import localtunnel from 'localtunnel';
 import morgan from "morgan";
 import { OpenAPISchemaGenerator } from "../OpenAPISchemaGenerator";
 import { OpenApiSwaggerDocsExpress } from '../OpenAPISchemaGenerator/OpenApiSwaggerDocsExpress';
 import { BaseToolPlugin } from './BaseToolPlugin';
 
+
 export class ExpressToolExporter {
     public app: Express;
     public base_tool_plugin: BaseToolPlugin;
+
+    public open_api_url: string;
 
     constructor(
         args: {
             app: Express;
             base_tool_plugin: BaseToolPlugin;
+            open_api_url: string;
         }
     ) {
         this.app = args.app;
         this.base_tool_plugin = args.base_tool_plugin;
+        this.open_api_url = args.open_api_url;
     }
 
     public export_tools_routes() {
@@ -58,7 +62,7 @@ export class ExpressToolExporter {
         const open_api = new OpenAPISchemaGenerator({
             description: 'open_api_functool',
             title: 'FN tools',
-            url: 'http://localhost:3000',
+            url: this.open_api_url,
 
             version: '1.0.0',
         });
@@ -79,7 +83,7 @@ export class ExpressToolExporter {
 
     public static default_server(base_tool_plugin: BaseToolPlugin) {
         import('express')
-            .then(express => {
+            .then(async express => {
                 const app = express.default(); // Note the use of .default here
                 app.use(express.json()); // To support JSON-encoded bodies
                 app.use(function (req, res, next) {
@@ -94,35 +98,31 @@ export class ExpressToolExporter {
                 // Initialize all Express tool exporter functionalities
                 const express_exporter = new ExpressToolExporter({
                     app: app,
-                    base_tool_plugin: base_tool_plugin
+                    base_tool_plugin: base_tool_plugin,
+                    open_api_url: 'https://1c42-190-113-103-194.ngrok-free.app'
                 });
                 express_exporter.initializeExpressToolExport();
 
                 // Start the server
                 const port = 3000; // Replace with your desired port
-                app.listen(port, () => {
+                const server = app.listen(port, async () => {
                     console.log(`Server running on port ${port}`);
 
-                    express_exporter.initializeLocaltunnel()
                 });
+
+                return server;
             });
     }
-
-    public async initializeLocaltunnel(subdomain?: string, port = 3000) {
-        const tunnel = await localtunnel({ port, subdomain });
-
-        console.log(`Localtunnel established at: ${tunnel.url}`);
-
-        // Opcional: manejo de cierre del túnel
-        tunnel.on('close', () => {
-            console.log('Localtunnel closed');
-        });
-    }
 }
-
 
 
 if (typeof require !== 'undefined' && require.main === module) {
+    (async () => {
+        const base_tool_plugin = BaseToolPlugin.factory_plugin("1");
+        await ExpressToolExporter.default_server(base_tool_plugin);
 
+        // Import Inquirer within the async function if it's not already imported
+        // TODO: Update the swagger registry and routes with the ngrok URL
+        // [Your logic to update Swagger registry and routes goes here]
+    })();
 }
-

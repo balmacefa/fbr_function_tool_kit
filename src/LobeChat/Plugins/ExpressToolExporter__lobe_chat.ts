@@ -1,7 +1,7 @@
 import { Express } from 'express';
 import morgan from 'morgan';
-import { ToolDirectoryVisualization, ToolFileContent } from '../../ToolFunction/Directory.tools';
 import { ExpressToolExporter } from '../../ToolFunction/ExpressToolExporter';
+import { ToolDirectoryVisualization, ToolFileContent } from '../../ToolFunction/tools/Directory.tools';
 import { PluginManifest } from './PluginManifestGenerator';
 
 

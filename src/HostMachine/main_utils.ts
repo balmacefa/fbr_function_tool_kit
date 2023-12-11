@@ -39,6 +39,8 @@ export class MainUtils {
         fs.writeFileSync(filePath, fileContent);
     }
 
+    static saveContentToFile = MainUtils.write_file_from_root;
+
     /** */
     static read_directory_by_ext(ext: string, dir?: string): string[] {
         if (dir === '' || dir === undefined) {
@@ -112,5 +114,9 @@ export class MainUtils {
     }
 
     // save_file
+
+    static createDirectory(path: string) {
+        // TODO: implement
+    }
 
 }

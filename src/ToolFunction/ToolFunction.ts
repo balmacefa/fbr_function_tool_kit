@@ -32,7 +32,8 @@ export class ToolFunction<TI = any, TO = any> {
         return prefix + `/${this.name}`;
     }
     get_operation_id() {
-        return `/${this.name}`;
+        // operatino id can not include /
+        return `${this.name}`;
     }
 
     validate_input(data: any) {

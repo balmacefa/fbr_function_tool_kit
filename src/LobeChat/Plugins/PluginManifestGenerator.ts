@@ -1,7 +1,7 @@
 import type { SchemaObject } from 'openapi3-ts/oas30';
 import { ToolFunction } from "../../ToolFunction";
 import { BaseToolPlugin } from '../../ToolFunction/BaseToolPlugin';
-import { ToolDirectoryVisualization, ToolFileContent } from '../../ToolFunction/Directory.tools';
+import { ToolDirectoryVisualization, ToolFileContent } from '../../ToolFunction/tools/Directory.tools';
 
 
 
