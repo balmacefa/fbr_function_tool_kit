@@ -4,6 +4,7 @@ import { MainUtils } from '../../HostMachine';
 import { ToolFunction } from '../ToolFunction';
 
 import { extendZodWithOpenApi } from "@asteasolutions/zod-to-openapi";
+import { MultiFileContentViewer } from './MultiFileContentViewer.tools';
 
 
 extendZodWithOpenApi(z);
@@ -240,6 +241,7 @@ export const DirectoryToolFunctionList = [
     // TODO: use factory patter, to get this function tool, base on herent
     DirectoryStructureViewer(),
     TextFileReader(),
+    MultiFileContentViewer(),
     ToolSaveFileContent(),
     ToolCreateDirectory(),
     ToolChangeRootDirectory(),

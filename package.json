@@ -46,6 +46,7 @@
     "file-regex": "^3.1.0",
     "inquirer": "^9.2.12",
     "json2md": "^2.0.0",
+    "langchain": "^0.0.204",
     "localtunnel": "^2.0.2",
     "morgan": "^1.10.0",
     "navalia": "^1.3.0",

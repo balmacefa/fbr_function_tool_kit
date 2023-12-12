@@ -21,7 +21,8 @@ export const MultiFileContentViewer = (): ToolFunction => {
         const fileContents = await Promise.all(filePaths.map(async (filePath) => {
             try {
                 const reader = TextFileReader();
-                const content = await reader.tool_fn({ filePath });
+                // H1- Correction from tool_fn to toolFn
+                const content = await reader.toolFn({ filePath });
                 return { filePath, content: content.content };
             } catch (error) {
                 throw new Error(`Error reading file ${filePath}: ${error}`);
