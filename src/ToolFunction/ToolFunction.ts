@@ -1,19 +1,19 @@
-import { AnyZodObject } from 'zod';
+import { AnyZodObject, z } from 'zod';
 
 export class ToolFunction<TI = any, TO = any> {
     name: string;
     description: string;
     toolFn: (input: TI) => TO;
-    inputSchema: AnyZodObject;
-    responseSchema: AnyZodObject;
+    inputSchema?: AnyZodObject | z.ZodString;
+    responseSchema?: AnyZodObject | z.ZodString;
     host: string
 
     constructor(
         name: string,
         description: string,
         toolFn: (input: TI) => TO,
-        inputSchema: AnyZodObject,
-        responseSchema: AnyZodObject,
+        inputSchema?: AnyZodObject | z.ZodString,
+        responseSchema?: AnyZodObject | z.ZodString,
         host?: string
     ) {
         this.name = name;
@@ -37,10 +37,10 @@ export class ToolFunction<TI = any, TO = any> {
     }
 
     validate_input(data: any) {
-        return this.inputSchema.safeParse(data);
+        return (this.inputSchema as AnyZodObject).safeParse(data);
     }
 
     validate_output(data: any) {
-        return this.responseSchema.safeParse(data);
+        return (this.responseSchema as AnyZodObject).safeParse(data);
     }
 }

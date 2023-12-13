@@ -29,7 +29,7 @@ export class ExpressToolExporter {
             this.app.post(fnt.get_path(), async (req, res) => {
                 try {
                     // Validate request parameters against the schema
-                    const validationResult = fnt.inputSchema.safeParse(req.body);
+                    const validationResult = fnt.validate_input(req.body);
 
                     if (!validationResult.success) {
                         return res.status(400).json({ error: 'Invalid input', details: validationResult.error });
@@ -41,7 +41,7 @@ export class ExpressToolExporter {
 
                         if (this.validate_ouput_schema) {
                             // Validate the function's output
-                            const outputValidation = fnt.responseSchema.safeParse(output);
+                            const outputValidation = fnt.validate_output(output);
                             if (!outputValidation.success) {
                                 return res.status(500).json({ error: 'Function execution failed', details: outputValidation.error });
                             }
