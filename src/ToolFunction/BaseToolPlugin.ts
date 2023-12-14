@@ -3,7 +3,7 @@ import { ToolFunction } from "./ToolFunction";
 import { DirectoryToolFunctionList } from "./tools/Directory.tools";
 import { ToolExecuteGitCommand } from "./tools/Git.tools";
 
-type plugin_names = '1' | '2';
+type plugin_names = 'fbr_BaseToolPlugin_tools_directory_and_git' | '2';
 export class BaseToolPlugin {
     public functions: ToolFunction[];
 
@@ -60,9 +60,17 @@ export class BaseToolPlugin {
     // Aquí podrían agregarse más métodos comunes si son necesarios
 
 
-    public static factory_plugin(name: plugin_names) {
+    public static factory_plugin(name: plugin_names): BaseToolPlugin {
+        switch (name) {
+            case 'fbr_BaseToolPlugin_tools_directory_and_git':
+                return BaseToolPlugin.fbr_BaseToolPlugin_tools_directory_and_git();
+            default:
+                return BaseToolPlugin.fbr_BaseToolPlugin_tools_directory_and_git();
+        }
+    }
+    public static fbr_BaseToolPlugin_tools_directory_and_git(): BaseToolPlugin {
         const plugin = new BaseToolPlugin({
-            identifier: 'fbr_BaseToolPlugin_01',
+            identifier: 'fbr_BaseToolPlugin_tools_directory_and_git',
             version: '1.0.0',
             functions: [
                 ...DirectoryToolFunctionList,

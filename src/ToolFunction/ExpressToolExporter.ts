@@ -123,7 +123,7 @@ export class ExpressToolExporter {
 
 if (typeof require !== 'undefined' && require.main === module) {
     (async () => {
-        const base_tool_plugin = BaseToolPlugin.factory_plugin("1");
+        const base_tool_plugin = BaseToolPlugin.factory_plugin("fbr_BaseToolPlugin_tools_directory_and_git");
         await ExpressToolExporter.default_server(base_tool_plugin);
 
         // Import Inquirer within the async function if it's not already imported

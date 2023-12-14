@@ -1,0 +1,146 @@
+import { Express, Request, Response } from "express";
+import expressLayouts from "express-ejs-layouts";
+import morgan from "morgan";
+import { MainUtils } from "../HostMachine";
+import { get_task_master_assistant_options } from "./AssistantsFactory";
+import { OpenAIAssistantSessionManager } from "./OpenAIAssistantSessionManager";
+export class ExpressOpenAIAssistantSessionExporter {
+  // TODO export html routes
+  private app: Express;
+  private sessionManager: OpenAIAssistantSessionManager;
+
+  constructor(args: { app: Express }) {
+    this.app = args.app;
+    this.sessionManager = OpenAIAssistantSessionManager.getInstance();
+
+    // Use expressLayouts middleware
+    this.app.use(expressLayouts);
+
+    // Set the directory for the views
+    this.app.set("views", MainUtils.root_directory("src/ChatHTMX/views"));
+
+    // Set the view engine to EJS
+    this.app.set("view engine", "ejs");
+
+    this.setupRoutes();
+  }
+
+  private setupRoutes() {
+    this.app.get("/chat_app/htmx", (req: Request, res: Response) => {
+      // const { userId, title, options } = req.body;
+      // const sessionData = this.sessionManager.createSession(
+      //   userId,
+      //   title,
+      //   options as AssistantOptions
+      // );
+      // res.json(sessionData);
+
+      // Adding /chat_app route
+      // Render a view for the /chat_app route
+      res.render("chat_app", { layout: "base_layout" });
+    });
+
+    this.app.post(
+      "/chat_app/htmx/session_create",
+      (req: Request, res: Response) => {
+        const { userId, title } = req.body;
+        const sessionData = this.sessionManager.createSession(
+          userId,
+          title,
+          get_task_master_assistant_options()
+        );
+
+        // Renderizar el ítem de conversación con EJS y los datos de la sesión
+        res.render("sidebar_chat_item_link", { sessionData });
+      }
+    );
+
+    // const sessionData = sessionManager.createSession('@balmacefa', 'TaskMaster', options);
+
+    // TODO create /chat_app/htmx/session_view/${sessionData.id}
+
+    this.app.get(
+      "/session/:userId/:sessionId",
+      (req: Request, res: Response) => {
+        const { userId, sessionId } = req.params;
+        const sessionData = this.sessionManager.getSession(userId, sessionId);
+        if (sessionData) {
+          res.json(sessionData);
+        } else {
+          res.status(404).send("Session not found");
+        }
+      }
+    );
+
+    this.app.get("/sessions/:userId", (req: Request, res: Response) => {
+      const { userId } = req.params;
+      const sessions = this.sessionManager.listUserSessions(userId);
+      res.json(sessions);
+    });
+
+    this.app.delete(
+      "/session/:userId/:sessionId",
+      async (req: Request, res: Response) => {
+        const { userId, sessionId } = req.params;
+        const success = await this.sessionManager.deleteSession(
+          userId,
+          sessionId
+        );
+        if (success) {
+          res.send("Session deleted");
+        } else {
+          res.status(404).send("Session not found or could not be deleted");
+        }
+      }
+    );
+
+    // Otros métodos de ruta pueden ser agregados aquí
+  }
+
+  // Métodos adicionales para manejar otras funcionalidades pueden ser añadidos aquí
+
+  public static default_server() {
+    import("express").then((express) => {
+      const app = express.default(); // Note the use of .default here
+      app.use(express.json()); // To support JSON-encoded bodies
+      app.use(function (req, res, next) {
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Headers", "X-Requested-With");
+        res.header(
+          "Access-Control-Allow-Methods",
+          "GET, POST, PUT, DELETE, OPTIONS"
+        );
+        next();
+      });
+      app.use(
+        morgan(":method :url :status :res[content-length] - :response-time ms")
+      );
+      // Initialize all Express tool exporter functionalities
+      const express_exporter = new ExpressOpenAIAssistantSessionExporter({
+        app: app,
+      });
+      express_exporter.setupRoutes();
+
+      // Start the server
+      const port = 3000; // Replace with your desired port
+      const server = app.listen(port, () => {
+        console.log(`Server running on port ${port}`);
+      });
+
+      return server;
+    });
+  }
+}
+
+// Function to configure Express to use EJS
+
+if (typeof require !== "undefined" && require.main === module) {
+  (() => {
+    const express_server =
+      ExpressOpenAIAssistantSessionExporter.default_server();
+
+    // Import Inquirer within the async function if it's not already imported
+    // TODO: Update the swagger registry and routes with the ngrok URL
+    // [Your logic to update Swagger registry and routes goes here]
+  })();
+}

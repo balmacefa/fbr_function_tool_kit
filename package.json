@@ -24,8 +24,8 @@
     "_dev:server": "tsx watch src/server/index.ts",
     "dev:server_taskmaster": "tsx watch src/server/AgentOpenAI/TaskMasterAI/server.ts",
     "dev:client": "wait-port 2022 && tsx watch src/client",
+    "dev_chat": "tsx watch src/ChatHTMX/ExpressOpenAIAssistantSessionExporter.tsx",
     "dev": "tsx watch src/ToolFunction/ExpressToolExporter.ts",
-    "dev_chat": "tsx watch src/ChatHTMX/index.tsx",
     "_dev": "run-p dev:* --print-label",
     "gen:openapi": "npx openapicmd typegen ./docs.json > src/openapi.d.ts",
     "lint": "eslint --cache --ext \".js,.ts,.tsx\" --report-unused-disable-directives src",
@@ -39,6 +39,7 @@
   },
   "dependencies": {
     "@asteasolutions/zod-to-openapi": "^6.3.0",
+    "@langchain/openai": "^0.0.5",
     "@lobehub/chat-plugins-gateway": "^1.5.3",
     "@ngrok/ngrok": "^0.9.1",
     "common-es": "^1.0.1",
