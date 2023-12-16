@@ -3,11 +3,14 @@ import expressLayouts from "express-ejs-layouts";
 import morgan from "morgan";
 import { MainUtils } from "../HostMachine";
 import { get_task_master_assistant_options } from "./AssistantsFactory";
+import { FBR_GlobalPrisma } from "./DB/PrismaManager";
 import { OpenAIAssistantSessionManager } from "./OpenAIAssistantSessionManager";
 export class ExpressOpenAIAssistantSessionExporter {
   // TODO export html routes
   private app: Express;
   private sessionManager: OpenAIAssistantSessionManager;
+
+  private prisma_wrapper = FBR_GlobalPrisma.getInstance();
 
   constructor(args: { app: Express }) {
     this.app = args.app;
@@ -41,174 +44,134 @@ export class ExpressOpenAIAssistantSessionExporter {
     });
 
     this.app.get("/chat_app/:userId", async (req: Request, res: Response) => {
-      const { userId } = req.params;
-      // Aquí debes recuperar los chats del usuario utilizando tu lógica de almacenamiento
-      // Por ejemplo, supongamos que tienes una función llamada getChatsByUserId
-      const userChats = this.sessionManager.getChatsByUserId(userId);
-
-      // Luego, renderiza una vista que muestre los chats en el nav bar del sidebar
       try {
-        let renderedContents = [];
+        const { userId } = req.params;
+        // Aquí debes recuperar los chats del usuario utilizando tu lógica de almacenamiento
+        // Por ejemplo, supongamos que tienes una función llamada getChatsByUserId
 
-        try {
-          // Map each session to a promise that resolves to the rendered string
-          const renderPromises = userChats.map((chat) => {
-            return new Promise((resolve, reject) => {
-              res.render(
-                "sidebar_chat_item_link",
-                { title: chat.title, id: chat.id },
-                (err, html) => {
-                  if (err) {
-                    reject(err);
-                  } else {
-                    resolve(html);
-                  }
-                }
-              );
-            });
-          });
+        const userChats = await this.prisma_wrapper.get_user_sessions(userId);
 
-          // Wait for all render promises to resolve
-          renderedContents = await Promise.all(renderPromises);
-
-          // At this point, renderedContents is an array of rendered strings
-          // You can now process or send these as needed
-          res.send(renderedContents.join(""));
-        } catch (error) {
-          // Handle any errors that occurred during rendering
-          res.status(500).send("Error rendering the pages");
-        }
-
-        res.render("sidebar_chat_item_link", { id: "123", title: "hola chat" });
+        // Luego, renderiza una vista que muestre los chats en el nav bar del sidebar
+        res.render("sidebar_chat_item_link_loop", { userChats: userChats });
       } catch (error) {
         console.error(error);
+        res.status(500).send("Server error occurred");
       }
     });
 
     this.app.post(
       "/chat_app/htmx/session_create",
-      (req: Request, res: Response) => {
-        const { userId, title } = req.body;
-        const sessionData = this.sessionManager.createSession(
-          userId,
-          title,
-          get_task_master_assistant_options()
-        );
+      async (req: Request, res: Response) => {
+        try {
+          const { userId, title } = req.body;
+          const sessionData = this.sessionManager.createSession(
+            userId,
+            title,
+            get_task_master_assistant_options()
+          );
 
-        // Render the chat item using EJS and store it in a constant
-        res.render(
-          "sidebar_chat_item_link",
-          { id: sessionData.id, title: "new chat" },
-          (err, html) => {
-            if (err) {
-              // Handle the error, for example, by sending an error response
-              console.error(err);
-              res.status(500).send("Error rendering the page");
-            } else {
-              // html is the rendered content
-              const renderedContent = html;
+          await sessionData.asistant_wrap.get_or_create_assistant();
 
-              // You can now use the renderedContent for further processing or logging
-              // ...
+          const new_session_data =
+            await this.prisma_wrapper.create_user_session({
+              assistantId: sessionData.asistant_wrap.assistantId as string,
+              userId: userId,
+              title,
+            });
 
-              // Send the rendered content to the client
-              res.send(renderedContent);
+          res.render(
+            "sidebar_chat_item_link",
+            { chat: new_session_data },
+            (err, html) => {
+              if (err) {
+                // Handle the error, for example, by sending an error response
+                console.error(err);
+                res.status(500).send("Error rendering the page");
+              } else {
+                // html is the rendered content
+                const renderedContent = html;
+                res.send(renderedContent);
+              }
             }
-          }
-        );
-      }
-    );
-
-    // const sessionData = sessionManager.createSession('@balmacefa', 'TaskMaster', options);
-
-    // TODO create /chat_app/htmx/session_view/${sessionData.id}
-
-    this.app.get(
-      "/session/:userId/:sessionId",
-      (req: Request, res: Response) => {
-        const { userId, sessionId } = req.params;
-        const sessionData = this.sessionManager.getSession(userId, sessionId);
-        if (sessionData) {
-          res.json(sessionData);
-        } else {
-          res.status(404).send("Session not found");
+          );
+        } catch (error) {
+          console.error(error);
+          res.status(500).send("Server error occurred");
         }
       }
     );
 
     this.app.get(
-      "/chat_app/htmx/session_view/:chat_id",
+      "/chat_app/htmx/session_view/:sessionId",
       async (req: Request, res: Response) => {
-        const { chat_id } = req.params;
+        const { sessionId } = req.params;
 
-        const { userId, title } = req.body;
+        const session_data = await this.prisma_wrapper.get_session(sessionId);
+
         const sessionData = this.sessionManager.createSession(
-          userId,
-          title,
+          session_data?.userId as string,
+          session_data?.title as string,
           get_task_master_assistant_options()
         );
 
-        // lets say we get it.
-        const threadId = "asst_TTVGhin54h5KxYETTMugb1qO";
-        await sessionData.asistant_wrap.get_or_create_assistant(threadId);
-        // them get messages
-        const chat_messages = await sessionData.asistant_wrap.get_chat_messages(
-          threadId
+        const threadId = session_data?.threadId;
+
+        if (threadId) {
+          // them load the messages
+          await sessionData.asistant_wrap.get_or_create_assistant(
+            session_data?.assistantId
+          );
+          // them get messages
+          const chat_messages =
+            await sessionData.asistant_wrap.get_chat_messages(threadId);
+
+          res.render("chat_app", {
+            layout: "base_layout",
+            chat_data_info: { chat_messages, sessionId },
+          });
+        } else {
+          res.render("chat_app", {
+            layout: "base_layout",
+            chat_data_info: { chat_messages: { data: [] }, sessionId },
+          });
+        }
+      }
+    );
+
+    this.app.post(
+      "/chat_app/htmx/session_view/action/new_user_message",
+      async (req: Request, res: Response) => {
+        const { content, sessionId } = req.body;
+
+        const session_data = await this.prisma_wrapper.get_session(sessionId);
+
+        const sessionData = this.sessionManager.createSession(
+          session_data?.userId as string,
+          session_data?.title as string,
+          get_task_master_assistant_options()
         );
 
-        // TODO convert this into tailwind messages
+        await sessionData.asistant_wrap.get_or_create_assistant(
+          session_data?.threadId
+        );
 
-        // res.render(
-        //   "sidebar_chat_item_link",
-        //   { id: sessionData.id, title: "new chat" },
-        //   (err, html) => {
-        //     if (err) {
-        //       // Handle the error, for example, by sending an error response
-        //       console.error(err);
-        //       res.status(500).send("Error rendering the page");
-        //     } else {
-        //       // html is the rendered content
-        //       const renderedContent = html;
+        const new_message = await sessionData.asistant_wrap.invoke(
+          content,
+          session_data?.threadId
+        );
 
-        //       // You can now use the renderedContent for further processing or logging
-        //       // ...
-
-        //       // Send the rendered content to the client
-        //       res.send(renderedContent);
-        //     }
-        //   }
-        // );
-
-        res.render("chat_app", {
-          layout: "base_layout",
-          chat_data_info: { id: chat_id, chat_messages },
+        if (!session_data?.threadId) {
+          // them save the threadId
+          await this.prisma_wrapper.update_session_threadId(
+            sessionId,
+            new_message.threadId
+          );
+        }
+        res.render("new_message", {
+          message: new_message,
         });
       }
     );
-
-    this.app.get("/sessions/:userId", (req: Request, res: Response) => {
-      const { userId } = req.params;
-      const sessions = this.sessionManager.listUserSessions(userId);
-      res.json(sessions);
-    });
-
-    this.app.delete(
-      "/session/:userId/:sessionId",
-      async (req: Request, res: Response) => {
-        const { userId, sessionId } = req.params;
-        const success = await this.sessionManager.deleteSession(
-          userId,
-          sessionId
-        );
-        if (success) {
-          res.send("Session deleted");
-        } else {
-          res.status(404).send("Session not found or could not be deleted");
-        }
-      }
-    );
-
-    // Otros métodos de ruta pueden ser agregados aquí
   }
 
   // Métodos adicionales para manejar otras funcionalidades pueden ser añadidos aquí
@@ -229,6 +192,8 @@ export class ExpressOpenAIAssistantSessionExporter {
       app.use(
         morgan(":method :url :status :res[content-length] - :response-time ms")
       );
+      app.use(express.json());
+      app.use(express.urlencoded({ extended: true }));
       // Initialize all Express tool exporter functionalities
       const express_exporter = new ExpressOpenAIAssistantSessionExporter({
         app: app,

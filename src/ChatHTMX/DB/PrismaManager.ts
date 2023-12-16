@@ -1,8 +1,9 @@
 import { execa } from "execa";
 import { MainUtils } from "../../HostMachine";
-import { PrismaClient } from "./prisma/primas_client_chat";
+import { Prisma, PrismaClient } from "./prisma/primas_client_chat";
 
 export class FBR_GlobalPrisma {
+
     private static instance: FBR_GlobalPrisma;
     public mongo_connections: Map<string, any>;
 
@@ -49,6 +50,43 @@ export class FBR_GlobalPrisma {
         const result = await execa(cmd);
         console.log(result.stdout);
         console.log('**-------------------------------------**');
+    }
+
+    public async get_user_sessions(userId: string) {
+        const chatSessions = await this.prisma_client.fBR_ChatSessionData.findMany({
+            where: {
+                userId: userId
+            }
+        });
+        return chatSessions;
+    }
+    public async get_session(sessionId: string) {
+        const chat = await this.prisma_client.fBR_ChatSessionData.findFirst({
+            where: {
+                id: sessionId
+            }
+        });
+
+        return chat;
+    }
+    public async create_user_session(data: Prisma.FBR_ChatSessionDataCreateInput) {
+        const chatSessions = await this.prisma_client.fBR_ChatSessionData.create({
+            data
+        });
+        return chatSessions;
+    }
+
+    async update_session_threadId(sessionId: any, threadId: string | null) {
+        const chat = await this.prisma_client.fBR_ChatSessionData.update({
+            where: {
+                id: sessionId
+            },
+            data: {
+                threadId
+            }
+        });
+
+        return chat;
     }
 
     public static get_mongo_connection(connection = FBR_GlobalPrisma.MainKey) {

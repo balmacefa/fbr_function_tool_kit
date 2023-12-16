@@ -100,10 +100,11 @@ Prisma.NullTypes = {
  * Enums
  */
 
-exports.Prisma.SessionDataScalarFieldEnum = {
+exports.Prisma.FBR_ChatSessionDataScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   title: 'title',
+  threadId: 'threadId',
   assistantId: 'assistantId'
 };
 
@@ -119,7 +120,7 @@ exports.Prisma.QueryMode = {
 
 
 exports.Prisma.ModelName = {
-  SessionData: 'SessionData'
+  FBR_ChatSessionData: 'FBR_ChatSessionData'
 };
 
 /**

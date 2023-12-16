@@ -1,38 +1,11 @@
 <!-- todo post to use ->this.app.post(
     "/chat_app/htmx/session_create", and append result to id chatapp___session_list_container -->
-<a
-  hx-post="/chat_app/htmx/session_create"
-  hx-target="#chatapp___session_list_container"
-  hx-trigger="click"
-  hx-swap="afterbegin"
-  hx-vals='{"userId": "user123", "title": "New Chat Title"}'
-  class="flex py-3 px-3 items-center gap-3 rounded-md hover:bg-gray-500/10 transition-colors duration-200 text-white cursor-pointer text-sm mb-1 flex-shrink-0 border border-white/20"
->
-  <svg
-    stroke="currentColor"
-    fill="currentColor"
-    stroke-width="0"
-    t="1551322312294"
-    viewBox="0 0 1024 1024"
-    version="1.1"
-    class="h-4 w-4"
-    height="1em"
-    width="1em"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <defs></defs>
-    <path
-      d="M474 152m8 0l60 0q8 0 8 8l0 704q0 8-8 8l-60 0q-8 0-8-8l0-704q0-8 8-8Z"
-    ></path>
-    <path
-      d="M168 474m8 0l672 0q8 0 8 8l0 60q0 8-8 8l-672 0q-8 0-8-8l0-60q0-8 8-8Z"
-    ></path>
-  </svg>
-  New chat
-</a>
+<!--  -->
+<%- include('new_chat_button') %>
+<!--  -->
 <div
   id="chatapp___session_list_container"
   class="flex-col flex-1 overflow-y-auto border-b border-white/20"
-  hx-get="/chat_app/_userId"
+  hx-get="/chat_app/649c9e6009a907a8543f46e4"
   hx-trigger="load"
 ></div>

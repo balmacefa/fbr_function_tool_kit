@@ -1897,8 +1897,8 @@ packages:
       call-bind: 1.0.5
     dev: false
 
-  /@lobehub/chat-plugin-sdk@1.30.2(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-UqgSNGTeo8pcNRmIj+j6cDVJiPCuEXv6OumeY4jeId+6XY5DJj76Vu3DZ9qxXAbjCdvxzwaO9wNRXE6T6qF/Rw==}
+  /@lobehub/chat-plugin-sdk@1.30.4(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-+TI/jkxIexWWETmaiubSxo0rPiez8vF5nu0iRb9BmPuTZA3qpT1SVve9vBHtTXJQzuLjDaTu2Zq6SzS/mftjDg==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
@@ -1920,7 +1920,7 @@ packages:
     resolution: {integrity: sha512-fVei4fL5wTyKedr6Bx5Ctjf9Jze210YJg/n1hOKfpHBc6Jp0vwXFLszY4RXYKgh7j7tYpkC/d9XjScxBk/o0GQ==}
     dependencies:
       '@cfworker/json-schema': 1.12.7
-      '@lobehub/chat-plugin-sdk': 1.30.2(react-dom@18.2.0)(react@18.2.0)
+      '@lobehub/chat-plugin-sdk': 1.30.4(react-dom@18.2.0)(react@18.2.0)
       zod: 3.22.4
     transitivePeerDependencies:
       - debug

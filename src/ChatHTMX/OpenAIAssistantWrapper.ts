@@ -1,5 +1,5 @@
 import { OpenAIClient } from "@langchain/openai";
-import { OpenAIToolType } from 'langchain/dist/experimental/openai_assistant/schema';
+import { OpenAIAssistantFinish, OpenAIToolType } from 'langchain/dist/experimental/openai_assistant/schema';
 import { AgentAction, AgentFinish, AgentStep } from "langchain/dist/schema";
 import { OpenAIAssistantRunnable } from 'langchain/experimental/openai_assistant';
 import { DynamicStructuredTool, StructuredTool } from "langchain/tools";
@@ -111,7 +111,7 @@ class OpenAIAssistantWrapper {
 
         this.tools.push(key as any) // TODO: fix ts error, add any to force add, 
     }
-    public async get_or_create_assistant(assistant_id?: string): Promise<void> {
+    public async get_or_create_assistant(assistant_id?: string | undefined | null): Promise<void> {
         // Method to create a new assistant
         if (assistant_id) {
             try {
@@ -120,17 +120,19 @@ class OpenAIAssistantWrapper {
                     assistantId: assistant_id,
                     asAgent: true
                 });
+                this.assistantId = (await this.assistant.getAssistant()).id;
 
             } catch (error) {
                 console.error(error);
                 console.error('Createing a new assistant instead');
                 this.assistant = await this._create_assistant();
+                this.assistantId = (await this.assistant.getAssistant()).id;
             }
         } else {
             this.assistant = await this._create_assistant();
+            this.assistantId = (await this.assistant.getAssistant()).id;
         }
 
-        this.assistantId = (await this.assistant.getAssistant()).id;
         console.info("dev: run .invoke(prompt_content) to start or continue a thread")
     }
 
@@ -151,101 +153,27 @@ class OpenAIAssistantWrapper {
     }
 
     public async get_chat_messages(threadId: string) {
-
-        const mess = {
-            "object": "list",
-            "data": [
-                {
-                    "id": "msg_abc123",
-                    "object": "thread.message",
-                    "created_at": 1699016383,
-                    "thread_id": "thread_abc123",
-                    "role": "user",
-                    "content": [
-                        {
-                            "type": "text",
-                            "text": {
-                                "value": "How does AI work? Explain it in simple terms.",
-                                "annotations": []
-                            }
-                        }
-                    ],
-                    "file_ids": [],
-                    "assistant_id": null,
-                    "run_id": null,
-                    "metadata": {}
-                },
-                {
-                    "id": "msg_abc456",
-                    "object": "thread.message",
-                    "created_at": 1699016383,
-                    "thread_id": "thread_abc123",
-                    "role": "user",
-                    "content": [
-                        {
-                            "type": "text",
-                            "text": {
-                                "value": "Hello, what is AI?",
-                                "annotations": []
-                            }
-                        }
-                    ],
-                    "file_ids": [
-                        "file-abc123"
-                    ],
-                    "assistant_id": null,
-                    "run_id": null,
-                    "metadata": {}
-                },
-                {
-                    "id": "msg_abc456",
-                    "object": "thread.message",
-                    "created_at": 1699016383,
-                    "thread_id": "thread_abc123",
-                    "role": "assistant",
-                    "content": [
-                        {
-                            "type": "text",
-                            "text": {
-                                "value": "Hello, what is AI?",
-                                "annotations": []
-                            }
-                        }
-                    ],
-                    "file_ids": [
-                        "file-abc123"
-                    ],
-                    "assistant_id": null,
-                    "run_id": null,
-                    "metadata": {}
-                }
-            ],
-            "first_id": "msg_abc123",
-            "last_id": "msg_abc456",
-            "has_more": false
-        };
-
-        return mess;
         const messages = await this.open_ai_client.beta.threads.messages.list(threadId, {
             order: "asc",
         });
         return messages;
     }
 
-    public async invoke(content: string, thread_id?: string): Promise<any> {
+    public async invoke(content: string, thread_id?: string | null) {
 
         const assistant = this.assistant;
         if (!assistant) {
             throw new Error("Dev error, forget to creat or get assistant")
         }
+
         const assistantResponse = await assistant.invoke({
             content,
-            threadId: thread_id,
+            ...(thread_id ? { threadId: thread_id } : {}), // Include threadId only if it's truthy
+
             // todo: maybe files? uploads?
         });
-
-        console.log(assistantResponse);
-        return assistantResponse;
+        // console.log(assistantResponse);
+        return assistantResponse as OpenAIAssistantFinish;
         /** content.type. can be an image or a file too
         [
           {

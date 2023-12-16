@@ -11,11 +11,10 @@ datasource db {
   url      = env("MONGODB_URI")
 }
 
-model SessionData {
+model FBR_ChatSessionData {
   id          String  @id @default(auto()) @map("_id") @db.ObjectId
   userId      String  @db.ObjectId
   title       String?
-  assistantId String  @db.ObjectId
-
-  @@map("session_data") // If your table name is different from the default
+  threadId    String?
+  assistantId String
 }

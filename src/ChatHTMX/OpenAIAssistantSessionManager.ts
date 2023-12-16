@@ -9,6 +9,15 @@ interface SessionData {
     asistant_wrap_id: OpenAIAssistantWrapper['assistantId'];
 }
 
+export interface SessionDataDB{
+    userId: string;
+    title: string;
+    
+    asistant_wrap: OpenAIAssistantWrapper;
+    asistant_wrap_id: OpenAIAssistantWrapper['assistantId'];
+    
+}
+
 export class OpenAIAssistantSessionManager {
     // TODO Use a db to manage this data
     private static instance: OpenAIAssistantSessionManager;

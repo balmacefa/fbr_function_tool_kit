@@ -14,10 +14,10 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
 
 
 /**
- * Model SessionData
+ * Model FBR_ChatSessionData
  * 
  */
-export type SessionData = $Result.DefaultSelection<Prisma.$SessionDataPayload>
+export type FBR_ChatSessionData = $Result.DefaultSelection<Prisma.$FBR_ChatSessionDataPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -26,8 +26,8 @@ export type SessionData = $Result.DefaultSelection<Prisma.$SessionDataPayload>
  * @example
  * ```
  * const prisma = new PrismaClient()
- * // Fetch zero or more SessionData
- * const sessionData = await prisma.sessionData.findMany()
+ * // Fetch zero or more FBR_ChatSessionData
+ * const fBR_ChatSessionData = await prisma.fBR_ChatSessionData.findMany()
  * ```
  *
  * 
@@ -47,8 +47,8 @@ export class PrismaClient<
    * @example
    * ```
    * const prisma = new PrismaClient()
-   * // Fetch zero or more SessionData
-   * const sessionData = await prisma.sessionData.findMany()
+   * // Fetch zero or more FBR_ChatSessionData
+   * const fBR_ChatSessionData = await prisma.fBR_ChatSessionData.findMany()
    * ```
    *
    * 
@@ -110,14 +110,14 @@ export class PrismaClient<
   $extends: $Extensions.ExtendsHook<'extends', Prisma.TypeMapCb, ExtArgs>
 
       /**
-   * `prisma.sessionData`: Exposes CRUD operations for the **SessionData** model.
+   * `prisma.fBR_ChatSessionData`: Exposes CRUD operations for the **FBR_ChatSessionData** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more SessionData
-    * const sessionData = await prisma.sessionData.findMany()
+    * // Fetch zero or more FBR_ChatSessionData
+    * const fBR_ChatSessionData = await prisma.fBR_ChatSessionData.findMany()
     * ```
     */
-  get sessionData(): Prisma.SessionDataDelegate<ExtArgs>;
+  get fBR_ChatSessionData(): Prisma.FBR_ChatSessionDataDelegate<ExtArgs>;
 }
 
 export namespace Prisma {
@@ -588,7 +588,7 @@ export namespace Prisma {
 
 
   export const ModelName: {
-    SessionData: 'SessionData'
+    FBR_ChatSessionData: 'FBR_ChatSessionData'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -605,81 +605,81 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     meta: {
-      modelProps: 'sessionData'
+      modelProps: 'fBR_ChatSessionData'
       txIsolationLevel: never
     },
     model: {
-      SessionData: {
-        payload: Prisma.$SessionDataPayload<ExtArgs>
-        fields: Prisma.SessionDataFieldRefs
+      FBR_ChatSessionData: {
+        payload: Prisma.$FBR_ChatSessionDataPayload<ExtArgs>
+        fields: Prisma.FBR_ChatSessionDataFieldRefs
         operations: {
           findUnique: {
-            args: Prisma.SessionDataFindUniqueArgs<ExtArgs>,
-            result: $Utils.PayloadToResult<Prisma.$SessionDataPayload> | null
+            args: Prisma.FBR_ChatSessionDataFindUniqueArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$FBR_ChatSessionDataPayload> | null
           }
           findUniqueOrThrow: {
-            args: Prisma.SessionDataFindUniqueOrThrowArgs<ExtArgs>,
-            result: $Utils.PayloadToResult<Prisma.$SessionDataPayload>
+            args: Prisma.FBR_ChatSessionDataFindUniqueOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$FBR_ChatSessionDataPayload>
           }
           findFirst: {
-            args: Prisma.SessionDataFindFirstArgs<ExtArgs>,
-            result: $Utils.PayloadToResult<Prisma.$SessionDataPayload> | null
+            args: Prisma.FBR_ChatSessionDataFindFirstArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$FBR_ChatSessionDataPayload> | null
           }
           findFirstOrThrow: {
-            args: Prisma.SessionDataFindFirstOrThrowArgs<ExtArgs>,
-            result: $Utils.PayloadToResult<Prisma.$SessionDataPayload>
+            args: Prisma.FBR_ChatSessionDataFindFirstOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$FBR_ChatSessionDataPayload>
           }
           findMany: {
-            args: Prisma.SessionDataFindManyArgs<ExtArgs>,
-            result: $Utils.PayloadToResult<Prisma.$SessionDataPayload>[]
+            args: Prisma.FBR_ChatSessionDataFindManyArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$FBR_ChatSessionDataPayload>[]
           }
           create: {
-            args: Prisma.SessionDataCreateArgs<ExtArgs>,
-            result: $Utils.PayloadToResult<Prisma.$SessionDataPayload>
+            args: Prisma.FBR_ChatSessionDataCreateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$FBR_ChatSessionDataPayload>
           }
           createMany: {
-            args: Prisma.SessionDataCreateManyArgs<ExtArgs>,
+            args: Prisma.FBR_ChatSessionDataCreateManyArgs<ExtArgs>,
             result: Prisma.BatchPayload
           }
           delete: {
-            args: Prisma.SessionDataDeleteArgs<ExtArgs>,
-            result: $Utils.PayloadToResult<Prisma.$SessionDataPayload>
+            args: Prisma.FBR_ChatSessionDataDeleteArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$FBR_ChatSessionDataPayload>
           }
           update: {
-            args: Prisma.SessionDataUpdateArgs<ExtArgs>,
-            result: $Utils.PayloadToResult<Prisma.$SessionDataPayload>
+            args: Prisma.FBR_ChatSessionDataUpdateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$FBR_ChatSessionDataPayload>
           }
           deleteMany: {
-            args: Prisma.SessionDataDeleteManyArgs<ExtArgs>,
+            args: Prisma.FBR_ChatSessionDataDeleteManyArgs<ExtArgs>,
             result: Prisma.BatchPayload
           }
           updateMany: {
-            args: Prisma.SessionDataUpdateManyArgs<ExtArgs>,
+            args: Prisma.FBR_ChatSessionDataUpdateManyArgs<ExtArgs>,
             result: Prisma.BatchPayload
           }
           upsert: {
-            args: Prisma.SessionDataUpsertArgs<ExtArgs>,
-            result: $Utils.PayloadToResult<Prisma.$SessionDataPayload>
+            args: Prisma.FBR_ChatSessionDataUpsertArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$FBR_ChatSessionDataPayload>
           }
           aggregate: {
-            args: Prisma.SessionDataAggregateArgs<ExtArgs>,
-            result: $Utils.Optional<AggregateSessionData>
+            args: Prisma.FBR_ChatSessionDataAggregateArgs<ExtArgs>,
+            result: $Utils.Optional<AggregateFBR_ChatSessionData>
           }
           groupBy: {
-            args: Prisma.SessionDataGroupByArgs<ExtArgs>,
-            result: $Utils.Optional<SessionDataGroupByOutputType>[]
+            args: Prisma.FBR_ChatSessionDataGroupByArgs<ExtArgs>,
+            result: $Utils.Optional<FBR_ChatSessionDataGroupByOutputType>[]
           }
           findRaw: {
-            args: Prisma.SessionDataFindRawArgs<ExtArgs>,
+            args: Prisma.FBR_ChatSessionDataFindRawArgs<ExtArgs>,
             result: Prisma.JsonObject
           }
           aggregateRaw: {
-            args: Prisma.SessionDataAggregateRawArgs<ExtArgs>,
+            args: Prisma.FBR_ChatSessionDataAggregateRawArgs<ExtArgs>,
             result: Prisma.JsonObject
           }
           count: {
-            args: Prisma.SessionDataCountArgs<ExtArgs>,
-            result: $Utils.Optional<SessionDataCountAggregateOutputType> | number
+            args: Prisma.FBR_ChatSessionDataCountArgs<ExtArgs>,
+            result: $Utils.Optional<FBR_ChatSessionDataCountAggregateOutputType> | number
           }
         }
       }
@@ -821,333 +821,343 @@ export namespace Prisma {
    */
 
   /**
-   * Model SessionData
+   * Model FBR_ChatSessionData
    */
 
-  export type AggregateSessionData = {
-    _count: SessionDataCountAggregateOutputType | null
-    _min: SessionDataMinAggregateOutputType | null
-    _max: SessionDataMaxAggregateOutputType | null
+  export type AggregateFBR_ChatSessionData = {
+    _count: FBR_ChatSessionDataCountAggregateOutputType | null
+    _min: FBR_ChatSessionDataMinAggregateOutputType | null
+    _max: FBR_ChatSessionDataMaxAggregateOutputType | null
   }
 
-  export type SessionDataMinAggregateOutputType = {
+  export type FBR_ChatSessionDataMinAggregateOutputType = {
     id: string | null
     userId: string | null
     title: string | null
+    threadId: string | null
     assistantId: string | null
   }
 
-  export type SessionDataMaxAggregateOutputType = {
+  export type FBR_ChatSessionDataMaxAggregateOutputType = {
     id: string | null
     userId: string | null
     title: string | null
+    threadId: string | null
     assistantId: string | null
   }
 
-  export type SessionDataCountAggregateOutputType = {
+  export type FBR_ChatSessionDataCountAggregateOutputType = {
     id: number
     userId: number
     title: number
+    threadId: number
     assistantId: number
     _all: number
   }
 
 
-  export type SessionDataMinAggregateInputType = {
+  export type FBR_ChatSessionDataMinAggregateInputType = {
     id?: true
     userId?: true
     title?: true
+    threadId?: true
     assistantId?: true
   }
 
-  export type SessionDataMaxAggregateInputType = {
+  export type FBR_ChatSessionDataMaxAggregateInputType = {
     id?: true
     userId?: true
     title?: true
+    threadId?: true
     assistantId?: true
   }
 
-  export type SessionDataCountAggregateInputType = {
+  export type FBR_ChatSessionDataCountAggregateInputType = {
     id?: true
     userId?: true
     title?: true
+    threadId?: true
     assistantId?: true
     _all?: true
   }
 
-  export type SessionDataAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type FBR_ChatSessionDataAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which SessionData to aggregate.
+     * Filter which FBR_ChatSessionData to aggregate.
      */
-    where?: SessionDataWhereInput
+    where?: FBR_ChatSessionDataWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of SessionData to fetch.
+     * Determine the order of FBR_ChatSessionData to fetch.
      */
-    orderBy?: SessionDataOrderByWithRelationInput | SessionDataOrderByWithRelationInput[]
+    orderBy?: FBR_ChatSessionDataOrderByWithRelationInput | FBR_ChatSessionDataOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
      */
-    cursor?: SessionDataWhereUniqueInput
+    cursor?: FBR_ChatSessionDataWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` SessionData from the position of the cursor.
+     * Take `±n` FBR_ChatSessionData from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` SessionData.
+     * Skip the first `n` FBR_ChatSessionData.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Count returned SessionData
+     * Count returned FBR_ChatSessionData
     **/
-    _count?: true | SessionDataCountAggregateInputType
+    _count?: true | FBR_ChatSessionDataCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the minimum value
     **/
-    _min?: SessionDataMinAggregateInputType
+    _min?: FBR_ChatSessionDataMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the maximum value
     **/
-    _max?: SessionDataMaxAggregateInputType
+    _max?: FBR_ChatSessionDataMaxAggregateInputType
   }
 
-  export type GetSessionDataAggregateType<T extends SessionDataAggregateArgs> = {
-        [P in keyof T & keyof AggregateSessionData]: P extends '_count' | 'count'
+  export type GetFBR_ChatSessionDataAggregateType<T extends FBR_ChatSessionDataAggregateArgs> = {
+        [P in keyof T & keyof AggregateFBR_ChatSessionData]: P extends '_count' | 'count'
       ? T[P] extends true
         ? number
-        : GetScalarType<T[P], AggregateSessionData[P]>
-      : GetScalarType<T[P], AggregateSessionData[P]>
+        : GetScalarType<T[P], AggregateFBR_ChatSessionData[P]>
+      : GetScalarType<T[P], AggregateFBR_ChatSessionData[P]>
   }
 
 
 
 
-  export type SessionDataGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: SessionDataWhereInput
-    orderBy?: SessionDataOrderByWithAggregationInput | SessionDataOrderByWithAggregationInput[]
-    by: SessionDataScalarFieldEnum[] | SessionDataScalarFieldEnum
-    having?: SessionDataScalarWhereWithAggregatesInput
+  export type FBR_ChatSessionDataGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FBR_ChatSessionDataWhereInput
+    orderBy?: FBR_ChatSessionDataOrderByWithAggregationInput | FBR_ChatSessionDataOrderByWithAggregationInput[]
+    by: FBR_ChatSessionDataScalarFieldEnum[] | FBR_ChatSessionDataScalarFieldEnum
+    having?: FBR_ChatSessionDataScalarWhereWithAggregatesInput
     take?: number
     skip?: number
-    _count?: SessionDataCountAggregateInputType | true
-    _min?: SessionDataMinAggregateInputType
-    _max?: SessionDataMaxAggregateInputType
+    _count?: FBR_ChatSessionDataCountAggregateInputType | true
+    _min?: FBR_ChatSessionDataMinAggregateInputType
+    _max?: FBR_ChatSessionDataMaxAggregateInputType
   }
 
-  export type SessionDataGroupByOutputType = {
+  export type FBR_ChatSessionDataGroupByOutputType = {
     id: string
     userId: string
     title: string | null
+    threadId: string | null
     assistantId: string
-    _count: SessionDataCountAggregateOutputType | null
-    _min: SessionDataMinAggregateOutputType | null
-    _max: SessionDataMaxAggregateOutputType | null
+    _count: FBR_ChatSessionDataCountAggregateOutputType | null
+    _min: FBR_ChatSessionDataMinAggregateOutputType | null
+    _max: FBR_ChatSessionDataMaxAggregateOutputType | null
   }
 
-  type GetSessionDataGroupByPayload<T extends SessionDataGroupByArgs> = Prisma.PrismaPromise<
+  type GetFBR_ChatSessionDataGroupByPayload<T extends FBR_ChatSessionDataGroupByArgs> = Prisma.PrismaPromise<
     Array<
-      PickEnumerable<SessionDataGroupByOutputType, T['by']> &
+      PickEnumerable<FBR_ChatSessionDataGroupByOutputType, T['by']> &
         {
-          [P in ((keyof T) & (keyof SessionDataGroupByOutputType))]: P extends '_count'
+          [P in ((keyof T) & (keyof FBR_ChatSessionDataGroupByOutputType))]: P extends '_count'
             ? T[P] extends boolean
               ? number
-              : GetScalarType<T[P], SessionDataGroupByOutputType[P]>
-            : GetScalarType<T[P], SessionDataGroupByOutputType[P]>
+              : GetScalarType<T[P], FBR_ChatSessionDataGroupByOutputType[P]>
+            : GetScalarType<T[P], FBR_ChatSessionDataGroupByOutputType[P]>
         }
       >
     >
 
 
-  export type SessionDataSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type FBR_ChatSessionDataSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     userId?: boolean
     title?: boolean
+    threadId?: boolean
     assistantId?: boolean
-  }, ExtArgs["result"]["sessionData"]>
+  }, ExtArgs["result"]["fBR_ChatSessionData"]>
 
-  export type SessionDataSelectScalar = {
+  export type FBR_ChatSessionDataSelectScalar = {
     id?: boolean
     userId?: boolean
     title?: boolean
+    threadId?: boolean
     assistantId?: boolean
   }
 
 
-  export type $SessionDataPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "SessionData"
+  export type $FBR_ChatSessionDataPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "FBR_ChatSessionData"
     objects: {}
     scalars: $Extensions.GetPayloadResult<{
       id: string
       userId: string
       title: string | null
+      threadId: string | null
       assistantId: string
-    }, ExtArgs["result"]["sessionData"]>
+    }, ExtArgs["result"]["fBR_ChatSessionData"]>
     composites: {}
   }
 
 
-  type SessionDataGetPayload<S extends boolean | null | undefined | SessionDataDefaultArgs> = $Result.GetResult<Prisma.$SessionDataPayload, S>
+  type FBR_ChatSessionDataGetPayload<S extends boolean | null | undefined | FBR_ChatSessionDataDefaultArgs> = $Result.GetResult<Prisma.$FBR_ChatSessionDataPayload, S>
 
-  type SessionDataCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
-    Omit<SessionDataFindManyArgs, 'select' | 'include' | 'distinct' > & {
-      select?: SessionDataCountAggregateInputType | true
+  type FBR_ChatSessionDataCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<FBR_ChatSessionDataFindManyArgs, 'select' | 'include' | 'distinct' > & {
+      select?: FBR_ChatSessionDataCountAggregateInputType | true
     }
 
-  export interface SessionDataDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SessionData'], meta: { name: 'SessionData' } }
+  export interface FBR_ChatSessionDataDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['FBR_ChatSessionData'], meta: { name: 'FBR_ChatSessionData' } }
     /**
-     * Find zero or one SessionData that matches the filter.
-     * @param {SessionDataFindUniqueArgs} args - Arguments to find a SessionData
+     * Find zero or one FBR_ChatSessionData that matches the filter.
+     * @param {FBR_ChatSessionDataFindUniqueArgs} args - Arguments to find a FBR_ChatSessionData
      * @example
-     * // Get one SessionData
-     * const sessionData = await prisma.sessionData.findUnique({
+     * // Get one FBR_ChatSessionData
+     * const fBR_ChatSessionData = await prisma.fBR_ChatSessionData.findUnique({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
     **/
-    findUnique<T extends SessionDataFindUniqueArgs<ExtArgs>>(
-      args: SelectSubset<T, SessionDataFindUniqueArgs<ExtArgs>>
-    ): Prisma__SessionDataClient<$Result.GetResult<Prisma.$SessionDataPayload<ExtArgs>, T, 'findUnique'> | null, null, ExtArgs>
+    findUnique<T extends FBR_ChatSessionDataFindUniqueArgs<ExtArgs>>(
+      args: SelectSubset<T, FBR_ChatSessionDataFindUniqueArgs<ExtArgs>>
+    ): Prisma__FBR_ChatSessionDataClient<$Result.GetResult<Prisma.$FBR_ChatSessionDataPayload<ExtArgs>, T, 'findUnique'> | null, null, ExtArgs>
 
     /**
-     * Find one SessionData that matches the filter or throw an error  with `error.code='P2025'` 
+     * Find one FBR_ChatSessionData that matches the filter or throw an error  with `error.code='P2025'` 
      *     if no matches were found.
-     * @param {SessionDataFindUniqueOrThrowArgs} args - Arguments to find a SessionData
+     * @param {FBR_ChatSessionDataFindUniqueOrThrowArgs} args - Arguments to find a FBR_ChatSessionData
      * @example
-     * // Get one SessionData
-     * const sessionData = await prisma.sessionData.findUniqueOrThrow({
+     * // Get one FBR_ChatSessionData
+     * const fBR_ChatSessionData = await prisma.fBR_ChatSessionData.findUniqueOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
     **/
-    findUniqueOrThrow<T extends SessionDataFindUniqueOrThrowArgs<ExtArgs>>(
-      args?: SelectSubset<T, SessionDataFindUniqueOrThrowArgs<ExtArgs>>
-    ): Prisma__SessionDataClient<$Result.GetResult<Prisma.$SessionDataPayload<ExtArgs>, T, 'findUniqueOrThrow'>, never, ExtArgs>
+    findUniqueOrThrow<T extends FBR_ChatSessionDataFindUniqueOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, FBR_ChatSessionDataFindUniqueOrThrowArgs<ExtArgs>>
+    ): Prisma__FBR_ChatSessionDataClient<$Result.GetResult<Prisma.$FBR_ChatSessionDataPayload<ExtArgs>, T, 'findUniqueOrThrow'>, never, ExtArgs>
 
     /**
-     * Find the first SessionData that matches the filter.
+     * Find the first FBR_ChatSessionData that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {SessionDataFindFirstArgs} args - Arguments to find a SessionData
+     * @param {FBR_ChatSessionDataFindFirstArgs} args - Arguments to find a FBR_ChatSessionData
      * @example
-     * // Get one SessionData
-     * const sessionData = await prisma.sessionData.findFirst({
+     * // Get one FBR_ChatSessionData
+     * const fBR_ChatSessionData = await prisma.fBR_ChatSessionData.findFirst({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
     **/
-    findFirst<T extends SessionDataFindFirstArgs<ExtArgs>>(
-      args?: SelectSubset<T, SessionDataFindFirstArgs<ExtArgs>>
-    ): Prisma__SessionDataClient<$Result.GetResult<Prisma.$SessionDataPayload<ExtArgs>, T, 'findFirst'> | null, null, ExtArgs>
+    findFirst<T extends FBR_ChatSessionDataFindFirstArgs<ExtArgs>>(
+      args?: SelectSubset<T, FBR_ChatSessionDataFindFirstArgs<ExtArgs>>
+    ): Prisma__FBR_ChatSessionDataClient<$Result.GetResult<Prisma.$FBR_ChatSessionDataPayload<ExtArgs>, T, 'findFirst'> | null, null, ExtArgs>
 
     /**
-     * Find the first SessionData that matches the filter or
+     * Find the first FBR_ChatSessionData that matches the filter or
      * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {SessionDataFindFirstOrThrowArgs} args - Arguments to find a SessionData
+     * @param {FBR_ChatSessionDataFindFirstOrThrowArgs} args - Arguments to find a FBR_ChatSessionData
      * @example
-     * // Get one SessionData
-     * const sessionData = await prisma.sessionData.findFirstOrThrow({
+     * // Get one FBR_ChatSessionData
+     * const fBR_ChatSessionData = await prisma.fBR_ChatSessionData.findFirstOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
     **/
-    findFirstOrThrow<T extends SessionDataFindFirstOrThrowArgs<ExtArgs>>(
-      args?: SelectSubset<T, SessionDataFindFirstOrThrowArgs<ExtArgs>>
-    ): Prisma__SessionDataClient<$Result.GetResult<Prisma.$SessionDataPayload<ExtArgs>, T, 'findFirstOrThrow'>, never, ExtArgs>
+    findFirstOrThrow<T extends FBR_ChatSessionDataFindFirstOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, FBR_ChatSessionDataFindFirstOrThrowArgs<ExtArgs>>
+    ): Prisma__FBR_ChatSessionDataClient<$Result.GetResult<Prisma.$FBR_ChatSessionDataPayload<ExtArgs>, T, 'findFirstOrThrow'>, never, ExtArgs>
 
     /**
-     * Find zero or more SessionData that matches the filter.
+     * Find zero or more FBR_ChatSessionData that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {SessionDataFindManyArgs=} args - Arguments to filter and select certain fields only.
+     * @param {FBR_ChatSessionDataFindManyArgs=} args - Arguments to filter and select certain fields only.
      * @example
-     * // Get all SessionData
-     * const sessionData = await prisma.sessionData.findMany()
+     * // Get all FBR_ChatSessionData
+     * const fBR_ChatSessionData = await prisma.fBR_ChatSessionData.findMany()
      * 
-     * // Get first 10 SessionData
-     * const sessionData = await prisma.sessionData.findMany({ take: 10 })
+     * // Get first 10 FBR_ChatSessionData
+     * const fBR_ChatSessionData = await prisma.fBR_ChatSessionData.findMany({ take: 10 })
      * 
      * // Only select the `id`
-     * const sessionDataWithIdOnly = await prisma.sessionData.findMany({ select: { id: true } })
+     * const fBR_ChatSessionDataWithIdOnly = await prisma.fBR_ChatSessionData.findMany({ select: { id: true } })
      * 
     **/
-    findMany<T extends SessionDataFindManyArgs<ExtArgs>>(
-      args?: SelectSubset<T, SessionDataFindManyArgs<ExtArgs>>
-    ): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionDataPayload<ExtArgs>, T, 'findMany'>>
+    findMany<T extends FBR_ChatSessionDataFindManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, FBR_ChatSessionDataFindManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FBR_ChatSessionDataPayload<ExtArgs>, T, 'findMany'>>
 
     /**
-     * Create a SessionData.
-     * @param {SessionDataCreateArgs} args - Arguments to create a SessionData.
+     * Create a FBR_ChatSessionData.
+     * @param {FBR_ChatSessionDataCreateArgs} args - Arguments to create a FBR_ChatSessionData.
      * @example
-     * // Create one SessionData
-     * const SessionData = await prisma.sessionData.create({
+     * // Create one FBR_ChatSessionData
+     * const FBR_ChatSessionData = await prisma.fBR_ChatSessionData.create({
      *   data: {
-     *     // ... data to create a SessionData
+     *     // ... data to create a FBR_ChatSessionData
      *   }
      * })
      * 
     **/
-    create<T extends SessionDataCreateArgs<ExtArgs>>(
-      args: SelectSubset<T, SessionDataCreateArgs<ExtArgs>>
-    ): Prisma__SessionDataClient<$Result.GetResult<Prisma.$SessionDataPayload<ExtArgs>, T, 'create'>, never, ExtArgs>
+    create<T extends FBR_ChatSessionDataCreateArgs<ExtArgs>>(
+      args: SelectSubset<T, FBR_ChatSessionDataCreateArgs<ExtArgs>>
+    ): Prisma__FBR_ChatSessionDataClient<$Result.GetResult<Prisma.$FBR_ChatSessionDataPayload<ExtArgs>, T, 'create'>, never, ExtArgs>
 
     /**
-     * Create many SessionData.
-     *     @param {SessionDataCreateManyArgs} args - Arguments to create many SessionData.
+     * Create many FBR_ChatSessionData.
+     *     @param {FBR_ChatSessionDataCreateManyArgs} args - Arguments to create many FBR_ChatSessionData.
      *     @example
-     *     // Create many SessionData
-     *     const sessionData = await prisma.sessionData.createMany({
+     *     // Create many FBR_ChatSessionData
+     *     const fBR_ChatSessionData = await prisma.fBR_ChatSessionData.createMany({
      *       data: {
      *         // ... provide data here
      *       }
      *     })
      *     
     **/
-    createMany<T extends SessionDataCreateManyArgs<ExtArgs>>(
-      args?: SelectSubset<T, SessionDataCreateManyArgs<ExtArgs>>
+    createMany<T extends FBR_ChatSessionDataCreateManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, FBR_ChatSessionDataCreateManyArgs<ExtArgs>>
     ): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Delete a SessionData.
-     * @param {SessionDataDeleteArgs} args - Arguments to delete one SessionData.
+     * Delete a FBR_ChatSessionData.
+     * @param {FBR_ChatSessionDataDeleteArgs} args - Arguments to delete one FBR_ChatSessionData.
      * @example
-     * // Delete one SessionData
-     * const SessionData = await prisma.sessionData.delete({
+     * // Delete one FBR_ChatSessionData
+     * const FBR_ChatSessionData = await prisma.fBR_ChatSessionData.delete({
      *   where: {
-     *     // ... filter to delete one SessionData
+     *     // ... filter to delete one FBR_ChatSessionData
      *   }
      * })
      * 
     **/
-    delete<T extends SessionDataDeleteArgs<ExtArgs>>(
-      args: SelectSubset<T, SessionDataDeleteArgs<ExtArgs>>
-    ): Prisma__SessionDataClient<$Result.GetResult<Prisma.$SessionDataPayload<ExtArgs>, T, 'delete'>, never, ExtArgs>
+    delete<T extends FBR_ChatSessionDataDeleteArgs<ExtArgs>>(
+      args: SelectSubset<T, FBR_ChatSessionDataDeleteArgs<ExtArgs>>
+    ): Prisma__FBR_ChatSessionDataClient<$Result.GetResult<Prisma.$FBR_ChatSessionDataPayload<ExtArgs>, T, 'delete'>, never, ExtArgs>
 
     /**
-     * Update one SessionData.
-     * @param {SessionDataUpdateArgs} args - Arguments to update one SessionData.
+     * Update one FBR_ChatSessionData.
+     * @param {FBR_ChatSessionDataUpdateArgs} args - Arguments to update one FBR_ChatSessionData.
      * @example
-     * // Update one SessionData
-     * const sessionData = await prisma.sessionData.update({
+     * // Update one FBR_ChatSessionData
+     * const fBR_ChatSessionData = await prisma.fBR_ChatSessionData.update({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -1157,34 +1167,34 @@ export namespace Prisma {
      * })
      * 
     **/
-    update<T extends SessionDataUpdateArgs<ExtArgs>>(
-      args: SelectSubset<T, SessionDataUpdateArgs<ExtArgs>>
-    ): Prisma__SessionDataClient<$Result.GetResult<Prisma.$SessionDataPayload<ExtArgs>, T, 'update'>, never, ExtArgs>
+    update<T extends FBR_ChatSessionDataUpdateArgs<ExtArgs>>(
+      args: SelectSubset<T, FBR_ChatSessionDataUpdateArgs<ExtArgs>>
+    ): Prisma__FBR_ChatSessionDataClient<$Result.GetResult<Prisma.$FBR_ChatSessionDataPayload<ExtArgs>, T, 'update'>, never, ExtArgs>
 
     /**
-     * Delete zero or more SessionData.
-     * @param {SessionDataDeleteManyArgs} args - Arguments to filter SessionData to delete.
+     * Delete zero or more FBR_ChatSessionData.
+     * @param {FBR_ChatSessionDataDeleteManyArgs} args - Arguments to filter FBR_ChatSessionData to delete.
      * @example
-     * // Delete a few SessionData
-     * const { count } = await prisma.sessionData.deleteMany({
+     * // Delete a few FBR_ChatSessionData
+     * const { count } = await prisma.fBR_ChatSessionData.deleteMany({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      * 
     **/
-    deleteMany<T extends SessionDataDeleteManyArgs<ExtArgs>>(
-      args?: SelectSubset<T, SessionDataDeleteManyArgs<ExtArgs>>
+    deleteMany<T extends FBR_ChatSessionDataDeleteManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, FBR_ChatSessionDataDeleteManyArgs<ExtArgs>>
     ): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more SessionData.
+     * Update zero or more FBR_ChatSessionData.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {SessionDataUpdateManyArgs} args - Arguments to update one or more rows.
+     * @param {FBR_ChatSessionDataUpdateManyArgs} args - Arguments to update one or more rows.
      * @example
-     * // Update many SessionData
-     * const sessionData = await prisma.sessionData.updateMany({
+     * // Update many FBR_ChatSessionData
+     * const fBR_ChatSessionData = await prisma.fBR_ChatSessionData.updateMany({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -1194,48 +1204,48 @@ export namespace Prisma {
      * })
      * 
     **/
-    updateMany<T extends SessionDataUpdateManyArgs<ExtArgs>>(
-      args: SelectSubset<T, SessionDataUpdateManyArgs<ExtArgs>>
+    updateMany<T extends FBR_ChatSessionDataUpdateManyArgs<ExtArgs>>(
+      args: SelectSubset<T, FBR_ChatSessionDataUpdateManyArgs<ExtArgs>>
     ): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Create or update one SessionData.
-     * @param {SessionDataUpsertArgs} args - Arguments to update or create a SessionData.
+     * Create or update one FBR_ChatSessionData.
+     * @param {FBR_ChatSessionDataUpsertArgs} args - Arguments to update or create a FBR_ChatSessionData.
      * @example
-     * // Update or create a SessionData
-     * const sessionData = await prisma.sessionData.upsert({
+     * // Update or create a FBR_ChatSessionData
+     * const fBR_ChatSessionData = await prisma.fBR_ChatSessionData.upsert({
      *   create: {
-     *     // ... data to create a SessionData
+     *     // ... data to create a FBR_ChatSessionData
      *   },
      *   update: {
      *     // ... in case it already exists, update
      *   },
      *   where: {
-     *     // ... the filter for the SessionData we want to update
+     *     // ... the filter for the FBR_ChatSessionData we want to update
      *   }
      * })
     **/
-    upsert<T extends SessionDataUpsertArgs<ExtArgs>>(
-      args: SelectSubset<T, SessionDataUpsertArgs<ExtArgs>>
-    ): Prisma__SessionDataClient<$Result.GetResult<Prisma.$SessionDataPayload<ExtArgs>, T, 'upsert'>, never, ExtArgs>
+    upsert<T extends FBR_ChatSessionDataUpsertArgs<ExtArgs>>(
+      args: SelectSubset<T, FBR_ChatSessionDataUpsertArgs<ExtArgs>>
+    ): Prisma__FBR_ChatSessionDataClient<$Result.GetResult<Prisma.$FBR_ChatSessionDataPayload<ExtArgs>, T, 'upsert'>, never, ExtArgs>
 
     /**
-     * Find zero or more SessionData that matches the filter.
-     * @param {SessionDataFindRawArgs} args - Select which filters you would like to apply.
+     * Find zero or more FBR_ChatSessionData that matches the filter.
+     * @param {FBR_ChatSessionDataFindRawArgs} args - Select which filters you would like to apply.
      * @example
-     * const sessionData = await prisma.sessionData.findRaw({
+     * const fBR_ChatSessionData = await prisma.fBR_ChatSessionData.findRaw({
      *   filter: { age: { $gt: 25 } } 
      * })
     **/
     findRaw(
-      args?: SessionDataFindRawArgs
+      args?: FBR_ChatSessionDataFindRawArgs
     ): Prisma.PrismaPromise<JsonObject>
 
     /**
-     * Perform aggregation operations on a SessionData.
-     * @param {SessionDataAggregateRawArgs} args - Select which aggregations you would like to apply.
+     * Perform aggregation operations on a FBR_ChatSessionData.
+     * @param {FBR_ChatSessionDataAggregateRawArgs} args - Select which aggregations you would like to apply.
      * @example
-     * const sessionData = await prisma.sessionData.aggregateRaw({
+     * const fBR_ChatSessionData = await prisma.fBR_ChatSessionData.aggregateRaw({
      *   pipeline: [
      *     { $match: { status: "registered" } },
      *     { $group: { _id: "$country", total: { $sum: 1 } } }
@@ -1243,37 +1253,37 @@ export namespace Prisma {
      * })
     **/
     aggregateRaw(
-      args?: SessionDataAggregateRawArgs
+      args?: FBR_ChatSessionDataAggregateRawArgs
     ): Prisma.PrismaPromise<JsonObject>
 
     /**
-     * Count the number of SessionData.
+     * Count the number of FBR_ChatSessionData.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {SessionDataCountArgs} args - Arguments to filter SessionData to count.
+     * @param {FBR_ChatSessionDataCountArgs} args - Arguments to filter FBR_ChatSessionData to count.
      * @example
-     * // Count the number of SessionData
-     * const count = await prisma.sessionData.count({
+     * // Count the number of FBR_ChatSessionData
+     * const count = await prisma.fBR_ChatSessionData.count({
      *   where: {
-     *     // ... the filter for the SessionData we want to count
+     *     // ... the filter for the FBR_ChatSessionData we want to count
      *   }
      * })
     **/
-    count<T extends SessionDataCountArgs>(
-      args?: Subset<T, SessionDataCountArgs>,
+    count<T extends FBR_ChatSessionDataCountArgs>(
+      args?: Subset<T, FBR_ChatSessionDataCountArgs>,
     ): Prisma.PrismaPromise<
       T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
-          : GetScalarType<T['select'], SessionDataCountAggregateOutputType>
+          : GetScalarType<T['select'], FBR_ChatSessionDataCountAggregateOutputType>
         : number
     >
 
     /**
-     * Allows you to perform aggregations operations on a SessionData.
+     * Allows you to perform aggregations operations on a FBR_ChatSessionData.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {SessionDataAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @param {FBR_ChatSessionDataAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
      * @example
      * // Ordered by age ascending
      * // Where email contains prisma.io
@@ -1293,13 +1303,13 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends SessionDataAggregateArgs>(args: Subset<T, SessionDataAggregateArgs>): Prisma.PrismaPromise<GetSessionDataAggregateType<T>>
+    aggregate<T extends FBR_ChatSessionDataAggregateArgs>(args: Subset<T, FBR_ChatSessionDataAggregateArgs>): Prisma.PrismaPromise<GetFBR_ChatSessionDataAggregateType<T>>
 
     /**
-     * Group by SessionData.
+     * Group by FBR_ChatSessionData.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {SessionDataGroupByArgs} args - Group by arguments.
+     * @param {FBR_ChatSessionDataGroupByArgs} args - Group by arguments.
      * @example
      * // Group by city, order by createdAt, get count
      * const result = await prisma.user.groupBy({
@@ -1314,14 +1324,14 @@ export namespace Prisma {
      * 
     **/
     groupBy<
-      T extends SessionDataGroupByArgs,
+      T extends FBR_ChatSessionDataGroupByArgs,
       HasSelectOrTake extends Or<
         Extends<'skip', Keys<T>>,
         Extends<'take', Keys<T>>
       >,
       OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: SessionDataGroupByArgs['orderBy'] }
-        : { orderBy?: SessionDataGroupByArgs['orderBy'] },
+        ? { orderBy: FBR_ChatSessionDataGroupByArgs['orderBy'] }
+        : { orderBy?: FBR_ChatSessionDataGroupByArgs['orderBy'] },
       OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
       ByFields extends MaybeTupleToUnion<T['by']>,
       ByValid extends Has<ByFields, OrderFields>,
@@ -1370,20 +1380,20 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, SessionDataGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSessionDataGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, FBR_ChatSessionDataGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFBR_ChatSessionDataGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
   /**
-   * Fields of the SessionData model
+   * Fields of the FBR_ChatSessionData model
    */
-  readonly fields: SessionDataFieldRefs;
+  readonly fields: FBR_ChatSessionDataFieldRefs;
   }
 
   /**
-   * The delegate class that acts as a "Promise-like" for SessionData.
+   * The delegate class that acts as a "Promise-like" for FBR_ChatSessionData.
    * Why is this prefixed with `Prisma__`?
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export interface Prisma__SessionDataClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+  export interface Prisma__FBR_ChatSessionDataClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: 'PrismaPromise';
 
 
@@ -1412,291 +1422,292 @@ export namespace Prisma {
 
 
   /**
-   * Fields of the SessionData model
+   * Fields of the FBR_ChatSessionData model
    */ 
-  interface SessionDataFieldRefs {
-    readonly id: FieldRef<"SessionData", 'String'>
-    readonly userId: FieldRef<"SessionData", 'String'>
-    readonly title: FieldRef<"SessionData", 'String'>
-    readonly assistantId: FieldRef<"SessionData", 'String'>
+  interface FBR_ChatSessionDataFieldRefs {
+    readonly id: FieldRef<"FBR_ChatSessionData", 'String'>
+    readonly userId: FieldRef<"FBR_ChatSessionData", 'String'>
+    readonly title: FieldRef<"FBR_ChatSessionData", 'String'>
+    readonly threadId: FieldRef<"FBR_ChatSessionData", 'String'>
+    readonly assistantId: FieldRef<"FBR_ChatSessionData", 'String'>
   }
     
 
   // Custom InputTypes
 
   /**
-   * SessionData findUnique
+   * FBR_ChatSessionData findUnique
    */
-  export type SessionDataFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type FBR_ChatSessionDataFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the SessionData
+     * Select specific fields to fetch from the FBR_ChatSessionData
      */
-    select?: SessionDataSelect<ExtArgs> | null
+    select?: FBR_ChatSessionDataSelect<ExtArgs> | null
     /**
-     * Filter, which SessionData to fetch.
+     * Filter, which FBR_ChatSessionData to fetch.
      */
-    where: SessionDataWhereUniqueInput
+    where: FBR_ChatSessionDataWhereUniqueInput
   }
 
 
   /**
-   * SessionData findUniqueOrThrow
+   * FBR_ChatSessionData findUniqueOrThrow
    */
-  export type SessionDataFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type FBR_ChatSessionDataFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the SessionData
+     * Select specific fields to fetch from the FBR_ChatSessionData
      */
-    select?: SessionDataSelect<ExtArgs> | null
+    select?: FBR_ChatSessionDataSelect<ExtArgs> | null
     /**
-     * Filter, which SessionData to fetch.
+     * Filter, which FBR_ChatSessionData to fetch.
      */
-    where: SessionDataWhereUniqueInput
+    where: FBR_ChatSessionDataWhereUniqueInput
   }
 
 
   /**
-   * SessionData findFirst
+   * FBR_ChatSessionData findFirst
    */
-  export type SessionDataFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type FBR_ChatSessionDataFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the SessionData
+     * Select specific fields to fetch from the FBR_ChatSessionData
      */
-    select?: SessionDataSelect<ExtArgs> | null
+    select?: FBR_ChatSessionDataSelect<ExtArgs> | null
     /**
-     * Filter, which SessionData to fetch.
+     * Filter, which FBR_ChatSessionData to fetch.
      */
-    where?: SessionDataWhereInput
+    where?: FBR_ChatSessionDataWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of SessionData to fetch.
+     * Determine the order of FBR_ChatSessionData to fetch.
      */
-    orderBy?: SessionDataOrderByWithRelationInput | SessionDataOrderByWithRelationInput[]
+    orderBy?: FBR_ChatSessionDataOrderByWithRelationInput | FBR_ChatSessionDataOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for SessionData.
+     * Sets the position for searching for FBR_ChatSessionData.
      */
-    cursor?: SessionDataWhereUniqueInput
+    cursor?: FBR_ChatSessionDataWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` SessionData from the position of the cursor.
+     * Take `±n` FBR_ChatSessionData from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` SessionData.
+     * Skip the first `n` FBR_ChatSessionData.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of SessionData.
+     * Filter by unique combinations of FBR_ChatSessionData.
      */
-    distinct?: SessionDataScalarFieldEnum | SessionDataScalarFieldEnum[]
+    distinct?: FBR_ChatSessionDataScalarFieldEnum | FBR_ChatSessionDataScalarFieldEnum[]
   }
 
 
   /**
-   * SessionData findFirstOrThrow
+   * FBR_ChatSessionData findFirstOrThrow
    */
-  export type SessionDataFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type FBR_ChatSessionDataFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the SessionData
+     * Select specific fields to fetch from the FBR_ChatSessionData
      */
-    select?: SessionDataSelect<ExtArgs> | null
+    select?: FBR_ChatSessionDataSelect<ExtArgs> | null
     /**
-     * Filter, which SessionData to fetch.
+     * Filter, which FBR_ChatSessionData to fetch.
      */
-    where?: SessionDataWhereInput
+    where?: FBR_ChatSessionDataWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of SessionData to fetch.
+     * Determine the order of FBR_ChatSessionData to fetch.
      */
-    orderBy?: SessionDataOrderByWithRelationInput | SessionDataOrderByWithRelationInput[]
+    orderBy?: FBR_ChatSessionDataOrderByWithRelationInput | FBR_ChatSessionDataOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for SessionData.
+     * Sets the position for searching for FBR_ChatSessionData.
      */
-    cursor?: SessionDataWhereUniqueInput
+    cursor?: FBR_ChatSessionDataWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` SessionData from the position of the cursor.
+     * Take `±n` FBR_ChatSessionData from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` SessionData.
+     * Skip the first `n` FBR_ChatSessionData.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of SessionData.
+     * Filter by unique combinations of FBR_ChatSessionData.
      */
-    distinct?: SessionDataScalarFieldEnum | SessionDataScalarFieldEnum[]
+    distinct?: FBR_ChatSessionDataScalarFieldEnum | FBR_ChatSessionDataScalarFieldEnum[]
   }
 
 
   /**
-   * SessionData findMany
+   * FBR_ChatSessionData findMany
    */
-  export type SessionDataFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type FBR_ChatSessionDataFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the SessionData
+     * Select specific fields to fetch from the FBR_ChatSessionData
      */
-    select?: SessionDataSelect<ExtArgs> | null
+    select?: FBR_ChatSessionDataSelect<ExtArgs> | null
     /**
-     * Filter, which SessionData to fetch.
+     * Filter, which FBR_ChatSessionData to fetch.
      */
-    where?: SessionDataWhereInput
+    where?: FBR_ChatSessionDataWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of SessionData to fetch.
+     * Determine the order of FBR_ChatSessionData to fetch.
      */
-    orderBy?: SessionDataOrderByWithRelationInput | SessionDataOrderByWithRelationInput[]
+    orderBy?: FBR_ChatSessionDataOrderByWithRelationInput | FBR_ChatSessionDataOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for listing SessionData.
+     * Sets the position for listing FBR_ChatSessionData.
      */
-    cursor?: SessionDataWhereUniqueInput
+    cursor?: FBR_ChatSessionDataWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` SessionData from the position of the cursor.
+     * Take `±n` FBR_ChatSessionData from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` SessionData.
+     * Skip the first `n` FBR_ChatSessionData.
      */
     skip?: number
-    distinct?: SessionDataScalarFieldEnum | SessionDataScalarFieldEnum[]
+    distinct?: FBR_ChatSessionDataScalarFieldEnum | FBR_ChatSessionDataScalarFieldEnum[]
   }
 
 
   /**
-   * SessionData create
+   * FBR_ChatSessionData create
    */
-  export type SessionDataCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type FBR_ChatSessionDataCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the SessionData
+     * Select specific fields to fetch from the FBR_ChatSessionData
      */
-    select?: SessionDataSelect<ExtArgs> | null
+    select?: FBR_ChatSessionDataSelect<ExtArgs> | null
     /**
-     * The data needed to create a SessionData.
+     * The data needed to create a FBR_ChatSessionData.
      */
-    data: XOR<SessionDataCreateInput, SessionDataUncheckedCreateInput>
+    data: XOR<FBR_ChatSessionDataCreateInput, FBR_ChatSessionDataUncheckedCreateInput>
   }
 
 
   /**
-   * SessionData createMany
+   * FBR_ChatSessionData createMany
    */
-  export type SessionDataCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type FBR_ChatSessionDataCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to create many SessionData.
+     * The data used to create many FBR_ChatSessionData.
      */
-    data: SessionDataCreateManyInput | SessionDataCreateManyInput[]
+    data: FBR_ChatSessionDataCreateManyInput | FBR_ChatSessionDataCreateManyInput[]
   }
 
 
   /**
-   * SessionData update
+   * FBR_ChatSessionData update
    */
-  export type SessionDataUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type FBR_ChatSessionDataUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the SessionData
+     * Select specific fields to fetch from the FBR_ChatSessionData
      */
-    select?: SessionDataSelect<ExtArgs> | null
+    select?: FBR_ChatSessionDataSelect<ExtArgs> | null
     /**
-     * The data needed to update a SessionData.
+     * The data needed to update a FBR_ChatSessionData.
      */
-    data: XOR<SessionDataUpdateInput, SessionDataUncheckedUpdateInput>
+    data: XOR<FBR_ChatSessionDataUpdateInput, FBR_ChatSessionDataUncheckedUpdateInput>
     /**
-     * Choose, which SessionData to update.
+     * Choose, which FBR_ChatSessionData to update.
      */
-    where: SessionDataWhereUniqueInput
+    where: FBR_ChatSessionDataWhereUniqueInput
   }
 
 
   /**
-   * SessionData updateMany
+   * FBR_ChatSessionData updateMany
    */
-  export type SessionDataUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type FBR_ChatSessionDataUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to update SessionData.
+     * The data used to update FBR_ChatSessionData.
      */
-    data: XOR<SessionDataUpdateManyMutationInput, SessionDataUncheckedUpdateManyInput>
+    data: XOR<FBR_ChatSessionDataUpdateManyMutationInput, FBR_ChatSessionDataUncheckedUpdateManyInput>
     /**
-     * Filter which SessionData to update
+     * Filter which FBR_ChatSessionData to update
      */
-    where?: SessionDataWhereInput
+    where?: FBR_ChatSessionDataWhereInput
   }
 
 
   /**
-   * SessionData upsert
+   * FBR_ChatSessionData upsert
    */
-  export type SessionDataUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type FBR_ChatSessionDataUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the SessionData
+     * Select specific fields to fetch from the FBR_ChatSessionData
      */
-    select?: SessionDataSelect<ExtArgs> | null
+    select?: FBR_ChatSessionDataSelect<ExtArgs> | null
     /**
-     * The filter to search for the SessionData to update in case it exists.
+     * The filter to search for the FBR_ChatSessionData to update in case it exists.
      */
-    where: SessionDataWhereUniqueInput
+    where: FBR_ChatSessionDataWhereUniqueInput
     /**
-     * In case the SessionData found by the `where` argument doesn't exist, create a new SessionData with this data.
+     * In case the FBR_ChatSessionData found by the `where` argument doesn't exist, create a new FBR_ChatSessionData with this data.
      */
-    create: XOR<SessionDataCreateInput, SessionDataUncheckedCreateInput>
+    create: XOR<FBR_ChatSessionDataCreateInput, FBR_ChatSessionDataUncheckedCreateInput>
     /**
-     * In case the SessionData was found with the provided `where` argument, update it with this data.
+     * In case the FBR_ChatSessionData was found with the provided `where` argument, update it with this data.
      */
-    update: XOR<SessionDataUpdateInput, SessionDataUncheckedUpdateInput>
+    update: XOR<FBR_ChatSessionDataUpdateInput, FBR_ChatSessionDataUncheckedUpdateInput>
   }
 
 
   /**
-   * SessionData delete
+   * FBR_ChatSessionData delete
    */
-  export type SessionDataDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type FBR_ChatSessionDataDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the SessionData
+     * Select specific fields to fetch from the FBR_ChatSessionData
      */
-    select?: SessionDataSelect<ExtArgs> | null
+    select?: FBR_ChatSessionDataSelect<ExtArgs> | null
     /**
-     * Filter which SessionData to delete.
+     * Filter which FBR_ChatSessionData to delete.
      */
-    where: SessionDataWhereUniqueInput
+    where: FBR_ChatSessionDataWhereUniqueInput
   }
 
 
   /**
-   * SessionData deleteMany
+   * FBR_ChatSessionData deleteMany
    */
-  export type SessionDataDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type FBR_ChatSessionDataDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which SessionData to delete
+     * Filter which FBR_ChatSessionData to delete
      */
-    where?: SessionDataWhereInput
+    where?: FBR_ChatSessionDataWhereInput
   }
 
 
   /**
-   * SessionData findRaw
+   * FBR_ChatSessionData findRaw
    */
-  export type SessionDataFindRawArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type FBR_ChatSessionDataFindRawArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * The query predicate filter. If unspecified, then all documents in the collection will match the predicate. ${@link https://docs.mongodb.com/manual/reference/operator/query MongoDB Docs}.
      */
@@ -1709,9 +1720,9 @@ export namespace Prisma {
 
 
   /**
-   * SessionData aggregateRaw
+   * FBR_ChatSessionData aggregateRaw
    */
-  export type SessionDataAggregateRawArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type FBR_ChatSessionDataAggregateRawArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * An array of aggregation stages to process and transform the document stream via the aggregation pipeline. ${@link https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline MongoDB Docs}.
      */
@@ -1724,13 +1735,13 @@ export namespace Prisma {
 
 
   /**
-   * SessionData without action
+   * FBR_ChatSessionData without action
    */
-  export type SessionDataDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type FBR_ChatSessionDataDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the SessionData
+     * Select specific fields to fetch from the FBR_ChatSessionData
      */
-    select?: SessionDataSelect<ExtArgs> | null
+    select?: FBR_ChatSessionDataSelect<ExtArgs> | null
   }
 
 
@@ -1739,14 +1750,15 @@ export namespace Prisma {
    * Enums
    */
 
-  export const SessionDataScalarFieldEnum: {
+  export const FBR_ChatSessionDataScalarFieldEnum: {
     id: 'id',
     userId: 'userId',
     title: 'title',
+    threadId: 'threadId',
     assistantId: 'assistantId'
   };
 
-  export type SessionDataScalarFieldEnum = (typeof SessionDataScalarFieldEnum)[keyof typeof SessionDataScalarFieldEnum]
+  export type FBR_ChatSessionDataScalarFieldEnum = (typeof FBR_ChatSessionDataScalarFieldEnum)[keyof typeof FBR_ChatSessionDataScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -1801,95 +1813,107 @@ export namespace Prisma {
    */
 
 
-  export type SessionDataWhereInput = {
-    AND?: SessionDataWhereInput | SessionDataWhereInput[]
-    OR?: SessionDataWhereInput[]
-    NOT?: SessionDataWhereInput | SessionDataWhereInput[]
-    id?: StringFilter<"SessionData"> | string
-    userId?: StringFilter<"SessionData"> | string
-    title?: StringNullableFilter<"SessionData"> | string | null
-    assistantId?: StringFilter<"SessionData"> | string
+  export type FBR_ChatSessionDataWhereInput = {
+    AND?: FBR_ChatSessionDataWhereInput | FBR_ChatSessionDataWhereInput[]
+    OR?: FBR_ChatSessionDataWhereInput[]
+    NOT?: FBR_ChatSessionDataWhereInput | FBR_ChatSessionDataWhereInput[]
+    id?: StringFilter<"FBR_ChatSessionData"> | string
+    userId?: StringFilter<"FBR_ChatSessionData"> | string
+    title?: StringNullableFilter<"FBR_ChatSessionData"> | string | null
+    threadId?: StringNullableFilter<"FBR_ChatSessionData"> | string | null
+    assistantId?: StringFilter<"FBR_ChatSessionData"> | string
   }
 
-  export type SessionDataOrderByWithRelationInput = {
+  export type FBR_ChatSessionDataOrderByWithRelationInput = {
     id?: SortOrder
     userId?: SortOrder
     title?: SortOrder
+    threadId?: SortOrder
     assistantId?: SortOrder
   }
 
-  export type SessionDataWhereUniqueInput = Prisma.AtLeast<{
+  export type FBR_ChatSessionDataWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    AND?: SessionDataWhereInput | SessionDataWhereInput[]
-    OR?: SessionDataWhereInput[]
-    NOT?: SessionDataWhereInput | SessionDataWhereInput[]
-    userId?: StringFilter<"SessionData"> | string
-    title?: StringNullableFilter<"SessionData"> | string | null
-    assistantId?: StringFilter<"SessionData"> | string
+    AND?: FBR_ChatSessionDataWhereInput | FBR_ChatSessionDataWhereInput[]
+    OR?: FBR_ChatSessionDataWhereInput[]
+    NOT?: FBR_ChatSessionDataWhereInput | FBR_ChatSessionDataWhereInput[]
+    userId?: StringFilter<"FBR_ChatSessionData"> | string
+    title?: StringNullableFilter<"FBR_ChatSessionData"> | string | null
+    threadId?: StringNullableFilter<"FBR_ChatSessionData"> | string | null
+    assistantId?: StringFilter<"FBR_ChatSessionData"> | string
   }, "id">
 
-  export type SessionDataOrderByWithAggregationInput = {
+  export type FBR_ChatSessionDataOrderByWithAggregationInput = {
     id?: SortOrder
     userId?: SortOrder
     title?: SortOrder
+    threadId?: SortOrder
     assistantId?: SortOrder
-    _count?: SessionDataCountOrderByAggregateInput
-    _max?: SessionDataMaxOrderByAggregateInput
-    _min?: SessionDataMinOrderByAggregateInput
+    _count?: FBR_ChatSessionDataCountOrderByAggregateInput
+    _max?: FBR_ChatSessionDataMaxOrderByAggregateInput
+    _min?: FBR_ChatSessionDataMinOrderByAggregateInput
   }
 
-  export type SessionDataScalarWhereWithAggregatesInput = {
-    AND?: SessionDataScalarWhereWithAggregatesInput | SessionDataScalarWhereWithAggregatesInput[]
-    OR?: SessionDataScalarWhereWithAggregatesInput[]
-    NOT?: SessionDataScalarWhereWithAggregatesInput | SessionDataScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"SessionData"> | string
-    userId?: StringWithAggregatesFilter<"SessionData"> | string
-    title?: StringNullableWithAggregatesFilter<"SessionData"> | string | null
-    assistantId?: StringWithAggregatesFilter<"SessionData"> | string
+  export type FBR_ChatSessionDataScalarWhereWithAggregatesInput = {
+    AND?: FBR_ChatSessionDataScalarWhereWithAggregatesInput | FBR_ChatSessionDataScalarWhereWithAggregatesInput[]
+    OR?: FBR_ChatSessionDataScalarWhereWithAggregatesInput[]
+    NOT?: FBR_ChatSessionDataScalarWhereWithAggregatesInput | FBR_ChatSessionDataScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"FBR_ChatSessionData"> | string
+    userId?: StringWithAggregatesFilter<"FBR_ChatSessionData"> | string
+    title?: StringNullableWithAggregatesFilter<"FBR_ChatSessionData"> | string | null
+    threadId?: StringNullableWithAggregatesFilter<"FBR_ChatSessionData"> | string | null
+    assistantId?: StringWithAggregatesFilter<"FBR_ChatSessionData"> | string
   }
 
-  export type SessionDataCreateInput = {
+  export type FBR_ChatSessionDataCreateInput = {
     id?: string
     userId: string
     title?: string | null
+    threadId?: string | null
     assistantId: string
   }
 
-  export type SessionDataUncheckedCreateInput = {
+  export type FBR_ChatSessionDataUncheckedCreateInput = {
     id?: string
     userId: string
     title?: string | null
+    threadId?: string | null
     assistantId: string
   }
 
-  export type SessionDataUpdateInput = {
+  export type FBR_ChatSessionDataUpdateInput = {
     userId?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    threadId?: NullableStringFieldUpdateOperationsInput | string | null
     assistantId?: StringFieldUpdateOperationsInput | string
   }
 
-  export type SessionDataUncheckedUpdateInput = {
+  export type FBR_ChatSessionDataUncheckedUpdateInput = {
     userId?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    threadId?: NullableStringFieldUpdateOperationsInput | string | null
     assistantId?: StringFieldUpdateOperationsInput | string
   }
 
-  export type SessionDataCreateManyInput = {
+  export type FBR_ChatSessionDataCreateManyInput = {
     id?: string
     userId: string
     title?: string | null
+    threadId?: string | null
     assistantId: string
   }
 
-  export type SessionDataUpdateManyMutationInput = {
+  export type FBR_ChatSessionDataUpdateManyMutationInput = {
     userId?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    threadId?: NullableStringFieldUpdateOperationsInput | string | null
     assistantId?: StringFieldUpdateOperationsInput | string
   }
 
-  export type SessionDataUncheckedUpdateManyInput = {
+  export type FBR_ChatSessionDataUncheckedUpdateManyInput = {
     userId?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
+    threadId?: NullableStringFieldUpdateOperationsInput | string | null
     assistantId?: StringFieldUpdateOperationsInput | string
   }
 
@@ -1924,24 +1948,27 @@ export namespace Prisma {
     isSet?: boolean
   }
 
-  export type SessionDataCountOrderByAggregateInput = {
+  export type FBR_ChatSessionDataCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
     title?: SortOrder
+    threadId?: SortOrder
     assistantId?: SortOrder
   }
 
-  export type SessionDataMaxOrderByAggregateInput = {
+  export type FBR_ChatSessionDataMaxOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
     title?: SortOrder
+    threadId?: SortOrder
     assistantId?: SortOrder
   }
 
-  export type SessionDataMinOrderByAggregateInput = {
+  export type FBR_ChatSessionDataMinOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
     title?: SortOrder
+    threadId?: SortOrder
     assistantId?: SortOrder
   }
 
@@ -2084,9 +2111,9 @@ export namespace Prisma {
    * Aliases for legacy arg types
    */
     /**
-     * @deprecated Use SessionDataDefaultArgs instead
+     * @deprecated Use FBR_ChatSessionDataDefaultArgs instead
      */
-    export type SessionDataArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = SessionDataDefaultArgs<ExtArgs>
+    export type FBR_ChatSessionDataArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = FBR_ChatSessionDataDefaultArgs<ExtArgs>
 
   /**
    * Batch Payload for updateMany & deleteMany & createMany
