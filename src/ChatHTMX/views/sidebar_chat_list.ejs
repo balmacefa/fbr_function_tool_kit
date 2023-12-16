@@ -4,7 +4,7 @@
   hx-post="/chat_app/htmx/session_create"
   hx-target="#chatapp___session_list_container"
   hx-trigger="click"
-  hx-swap="afterend"
+  hx-swap="afterbegin"
   hx-vals='{"userId": "user123", "title": "New Chat Title"}'
   class="flex py-3 px-3 items-center gap-3 rounded-md hover:bg-gray-500/10 transition-colors duration-200 text-white cursor-pointer text-sm mb-1 flex-shrink-0 border border-white/20"
 >
@@ -33,8 +33,6 @@
 <div
   id="chatapp___session_list_container"
   class="flex-col flex-1 overflow-y-auto border-b border-white/20"
-  hx-get="/ruta_para_obtener_chats_del_usuario"
+  hx-get="/chat_app/_userId"
   hx-trigger="load"
->
-  <!-- TODO: this need to be featch on load by htmx, so it get user's chat items links, and change main content -->
-</div>
+></div>

@@ -76,4 +76,7 @@ export class OpenAIAssistantSessionManager {
     }
 
     // Métodos adicionales pueden ser añadidos aquí
+    public getChatsByUserId(user_id: string) {
+        return [{ id: "13", title: "hola chat" }, { id: "123", title: "chat" + user_id }]
+    }
 }

@@ -40,6 +40,51 @@ export class ExpressOpenAIAssistantSessionExporter {
       res.render("chat_app", { layout: "base_layout" });
     });
 
+    this.app.get("/chat_app/:userId", async (req: Request, res: Response) => {
+      const { userId } = req.params;
+      // Aquí debes recuperar los chats del usuario utilizando tu lógica de almacenamiento
+      // Por ejemplo, supongamos que tienes una función llamada getChatsByUserId
+      const userChats = this.sessionManager.getChatsByUserId(userId);
+
+      // Luego, renderiza una vista que muestre los chats en el nav bar del sidebar
+      try {
+        let renderedContents = [];
+
+        try {
+          // Map each session to a promise that resolves to the rendered string
+          const renderPromises = userChats.map((chat) => {
+            return new Promise((resolve, reject) => {
+              res.render(
+                "sidebar_chat_item_link",
+                { title: chat.title, id: chat.id },
+                (err, html) => {
+                  if (err) {
+                    reject(err);
+                  } else {
+                    resolve(html);
+                  }
+                }
+              );
+            });
+          });
+
+          // Wait for all render promises to resolve
+          renderedContents = await Promise.all(renderPromises);
+
+          // At this point, renderedContents is an array of rendered strings
+          // You can now process or send these as needed
+          res.send(renderedContents.join(""));
+        } catch (error) {
+          // Handle any errors that occurred during rendering
+          res.status(500).send("Error rendering the pages");
+        }
+
+        res.render("sidebar_chat_item_link", { id: "123", title: "hola chat" });
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
     this.app.post(
       "/chat_app/htmx/session_create",
       (req: Request, res: Response) => {
@@ -50,8 +95,27 @@ export class ExpressOpenAIAssistantSessionExporter {
           get_task_master_assistant_options()
         );
 
-        // Renderizar el ítem de conversación con EJS y los datos de la sesión
-        res.render("sidebar_chat_item_link", { sessionData });
+        // Render the chat item using EJS and store it in a constant
+        res.render(
+          "sidebar_chat_item_link",
+          { id: sessionData.id, title: "new chat" },
+          (err, html) => {
+            if (err) {
+              // Handle the error, for example, by sending an error response
+              console.error(err);
+              res.status(500).send("Error rendering the page");
+            } else {
+              // html is the rendered content
+              const renderedContent = html;
+
+              // You can now use the renderedContent for further processing or logging
+              // ...
+
+              // Send the rendered content to the client
+              res.send(renderedContent);
+            }
+          }
+        );
       }
     );
 

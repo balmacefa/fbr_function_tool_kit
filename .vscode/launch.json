@@ -6,12 +6,10 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "node",
+      "command": "pnpm dev",
+      "name": "Run npm start",
       "request": "launch",
-      "name": "Launch Program",
-      "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}\\src\\lib_index.ts",
-      "outFiles": ["${workspaceFolder}/**/*.js"]
+      "type": "node-terminal"
     }
   ]
 }
