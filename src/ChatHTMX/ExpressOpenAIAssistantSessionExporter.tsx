@@ -136,6 +136,56 @@ export class ExpressOpenAIAssistantSessionExporter {
       }
     );
 
+    this.app.get(
+      "/chat_app/htmx/session_view/:chat_id",
+      async (req: Request, res: Response) => {
+        const { chat_id } = req.params;
+
+        const { userId, title } = req.body;
+        const sessionData = this.sessionManager.createSession(
+          userId,
+          title,
+          get_task_master_assistant_options()
+        );
+
+        // lets say we get it.
+        const threadId = "asst_TTVGhin54h5KxYETTMugb1qO";
+        await sessionData.asistant_wrap.get_or_create_assistant(threadId);
+        // them get messages
+        const chat_messages = await sessionData.asistant_wrap.get_chat_messages(
+          threadId
+        );
+
+        // TODO convert this into tailwind messages
+
+        // res.render(
+        //   "sidebar_chat_item_link",
+        //   { id: sessionData.id, title: "new chat" },
+        //   (err, html) => {
+        //     if (err) {
+        //       // Handle the error, for example, by sending an error response
+        //       console.error(err);
+        //       res.status(500).send("Error rendering the page");
+        //     } else {
+        //       // html is the rendered content
+        //       const renderedContent = html;
+
+        //       // You can now use the renderedContent for further processing or logging
+        //       // ...
+
+        //       // Send the rendered content to the client
+        //       res.send(renderedContent);
+        //     }
+        //   }
+        // );
+
+        res.render("chat_app", {
+          layout: "base_layout",
+          chat_data_info: { id: chat_id },
+        });
+      }
+    );
+
     this.app.get("/sessions/:userId", (req: Request, res: Response) => {
       const { userId } = req.params;
       const sessions = this.sessionManager.listUserSessions(userId);

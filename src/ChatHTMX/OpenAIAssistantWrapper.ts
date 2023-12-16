@@ -1,4 +1,4 @@
-import type { OpenAIClient } from "@langchain/openai";
+import { OpenAIClient } from "@langchain/openai";
 import { OpenAIToolType } from 'langchain/dist/experimental/openai_assistant/schema';
 import { AgentAction, AgentFinish, AgentStep } from "langchain/dist/schema";
 import { OpenAIAssistantRunnable } from 'langchain/experimental/openai_assistant';
@@ -26,6 +26,7 @@ class OpenAIAssistantWrapper {
     name?: string;
     instructions?: string;
     private model?: string;
+    public open_ai_client: OpenAIClient;
     // private openAIFiles: OpenAIFiles;
 
     constructor(options: AssistantOptions) {
@@ -40,6 +41,8 @@ class OpenAIAssistantWrapper {
         }
         this.name = options.name;
         this.instructions = options.instructions;
+
+        this.open_ai_client = new OpenAIClient();
         console.info("dev: run .get_or_create_assistant to start when ready! ")
     }
 
@@ -112,10 +115,14 @@ class OpenAIAssistantWrapper {
         // Method to create a new assistant
         if (assistant_id) {
             try {
+                // TODO, create a class que herede de OpenAIAssistantRunnable y agregue un metodo para 
                 this.assistant = new OpenAIAssistantRunnable({
                     assistantId: assistant_id,
-                    // asAgent: true
+                    asAgent: true
                 });
+                const assistantResponse = await this.assistant.getAssistant();
+                console.info(assistantResponse);
+
             } catch (error) {
                 console.error(error);
                 console.error('Createing a new assistant instead');
@@ -128,6 +135,7 @@ class OpenAIAssistantWrapper {
         this.assistantId = (await this.assistant.getAssistant()).id;
         console.info("dev: run .invoke(prompt_content) to start or continue a thread")
     }
+
     private async _create_assistant(): Promise<AsisType> {
         // Method to create a new assistant
         const assistant = await OpenAIAssistantRunnable.createAssistant({
@@ -137,11 +145,21 @@ class OpenAIAssistantWrapper {
             name: this.name,
             instructions: this.instructions
         });
-        return assistant;
+        const assistant_run = new OpenAIAssistantRunnable({
+            assistantId: assistant.assistantId,
+            asAgent: true
+        });
+        return assistant_run;
     }
 
+    public async get_chat_messages(threadId: string): Promise<OpenAIClient.Beta.Threads.Messages.ThreadMessagesPage> {
+        const messages = await this.open_ai_client.beta.threads.messages.list(threadId, {
+            order: "asc",
+        });
+        return messages;
+    }
 
-    public async invoke(content: string): Promise<any> {
+    public async invoke(content: string, thread_id?: string): Promise<any> {
 
         const assistant = this.assistant;
         if (!assistant) {
@@ -149,8 +167,10 @@ class OpenAIAssistantWrapper {
         }
         const assistantResponse = await assistant.invoke({
             content,
+            threadId: thread_id,
             // todo: maybe files? uploads?
         });
+
         console.log(assistantResponse);
         return assistantResponse;
         /** content.type. can be an image or a file too

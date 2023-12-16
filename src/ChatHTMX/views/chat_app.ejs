@@ -4,6 +4,7 @@
     <%- include('sidebar'); -%>
     <!--  -->
     <!-- 'main_content' -->
-    <%- include('main_content'); -%>
+    <% if (locals.chat_data_info) { %> <%- include('main_content_chat'); -%> <%
+    } else { %> <%- include('main_content_no_chat'); -%> <% } %>
   </main>
 </div>
