@@ -120,8 +120,6 @@ class OpenAIAssistantWrapper {
                     assistantId: assistant_id,
                     asAgent: true
                 });
-                const assistantResponse = await this.assistant.getAssistant();
-                console.info(assistantResponse);
 
             } catch (error) {
                 console.error(error);
@@ -152,7 +150,82 @@ class OpenAIAssistantWrapper {
         return assistant_run;
     }
 
-    public async get_chat_messages(threadId: string): Promise<OpenAIClient.Beta.Threads.Messages.ThreadMessagesPage> {
+    public async get_chat_messages(threadId: string) {
+
+        const mess = {
+            "object": "list",
+            "data": [
+                {
+                    "id": "msg_abc123",
+                    "object": "thread.message",
+                    "created_at": 1699016383,
+                    "thread_id": "thread_abc123",
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": {
+                                "value": "How does AI work? Explain it in simple terms.",
+                                "annotations": []
+                            }
+                        }
+                    ],
+                    "file_ids": [],
+                    "assistant_id": null,
+                    "run_id": null,
+                    "metadata": {}
+                },
+                {
+                    "id": "msg_abc456",
+                    "object": "thread.message",
+                    "created_at": 1699016383,
+                    "thread_id": "thread_abc123",
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": {
+                                "value": "Hello, what is AI?",
+                                "annotations": []
+                            }
+                        }
+                    ],
+                    "file_ids": [
+                        "file-abc123"
+                    ],
+                    "assistant_id": null,
+                    "run_id": null,
+                    "metadata": {}
+                },
+                {
+                    "id": "msg_abc456",
+                    "object": "thread.message",
+                    "created_at": 1699016383,
+                    "thread_id": "thread_abc123",
+                    "role": "assistant",
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": {
+                                "value": "Hello, what is AI?",
+                                "annotations": []
+                            }
+                        }
+                    ],
+                    "file_ids": [
+                        "file-abc123"
+                    ],
+                    "assistant_id": null,
+                    "run_id": null,
+                    "metadata": {}
+                }
+            ],
+            "first_id": "msg_abc123",
+            "last_id": "msg_abc456",
+            "has_more": false
+        };
+
+        return mess;
         const messages = await this.open_ai_client.beta.threads.messages.list(threadId, {
             order: "asc",
         });

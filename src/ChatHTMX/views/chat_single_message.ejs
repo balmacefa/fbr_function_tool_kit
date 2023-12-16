@@ -1,0 +1,26 @@
+<li
+  class="message <%= message.role === 'user' ? 'dark:bg-gray-700' : 'dark:bg-gray-600' %> rounded-lg shadow dark:shadow-md mb-4 last:mb-0 relative"
+>
+  <div class="message-content p-4 dark:text-gray-200">
+    <% message.content.forEach(function(content) { %> <% if(content.type ===
+    'text') { %>
+    <p class="message-text text-sm md:text-base leading-tight">
+      <span> <%= content.text.value %> </span>
+    </p>
+    <% } %>
+    <!-- Add other content type handling if necessary -->
+    <% }); %>
+  </div>
+  <div class="message-metadata absolute top-0 right-0 mt-2 mr-3">
+    <span class="timestamp text-xs dark:text-gray-400">
+      <span class="timestamp text-xs dark:text-gray-400">
+        <%= new Date(message.created_at * 1000).toLocaleTimeString([], { hour:
+        '2-digit', minute: '2-digit' }) %>
+      </span>
+      <span class="role text-xs font-semibold dark:text-gray-400 ml-1">
+        <%= message.role === 'user' ? 'User' : 'Assistant' %>
+      </span>
+    </span>
+    <!-- Add other metadata if needed -->
+  </div>
+</li>

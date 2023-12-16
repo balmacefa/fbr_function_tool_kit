@@ -181,7 +181,7 @@ export class ExpressOpenAIAssistantSessionExporter {
 
         res.render("chat_app", {
           layout: "base_layout",
-          chat_data_info: { id: chat_id },
+          chat_data_info: { id: chat_id, chat_messages },
         });
       }
     );
