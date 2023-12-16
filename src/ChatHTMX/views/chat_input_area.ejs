@@ -3,9 +3,10 @@
   class="flex-none mt-3 bottom-0 left-0 w-full border-t md:border-t-0 dark:border-white/20 md:border-transparent md:dark:border-transparent md:bg-vert-light-gradient bg-white dark:bg-gray-800 md:!bg-transparent dark:md:bg-vert-dark-gradient pt-2"
 >
   <form
+    id="chatForm"
     hx-post="/chat_app/htmx/session_view/action/new_user_message"
     hx-target="#chatlog_container"
-    hx-swap="afterbegin"
+    hx-swap="innerHTML"
     class="stretch mx-2 flex flex-row gap-3 last:mb-2 md:mx-4 md:last:mb-6 lg:mx-auto lg:max-w-2xl xl:max-w-3xl"
   >
     <input
@@ -13,11 +14,13 @@
       name="sessionId"
       value="<%= locals.chat_data_info.sessionId  %>"
     />
+
     <div class="relative flex flex-col h-full flex-1 items-stretch md:flex-col">
       <div
         class="flex flex-col w-full py-2 flex-grow md:py-3 md:pl-4 relative border border-black/10 bg-white dark:border-gray-900/50 dark:text-white dark:bg-gray-700 rounded-md shadow-[0_0_10px_rgba(0,0,0,0.10)] dark:shadow-[0_0_15px_rgba(0,0,0,0.10)]"
       >
         <textarea
+          id="textarea_input_chat"
           name="content"
           tabindex="0"
           data-id="root"

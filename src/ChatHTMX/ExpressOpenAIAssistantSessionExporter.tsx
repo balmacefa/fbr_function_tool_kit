@@ -141,35 +141,50 @@ export class ExpressOpenAIAssistantSessionExporter {
     this.app.post(
       "/chat_app/htmx/session_view/action/new_user_message",
       async (req: Request, res: Response) => {
-        const { content, sessionId } = req.body;
+        try {
+          const { content, sessionId } = req.body;
 
-        const session_data = await this.prisma_wrapper.get_session(sessionId);
+          const session_data = await this.prisma_wrapper.get_session(sessionId);
 
-        const sessionData = this.sessionManager.createSession(
-          session_data?.userId as string,
-          session_data?.title as string,
-          get_task_master_assistant_options()
-        );
+          if (!session_data) {
+            return res.status(404).send("Session not found");
+          }
 
-        await sessionData.asistant_wrap.get_or_create_assistant(
-          session_data?.threadId
-        );
-
-        const new_message = await sessionData.asistant_wrap.invoke(
-          content,
-          session_data?.threadId
-        );
-
-        if (!session_data?.threadId) {
-          // them save the threadId
-          await this.prisma_wrapper.update_session_threadId(
-            sessionId,
-            new_message.threadId
+          const sessionData = this.sessionManager.createSession(
+            session_data.userId as string,
+            session_data.title as string,
+            get_task_master_assistant_options()
           );
+
+          await sessionData.asistant_wrap.get_or_create_assistant(
+            session_data.assistantId
+          );
+
+          const new_message = await sessionData.asistant_wrap.invoke(
+            content,
+            session_data.threadId
+          );
+
+          if (!session_data.threadId) {
+            await this.prisma_wrapper.update_session_threadId(
+              sessionId,
+              new_message.threadId
+            );
+          }
+          // load all messages and replace XD!
+          // them get messages
+          const chat_messages =
+            await sessionData.asistant_wrap.get_chat_messages(
+              session_data.threadId as string
+            );
+
+          res.render("chat_chatlog_messages", {
+            chat_data_info: { chat_messages, sessionId },
+          });
+        } catch (error) {
+          console.error(error);
+          res.status(500).send("Internal Server Error");
         }
-        res.render("new_message", {
-          message: new_message,
-        });
       }
     );
   }

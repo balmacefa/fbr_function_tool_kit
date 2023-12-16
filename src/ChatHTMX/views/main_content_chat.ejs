@@ -27,7 +27,6 @@
 
 <script>
   $(document).ready(function () {
-    // Convertir Markdown a HTML
     function convertMarkdown() {
       var converter = new showdown.Converter();
       $(".markdown-content").each(function () {
@@ -35,35 +34,7 @@
         $(this).html(html);
       });
     }
-
-    // Funcionalidad del botón Enviar
-    $("#send-button").click(function () {
-      var message = $("#message-input").val();
-      console.log("Mensaje enviado:", message);
-      // Aquí iría la lógica para enviar el mensaje
-    });
-
+    // Convertir Markdown a HTML
     convertMarkdown();
   });
-
-  // TODO: use Jquery
-  // Convertir Markdown a HTML
-  function convertMarkdown() {
-    var converter = new showdown.Converter();
-    var markdownElements = document.querySelectorAll(".markdown-content");
-
-    markdownElements.forEach(function (elem) {
-      var text = elem.innerHTML;
-      var html = converter.makeHtml(text);
-      elem.innerHTML = html;
-    });
-  }
-
-  // Funcionalidad del botón Enviar
-  document.getElementById("send-button").addEventListener("click", function () {
-    var message = document.getElementById("message-input").value;
-    console.log("Mensaje enviado:", message); // Aquí iría la lógica para enviar el mensaje
-  });
-
-  window.onload = convertMarkdown;
 </script>
