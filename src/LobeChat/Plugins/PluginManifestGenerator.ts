@@ -1,7 +1,8 @@
 import type { SchemaObject } from 'openapi3-ts/oas30';
 import { ToolFunction } from "../../ToolFunction";
 import { BaseToolPlugin } from '../../ToolFunction/BaseToolPlugin';
-import { ToolDirectoryVisualization, ToolFileContent } from '../../ToolFunction/tools/Directory.tools';
+import { DirectoryToolFunctionList } from '../../ToolFunction/tools/Directory.tools';
+import { ToolExecuteGitCommand } from '../../ToolFunction/tools/Git.tools';
 
 
 
@@ -62,8 +63,8 @@ if (typeof require !== 'undefined' && require.main === module) {
         identifier: 'fbr_lobechat_01',
         version: '1.0.0',
         functions: [
-            ToolDirectoryVisualization(),
-            ToolFileContent()
+            ...DirectoryToolFunctionList,
+            ToolExecuteGitCommand(),
         ]
     });
 

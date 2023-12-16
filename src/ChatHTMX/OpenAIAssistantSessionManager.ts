@@ -9,17 +9,7 @@ interface SessionData {
     asistant_wrap_id: OpenAIAssistantWrapper['assistantId'];
 }
 
-export interface SessionDataDB{
-    userId: string;
-    title: string;
-    
-    asistant_wrap: OpenAIAssistantWrapper;
-    asistant_wrap_id: OpenAIAssistantWrapper['assistantId'];
-    
-}
-
 export class OpenAIAssistantSessionManager {
-    // TODO Use a db to manage this data
     private static instance: OpenAIAssistantSessionManager;
     private sessions: Map<string, SessionData[]>;
 
@@ -84,8 +74,5 @@ export class OpenAIAssistantSessionManager {
         return crypto.randomUUID(); // Usar UUID para generar un identificador único
     }
 
-    // Métodos adicionales pueden ser añadidos aquí
-    public getChatsByUserId(user_id: string) {
-        return [{ id: "13", title: "hola chat" }, { id: "123", title: "chat" + user_id }]
-    }
+
 }

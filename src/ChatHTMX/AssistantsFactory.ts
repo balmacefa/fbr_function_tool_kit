@@ -1,4 +1,6 @@
 import { MainUtils } from "../HostMachine";
+import { DirectoryToolFunctionList } from "../ToolFunction/tools/Directory.tools";
+import { ToolExecuteGitCommand } from "../ToolFunction/tools/Git.tools";
 import { GPT_MODELS } from "./GPTS_Codes";
 import { AssistantOptions } from "./OpenAIAssistantWrapper";
 
@@ -10,14 +12,11 @@ export function get_task_master_assistant_options(): AssistantOptions {
     const options: AssistantOptionsT = {
         model: GPT_MODELS.LAST_AND_BEST.model,
         instructions: promt,
-        name: 'TaskMaster - v1.0.0'
+        name: 'TaskMaster - v1.0.0',
+        tools_plugin: [
+            ...DirectoryToolFunctionList,
+            ToolExecuteGitCommand(),
+        ]
     };
     return options;
-
-    // const sessionManager = OpenAIAssistantSessionManager.getInstance();
-
-    // const sessionData = sessionManager.createSession('@balmacefa', 'TaskMaster', options);
-
-    // const { id, userId, title, asistant_wrap_id } = sessionData;
-    // return { id, userId, title, asistant_wrap_id };
 }
