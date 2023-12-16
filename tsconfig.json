@@ -8,6 +8,8 @@
     "moduleResolution": "node",
     // "noEmit": true,
     // "types": ["jest"],
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
     // "jsx": "react",
     "forceConsistentCasingInFileNames": true
   },
