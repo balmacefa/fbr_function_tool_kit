@@ -14,6 +14,7 @@ export enum AgentType {
  * @returns AssistantOptions based on the provided agent type.
  */
 export function CreateAssistantOptions(agentType: AgentType = AgentType.TypeScriptTodo): AssistantOptions {
+    console.log('creating agent: ', agentType)
     switch (agentType) {
         case AgentType.TaskMaster: {
             const prompt = MainUtils.read_file_from_root('src/ChatHTMX/prompts/TaskMaster.agent.promt.md').fileContent;
@@ -27,7 +28,7 @@ export function CreateAssistantOptions(agentType: AgentType = AgentType.TypeScri
         case AgentType.TypeScriptTodo: {
             const prompt = MainUtils.read_file_from_root('src/ChatHTMX/prompts/typescript_todo.agent.promt.md').fileContent;
             return {
-                model: GPT_MODELS.LAST_AND_BEST.model,
+                model: GPT_MODELS.GPT_3_5_TURBO_1106.model,
                 instructions: prompt,
                 name: 'typescript_todo Agent - v1.0.0',
                 BaseToolPlugin: BaseToolPlugin.factory_plugin("fbr_BaseToolPlugin_tools_directory_and_git")
