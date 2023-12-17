@@ -79,7 +79,7 @@ export const DirectoryStructureViewer = (): ToolFunction => {
 
     const tfn = new ToolFunction<IOInput, IOResponse>(
         'DirectoryStructureViewer',
-        'Visualize directory structure',
+        'This tool create a directory tree of the current workspace or root path',
         tool_fn,
         input_schema,
         response_schema
@@ -246,4 +246,9 @@ export const DirectoryToolFunctionList = [
     ToolCreateDirectory(),
     ToolChangeRootDirectory(),
     ToolGetRootDirectory(),
+]
+export const MinimalDirectoryToolFunctionList = [
+    DirectoryStructureViewer(),
+    TextFileReader(),
+    ToolSaveFileContent(),
 ]
