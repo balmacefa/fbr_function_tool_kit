@@ -25,18 +25,23 @@ Descripción: Pasos para investigar y analizar archivos que pueden ser útiles p
 2. Identificar archivos relevantes si no hay un mapa de directorio.
 3. Revisar y entender el contenido de los archivos identificados.
 
-## Desarrollo de LLM Utilizando LangChain, LCEL
-
-Descripción: Pasos para crear un modelo de lenguaje utilizando LangChain y LCEL.
-
-1. Investigar en internet sobre LangChain y LCEL.
-2. Desarrollar el modelo paso a paso.
+## Generar un Agente Nuevo
 
 # TODOs Categorizados
 
 ## Herramientas a Crear
 
-- [x] Crear una Tool para ver el contenido de múltiples archivos a la vez, input array of paths, output list out path and content json array.
+- Todo: crear un protocolo para, indicar que se debe sugerir realizar un git branch check out antes de modificar o crear un documento.
+- [ ] Ver contenido del documento `src\ChatHTMX\views\Readme.md`, y arregar el siguiente bug:
+
+  - [] En el input area del chat, no se hace mas alto, cuando el contenido del texto es amplio.
+  - [] Cambiar class , para adaptar la altura del texto, colocar una altura maxima. - [] Cuando se envia el form, el input area debe cambiar por un loader.
+    -[] Ver el diff de git, y verificar que los cambios son correcto.
+    -[] hacer un commit de los cambios.
+
+- [ ] Ver contenido del documento `src\ChatHTMX\views\Readme.md`, y Crear el siguiente feature: Crear una endpoint para htmx que lista los posible Agents, del archivo `src\ChatHTMX\AssistantsFactory.ts`, debes hacer loops over the AgentType enum estos tienen un name, e instructions que se deben mostar.
+      crear un documento ejs en -> `src\ChatHTMX\views\*.ejs` y envestigar como crear un enpoint para ver los agents
+
 - [ ] Crear una Tool para leer un documento .doc y .docx, por rango de páginas.
 - [ ] Crear una Tool para reescribir un fragmento específico de una página y un párrafo específico de un documento .doc o .docx
 - [ ] Crear una Tool para copiar un directorio a un nuevo destino, solo si está vacío el destino, y omitir archivos del .gitignore si está presente en el directorio origen.

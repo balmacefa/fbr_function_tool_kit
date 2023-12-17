@@ -2,7 +2,7 @@ import { Express, Request, Response } from "express";
 import expressLayouts from "express-ejs-layouts";
 import morgan from "morgan";
 import { MainUtils } from "../HostMachine";
-import { get_task_master_assistant_options } from "./AssistantsFactory";
+import { CreateAssistantOptions } from "./AssistantsFactory";
 import { FBR_GlobalPrisma } from "./DB/PrismaManager";
 import { OpenAIAssistantSessionManager } from "./OpenAIAssistantSessionManager";
 export class ExpressOpenAIAssistantSessionExporter {
@@ -67,7 +67,7 @@ export class ExpressOpenAIAssistantSessionExporter {
           const sessionData = this.sessionManager.createSession(
             userId,
             title,
-            get_task_master_assistant_options()
+            CreateAssistantOptions()
           );
 
           await sessionData.asistant_wrap.get_or_create_assistant();
@@ -111,7 +111,7 @@ export class ExpressOpenAIAssistantSessionExporter {
         const sessionData = this.sessionManager.createSession(
           session_data?.userId as string,
           session_data?.title as string,
-          get_task_master_assistant_options()
+          CreateAssistantOptions()
         );
 
         const threadId = session_data?.threadId;
@@ -153,7 +153,7 @@ export class ExpressOpenAIAssistantSessionExporter {
           const sessionData = this.sessionManager.createSession(
             session_data.userId as string,
             session_data.title as string,
-            get_task_master_assistant_options()
+            CreateAssistantOptions()
           );
 
           await sessionData.asistant_wrap.get_or_create_assistant(
