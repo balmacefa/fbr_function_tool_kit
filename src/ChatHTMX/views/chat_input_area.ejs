@@ -1,4 +1,6 @@
+<!-- TODO: can the onsubmit be a jquery trigger script instead? -->
 <!-- Chat Input Form with HTMX and Native Form Mechanisms -->
+<!-- form.onsubmit="event.preventDefault(); document.getElementById('textarea_input_chat').style.display = 'none'; document.getElementById('loadingIndicator').style.display = 'block'; this.submit();" -->
 <div
   class="flex-none mt-3 bottom-0 left-0 w-full border-t md:border-t-0 dark:border-white/20 md:border-transparent md:dark:border-transparent md:bg-vert-light-gradient bg-white dark:bg-gray-800 md:!bg-transparent dark:md:bg-vert-dark-gradient pt-2"
 >
@@ -9,13 +11,28 @@
     hx-swap="innerHTML"
     class="stretch mx-2 flex flex-row gap-3 last:mb-2 md:mx-4 md:last:mb-6 lg:mx-auto lg:max-w-2xl xl:max-w-3xl"
     hx-indicator="#loadingIndicator"
-    onsubmit="event.preventDefault(); document.getElementById('textarea_input_chat').style.display = 'none'; document.getElementById('loadingIndicator').style.display = 'block'; this.submit();"
   >
     <div id="loadingIndicator" class="hidden">
       <!-- Loading indicator for submit -->
-      <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 11 16 0A8 8 0 014 12H2z"></path>
+      <svg
+        class="animate-spin h-5 w-5"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          class="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          stroke-width="4"
+        ></circle>
+        <path
+          class="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 11 16 0A8 8 0 014 12H2z"
+        ></path>
       </svg>
     </div>
     <input

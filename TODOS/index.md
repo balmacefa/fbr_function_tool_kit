@@ -33,8 +33,15 @@ Descripci�n: Pasos para investigar y analizar archivos que pueden ser �tiles
 
 # TODO
 
-- [ ] Ver contenido del documento `src\ChatHTMX\views\Readme.md`, y Crear el siguiente feature: Crear una endpoint para htmx que lista los posible Agents, del archivo `src\ChatHTMX\AssistantsFactory.ts`, debes hacer loops over the AgentType enum estos tienen un name, e instructions que se deben mostar.
-      crear un documento ejs en -> `src\ChatHTMX\views\*.ejs` y envestigar como crear un enpoint para ver los agents
+- [ ] TODO A01 - Ver contenido del documento `src\ChatHTMX\views\Readme.md`, y Crear el siguiente feature: Crear una endpoint para htmx que lista los posible Agents, del archivo `src\ChatHTMX\AssistantsFactory.ts`, debes hacer loops over the AgentType enum estos tienen un name, e instructions que se deben mostar.
+      crear un documento ejs en -> `src\ChatHTMX\views\*.ejs`
+      Crear un enpoint para renderzar en `src\ChatHTMX\ExpressOpenAIAssistantSessionExporter.tsx`
+      Verificar con git diff todos los cambios y realizar un reporte
+
+- [ ] TODO A02 Crear 3 documentos propuesta para refactorizar `src\ChatHTMX\ExpressOpenAIAssistantSessionExporter.tsx`
+    - [ ] Subtarea 1: Identificar áreas problemáticas en el código existente y documentarlas en un archivo separado. `src\ChatHTMX\ExpressOpenAIAssistantSessionExporter\problematic_areas.txt`
+    - [ ] Subtarea 2: Proponer soluciones y mejoras para cada área problemática identificada.
+    - [ ] Subtarea 3: Crear una estructura de carpetas y archivos para la refactorización propuesta.
 
 - [ ] Crear una Tool para leer un documento .doc y .docx, por rango de p�ginas.
 - [ ] Crear una Tool para reescribir un fragmento espec�fico de una p�gina y un p�rrafo espec�fico de un documento .doc o .docx

@@ -6,7 +6,6 @@ import { CreateAssistantOptions } from "./AssistantsFactory";
 import { FBR_GlobalPrisma } from "./DB/PrismaManager";
 import { OpenAIAssistantSessionManager } from "./OpenAIAssistantSessionManager";
 export class ExpressOpenAIAssistantSessionExporter {
-  // TODO export html routes
   private app: Express;
   private sessionManager: OpenAIAssistantSessionManager;
 
