@@ -8,7 +8,16 @@
     hx-target="#chatlog_container"
     hx-swap="innerHTML"
     class="stretch mx-2 flex flex-row gap-3 last:mb-2 md:mx-4 md:last:mb-6 lg:mx-auto lg:max-w-2xl xl:max-w-3xl"
+    hx-indicator="#loadingIndicator"
+    onsubmit="event.preventDefault(); document.getElementById('textarea_input_chat').style.display = 'none'; document.getElementById('loadingIndicator').style.display = 'block'; this.submit();"
   >
+    <div id="loadingIndicator" class="hidden">
+      <!-- Loading indicator for submit -->
+      <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 11 16 0A8 8 0 014 12H2z"></path>
+      </svg>
+    </div>
     <input
       type="hidden"
       name="sessionId"
@@ -24,10 +33,9 @@
           name="content"
           tabindex="0"
           data-id="root"
-          style="height: 24px; max-height: 200px; overflow-y: hidden"
           placeholder="Send a message..."
-          class="m-0 w-full resize-none border-0 bg-transparent p-0 pr-7 focus:ring-0 focus-visible:ring-0 dark:bg-transparent pl-2 md:pl-0"
-          oninput="this.form.querySelector('button').disabled = !this.value;"
+          class="m-0 w-full resize-none border-0 bg-transparent p-0 pr-7 focus:ring-0 focus-visible:ring-0 dark:bg-transparent pl-2 md:pl-0 overflow-hidden"
+          oninput="this.style.height = 'auto'; this.style.height = (this.scrollHeight) + 'px'; this.form.querySelector('button').disabled = !this.value;"
         ></textarea>
         <button
           type="submit"
