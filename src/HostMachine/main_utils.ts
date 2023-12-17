@@ -19,7 +19,7 @@ export class MainUtils {
 
         if (MainUtils.root_path === '') {
             // Todu: change to .evn config
-            MainUtils.root_path = 'D:/FullFramework/@balmacefa/function_tool_kit';
+            MainUtils.root_path = `${process.env.MainUtilsInitRootPath}`;
         }
 
         return path.join(MainUtils.root_path, append_path);

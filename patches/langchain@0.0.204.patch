@@ -1,0 +1,17 @@
+diff --git a/dist/agents/executor.cjs b/dist/agents/executor.cjs
+index b6a2108aadd0ea07f96d939b3563cd800ebf5f12..4f8df69e78dfbb1c82035ce23786a339a79edeb7 100644
+--- a/dist/agents/executor.cjs
++++ b/dist/agents/executor.cjs
+@@ -363,10 +363,10 @@ class AgentExecutor extends base_js_1.BaseChain {
+             const { returnValues } = finishStep;
+             const additional = await this.agent.prepareForOutput(returnValues, steps);
+             if (this.returnIntermediateSteps) {
+-                return { ...returnValues, intermediateSteps: steps, ...additional };
++                return { finishStep:finishStep, ...returnValues, intermediateSteps: steps, ...additional };
+             }
+             await runManager?.handleAgentEnd(finishStep);
+-            return { ...returnValues, ...additional };
++            return { ...returnValues, ...additional, finishStep:finishStep};
+         };
+         while (this.shouldContinue(iterations)) {
+             let output;

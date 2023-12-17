@@ -160,7 +160,7 @@ export class ExpressOpenAIAssistantSessionExporter {
             session_data.assistantId
           );
 
-          const new_message = await sessionData.asistant_wrap.invoke(
+          const new_message = await sessionData.asistant_wrap.execute_agent(
             content,
             session_data.threadId
           );
@@ -175,7 +175,7 @@ export class ExpressOpenAIAssistantSessionExporter {
           // them get messages
           const chat_messages =
             await sessionData.asistant_wrap.get_chat_messages(
-              session_data.threadId as string
+              `${new_message.threadId}`
             );
 
           res.render("chat_chatlog_messages", {

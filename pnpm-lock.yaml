@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  langchain@0.0.204:
+    hash: oorxl6dz5kbi6tpojshnxu2ymm
+    path: patches/langchain@0.0.204.patch
+
 dependencies:
   '@asteasolutions/zod-to-openapi':
     specifier: ^6.3.0
@@ -58,7 +63,7 @@ dependencies:
     version: 2.0.0
   langchain:
     specifier: ^0.0.204
-    version: 0.0.204(puppeteer@21.6.0)(ws@8.14.2)
+    version: 0.0.204(patch_hash=oorxl6dz5kbi6tpojshnxu2ymm)(axios@1.6.2)(puppeteer@21.6.0)(ws@8.14.2)
   localtunnel:
     specifier: ^2.0.2
     version: 2.0.2
@@ -6680,7 +6685,7 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /langchain@0.0.204(puppeteer@21.6.0)(ws@8.14.2):
+  /langchain@0.0.204(patch_hash=oorxl6dz5kbi6tpojshnxu2ymm)(axios@1.6.2)(puppeteer@21.6.0)(ws@8.14.2):
     resolution: {integrity: sha512-fLTgPhheCE/4SXsj1C5t+txbBbVtfN9dNoKysDPxGyRUZHycSd3A+cEyn7dJJGYHZxRMc7EQgg7yffxzrM7c0A==}
     engines: {node: '>=18'}
     peerDependencies:
@@ -6843,6 +6848,7 @@ packages:
       '@langchain/community': 0.0.2(ws@8.14.2)
       '@langchain/core': 0.0.11
       '@langchain/openai': 0.0.5
+      axios: 1.6.2
       binary-extensions: 2.2.0
       expr-eval: 2.0.2
       js-tiktoken: 1.0.8
@@ -6912,6 +6918,7 @@ packages:
       - usearch
       - voy-search
     dev: false
+    patched: true
 
   /langchainhub@0.0.6:
     resolution: {integrity: sha512-SW6105T+YP1cTe0yMf//7kyshCgvCTyFBMTgH2H3s9rTAR4e+78DA/BBrUL/Mt4Q5eMWui7iGuAYb3pgGsdQ9w==}

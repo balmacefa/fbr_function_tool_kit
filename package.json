@@ -116,5 +116,10 @@
     "fastify": "^4.24.3",
     "openai": "^4.20.0",
     "openapi-client-axios": "^7.4.0"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "langchain@0.0.204": "patches/langchain@0.0.204.patch"
+    }
   }
 }

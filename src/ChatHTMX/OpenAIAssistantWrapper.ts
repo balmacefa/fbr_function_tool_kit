@@ -1,27 +1,50 @@
 import { OpenAIClient } from "@langchain/openai";
-import { OpenAIAssistantFinish, OpenAIToolType } from 'langchain/dist/experimental/openai_assistant/schema';
+import { AgentExecutor } from "langchain/agents";
 import { AgentAction, AgentFinish, AgentStep } from "langchain/dist/schema";
 import { OpenAIAssistantRunnable } from 'langchain/experimental/openai_assistant';
-import { DynamicStructuredTool, StructuredTool } from "langchain/tools";
-import { z } from "zod";
-import { ToolFunction } from "../ToolFunction";
-
-type AsisType = OpenAIAssistantRunnable<boolean, Record<string, any>>;
-type ToolsType = OpenAIToolType | StructuredTool[];
+import { StructuredTool } from "langchain/tools";
+import { BaseToolPlugin } from "../ToolFunction/BaseToolPlugin";
 
 export interface AssistantOptions {
     model: string;
     assistantId?: string;
-    tools_plugin?: ToolFunction[];
     name?: string;
     instructions?: string;
+    BaseToolPlugin?: BaseToolPlugin;
 }
+
+interface ExcutorOutput {
+    finishStep: any;
+    output: string;
+    intermediateSteps: IntermediateStep[];
+    threadId: string;
+}
+
+interface IntermediateStep {
+    action: ActionDetails;
+    observation: string;
+}
+
+interface ActionDetails {
+    tool: string;
+    toolInput: ToolInput;
+    toolCallId: string;
+    log: string;
+    runId: string;
+    threadId: string;
+}
+
+interface ToolInput {
+    directoryPath: string;
+    depth: number;
+}
+
 
 
 // TODO: create a method to export to save, and to inport save
 class OpenAIAssistantWrapper {
-    private assistant?: AsisType;
-    private tools: ToolsType;
+    private assistant: OpenAIAssistantRunnable<true, Record<string, any>> | undefined;
+    private BaseToolPlugin?: BaseToolPlugin;
     assistantId?: string;
     name?: string;
     instructions?: string;
@@ -32,85 +55,13 @@ class OpenAIAssistantWrapper {
     constructor(options: AssistantOptions) {
         this.model = options.model;
         this.assistantId = options.assistantId;
-
-        if (options.tools_plugin) {
-            this.tools = this.convertToolFunctions_to_DynamicStructuredTool_langchain(options.tools_plugin);
-        } else {
-            console.info("dev: you can .add_code_interpreter_open_ai_tool ")
-            this.tools = [];
-        }
+        this.BaseToolPlugin = options.BaseToolPlugin;
         this.name = options.name;
         this.instructions = options.instructions;
-
         this.open_ai_client = new OpenAIClient();
         console.info("dev: run .get_or_create_assistant to start when ready! ")
     }
 
-
-
-    /**
-     * Convierte la instancia en un objeto JSON.
-     * @returns {object} Representación serializable del objeto.
-     */
-    toJSON() {
-        return {
-            // assistant: this.assistant, -. this is a dynamic obj fron langchain...
-            tools: this.tools,
-            assistantId: this.assistantId,
-            name: this.name,
-            instructions: this.instructions,
-            model: this.model,
-            // Aquí puedes decidir si incluir o no otros campos
-        };
-    }
-
-    /**
-     * Convierte la instancia en una cadena legible.
-     * @returns {string} Representación en cadena del objeto.
-     */
-    toString() {
-        return `OpenAIAssistantWrapper: { 
-            Name: ${this.name}, 
-            Instructions: ${this.instructions}, 
-            Assistant ID: ${this.assistantId}, 
-            Model: ${this.model}
-        }`;
-    }
-
-
-
-    public convertToolFunctions_to_DynamicStructuredTool_langchain(toolFunctionList: ToolFunction[]): DynamicStructuredTool<any>[] {
-        // sample input: base_tool_plugin.functions
-        const list: DynamicStructuredTool<any>[] = [];
-        toolFunctionList.forEach(fnt => {
-
-            const tool_lang_chain = new DynamicStructuredTool({
-                name: fnt.name,
-                description: fnt.description,
-                schema: fnt.inputSchema ? fnt.inputSchema as any : z.object({}),
-                func: async (input: unknown): Promise<string> => {
-                    const output = await fnt.execute(input);
-                    // Si 'output' es una cadena, se devuelve directamente.
-                    if (typeof output === 'string') {
-                        return output;
-                    }
-                    // Si no es una cadena, se convierte el objeto JSON a una cadena JSON.
-                    return JSON.stringify(output);
-                    // if(output is string then rteuirn, is not convert json to json string line)
-                },
-                returnDirect: false, // This is an option that allows the tool to return the output directly
-            });
-            list.push(tool_lang_chain);
-        });
-        return list
-    }
-
-    public add_code_interpreter_open_ai_tool() {
-        const key: OpenAIClient.Beta.AssistantCreateParams.AssistantToolsCode =
-            { type: 'code_interpreter' };
-
-        this.tools.push(key as any) // TODO: fix ts error, add any to force add, 
-    }
     public async get_or_create_assistant(assistant_id?: string | undefined | null): Promise<void> {
         // Method to create a new assistant
         if (assistant_id) {
@@ -136,11 +87,11 @@ class OpenAIAssistantWrapper {
         console.info("dev: run .invoke(prompt_content) to start or continue a thread")
     }
 
-    private async _create_assistant(): Promise<AsisType> {
+    private async _create_assistant() {
         // Method to create a new assistant
         const assistant = await OpenAIAssistantRunnable.createAssistant({
             model: this.model || "gpt-4-1106-preview",
-            tools: this.tools,
+            ...(this.BaseToolPlugin ? { tools: this.BaseToolPlugin.generate_func_asistant_list() } : {}),
             asAgent: true,
             name: this.name,
             instructions: this.instructions
@@ -161,6 +112,7 @@ class OpenAIAssistantWrapper {
 
     public async invoke(content: string, thread_id?: string | null) {
 
+        // Invoke should olso execute tools
         const assistant = this.assistant;
         if (!assistant) {
             throw new Error("Dev error, forget to creat or get assistant")
@@ -169,67 +121,41 @@ class OpenAIAssistantWrapper {
         const assistantResponse = await assistant.invoke({
             content,
             ...(thread_id ? { threadId: thread_id } : {}), // Include threadId only if it's truthy
-
             // todo: maybe files? uploads?
         });
-        // console.log(assistantResponse);
-        return assistantResponse as OpenAIAssistantFinish;
-        /** content.type. can be an image or a file too
-        [
-          {
-            id: 'msg_OBH60nkVI40V9zY2PlxMzbEI',
-            thread_id: 'thread_wKpj4cu1XaYEVeJlx4yFbWx5',
-            role: 'assistant',
-            content: [
-              {
-                type: 'text',
-                text: {
-                  value: 'The result of 10 - 4 raised to the 2.7 is approximately -32.22.',
-                  annotations: []
-                }
-              }
-            ],
-            assistant_id: 'asst_RtW03Vs6laTwqSSMCQpVND7i',
-            run_id: 'run_4Ve5Y9fyKMcSxHbaNHOFvdC6',
-          }
-        ]
-        */
+        return assistantResponse;
     }
-    // public async execute_agent(input: any) {
-    //     const toolMap: Record<string, ToolsType> = {};
-    //     this.tools.forEach(tool => {
-    //         const key = (tool as StructuredTool).name;
-    //         toolMap[key] = tool;
-    //     });
-    //     if (!this.assistant) {
-    //         throw new Error("Dev error, forget to creat or get assistant")
-    //     }
-    //     let response = await this.assistant.invoke(input);
+    public async execute_agent(content: string, thread_id?: string | null) {
+        if (!this.assistant) {
+            throw new Error("Dev error, forget to creat or get assistant")
+        } else {
 
-    //     while (!(this.isAgentFinish(response))) {
-    //         if (this.isAgentAction(response)) {
+            // this.assistant.prepareForOutput = function (args:any)
 
-    //             const toolOutputs: any[] = [];
-    //             response.forEach((action: AgentAction) => {
-    //                 const toolOutput = toolMap[action.tool].invoke(action.tool_input);
-    //                 console.log(action.ssssstool, action.tool_input, toolOutput, "\n");
-    //                 toolOutputs.push({
-    //                     output: toolOutput,
-    //                     tool_call_id: action.tool_call_id
-    //                 });
-    //             });
 
-    //             response = agent.invoke({
-    //                 tool_outputs: toolOutputs,
-    //                 run_id: response[0].run_id,
-    //                 thread_id: response[0].thread_id,
-    //             });
-    //         }
-    //     }
+            const executor = AgentExecutor.fromAgentAndTools({
+                agent: this.assistant,
+                ...(this.BaseToolPlugin ? { tools: this.BaseToolPlugin.generate_func_asistant_list_lang_chain() } : { tools: [] }),
+                returnIntermediateSteps: true,
+            });
+            const response = await executor.invoke({
+                content,
+                ...(thread_id ? {
+                    id: thread_id,
+                    threadId: thread_id,
+                } : {})
+            }) as ExcutorOutput;
+            response.threadId = this.getThreadIdFromExcutorReq(response);
 
-    //     return response;
-    // }
+            return response;
 
+        }
+    }
+
+    private getThreadIdFromExcutorReq(response: ExcutorOutput) {
+
+        return response.threadId = response.finishStep.threadId;
+    }
 
     public isAgentFinish(response: any): response is AgentFinish {
         return (response as AgentFinish).returnValues !== undefined;

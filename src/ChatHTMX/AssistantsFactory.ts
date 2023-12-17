@@ -1,6 +1,5 @@
 import { MainUtils } from "../HostMachine";
-import { DirectoryToolFunctionList } from "../ToolFunction/tools/Directory.tools";
-import { ToolExecuteGitCommand } from "../ToolFunction/tools/Git.tools";
+import { BaseToolPlugin } from "../ToolFunction/BaseToolPlugin";
 import { GPT_MODELS } from "./GPTS_Codes";
 import { AssistantOptions } from "./OpenAIAssistantWrapper";
 
@@ -13,10 +12,7 @@ export function get_task_master_assistant_options(): AssistantOptions {
         model: GPT_MODELS.LAST_AND_BEST.model,
         instructions: promt,
         name: 'TaskMaster - v1.0.0',
-        tools_plugin: [
-            ...DirectoryToolFunctionList,
-            ToolExecuteGitCommand(),
-        ]
+        BaseToolPlugin: BaseToolPlugin.factory_plugin("fbr_BaseToolPlugin_tools_directory_and_git")
     };
     return options;
 }
