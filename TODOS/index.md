@@ -39,9 +39,10 @@ Descripci�n: Pasos para investigar y analizar archivos que pueden ser �tiles
       Verificar con git diff todos los cambios y realizar un reporte
 
 - [ ] TODO A02 Crear 3 documentos propuesta para refactorizar `src\ChatHTMX\ExpressOpenAIAssistantSessionExporter.tsx`
-    - [ ] Subtarea 1: Identificar áreas problemáticas en el código existente y documentarlas en un archivo separado. `src\ChatHTMX\ExpressOpenAIAssistantSessionExporter\problematic_areas.txt`
-    - [ ] Subtarea 2: Proponer soluciones y mejoras para cada área problemática identificada.
-    - [ ] Subtarea 3: Crear una estructura de carpetas y archivos para la refactorización propuesta.
+
+  - [ ] Subtarea 1: Identificar áreas problemáticas en el código existente y documentarlas en un archivo separado. `src\ChatHTMX\ExpressOpenAIAssistantSessionExporter\problematic_areas.txt`
+  - [ ] Subtarea 2: Proponer soluciones y mejoras para cada área problemática identificada.
+  - [ ] Subtarea 3: Crear una estructura de carpetas y archivos para la refactorización propuesta.
 
 - [ ] Crear una Tool para leer un documento .doc y .docx, por rango de p�ginas.
 - [ ] Crear una Tool para reescribir un fragmento espec�fico de una p�gina y un p�rrafo espec�fico de un documento .doc o .docx
@@ -52,3 +53,6 @@ Descripci�n: Pasos para investigar y analizar archivos que pueden ser �tiles
 - [ ] Review this on https://platform.openai.com/docs/actions, using the web_agent
       Multiple authentication schemas
       Actions now support multiple authentication schemas which can be set on a per-endpoint basis. This means you can have some endpoints that require authentication and some that don't.
+
+- [] Implemnetar
+  https://github.com/MarketingPipeline/Markdown-Tag

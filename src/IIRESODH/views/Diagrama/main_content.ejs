@@ -1,0 +1,52 @@
+<div class="container mx-auto p-4 h-full">
+  <!-- Grupo 3: Lista de Recursos -->
+  <div class="bg-gray-100 grid justify-items-center p-4">
+    <body>
+      Here is a mermaid diagram:
+      <pre class="mermaid h-full w-full grid justify-items-center">
+         mindmap
+  root((mindmap))
+    Origins
+      Long history
+      ::icon(fa fa-book)
+      Popularisation
+        British popular psychology author Tony Buzan
+    Research
+      On effectiveness<br/>and features
+      On Automatic creation
+        Uses
+            Creative techniques
+            Strategic planning
+            Argument mapping
+    Tools
+      Pen and paper
+      Mermaid
+    </pre>
+    </body>
+  </div>
+</div>
+
+<script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+  mermaid.initialize({ startOnLoad: true });
+
+  $(document).ready(function () {
+    // Wait for the Mermaid diagram to be rendered
+    setTimeout(function () {
+      // Selecting all node groups in the SVG and adding a click event
+      $("svg .mindmap-node").click(function () {
+        alert("Node clicked: " + $(this).text());
+      });
+
+      // Example: Change color on hover
+      $("svg .mindmap-node").hover(
+        function () {
+          $(this).find("path, circle").css("fill", "lightblue");
+        },
+        function () {
+          $(this).find("path, circle").css("fill", "");
+        }
+      );
+    }, 1000); // Adjust the timeout as necessary
+  });
+</script>

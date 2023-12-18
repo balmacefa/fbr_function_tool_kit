@@ -101,6 +101,19 @@ export class ExpressOpenAIAssistantSessionExporter {
       });
     });
 
+    this.app.get("/iiresodh/repositorio", (req: Request, res: Response) => {
+      res.render("Repositorio/index_page", {
+        layout: "base_layout",
+        ...common_data,
+      });
+    });
+    this.app.get("/iiresodh/diagramas/:id", (req: Request, res: Response) => {
+      res.render("Diagrama/index_page", {
+        layout: "base_layout",
+        ...common_data,
+      });
+    });
+
     // Redirect from "/" to "/iiresodh/"
     this.app.get("/", (req: Request, res: Response) => {
       res.redirect("/iiresodh/");
