@@ -4,10 +4,11 @@ import { AssistantCreateParams } from "openai/resources/beta/assistants/assistan
 import { z } from "zod";
 import { OpenAPISchemaGenerator } from "../OpenAPISchemaGenerator";
 import { ToolFunction } from "./ToolFunction";
-import { DirectoryToolFunctionList } from "./tools/Directory.tools";
+import { DirectoryToolFunctionList, MinimalDirectoryToolFunctionList } from "./tools/Directory.tools";
 import { ToolExecuteGitCommand } from "./tools/Git.tools";
+import { JSDocUpdater } from "./tools/UpdateJSDoc.tools";
 
-type plugin_names = 'fbr_BaseToolPlugin_tools_directory_and_git' | '2';
+type plugin_names = 'fbr_BaseToolPlugin_tools_directory_and_git' | 'fbr_tools_minimal_directory__git__ts_tools';
 export class BaseToolPlugin {
     public functions: ToolFunction[];
 
@@ -121,6 +122,8 @@ export class BaseToolPlugin {
         switch (name) {
             case 'fbr_BaseToolPlugin_tools_directory_and_git':
                 return BaseToolPlugin.fbr_BaseToolPlugin_tools_directory_and_git();
+            case 'fbr_tools_minimal_directory__git__ts_tools':
+                return BaseToolPlugin.fbr_tools_minimal_directory__git__ts_tools();
             default:
                 return BaseToolPlugin.fbr_BaseToolPlugin_tools_directory_and_git();
         }
@@ -132,6 +135,19 @@ export class BaseToolPlugin {
             functions: [
                 ...DirectoryToolFunctionList,
                 ToolExecuteGitCommand(),
+            ],
+            host: 'http://localhost:3000'
+        });
+        return plugin;
+    }
+    public static fbr_tools_minimal_directory__git__ts_tools(): BaseToolPlugin {
+        const plugin = new BaseToolPlugin({
+            identifier: 'fbr_tools_minimal_directory__git__ts_tools',
+            version: '1.0.0',
+            functions: [
+                ...MinimalDirectoryToolFunctionList,
+                ToolExecuteGitCommand(),
+                JSDocUpdater()
             ],
             host: 'http://localhost:3000'
         });

@@ -31,7 +31,7 @@ export function CreateAssistantOptions(agentType: AgentType = AgentType.TypeScri
                 model: GPT_MODELS.GPT_3_5_TURBO_1106.model,
                 instructions: prompt,
                 name: 'typescript_todo Agent - v1.0.0',
-                BaseToolPlugin: BaseToolPlugin.factory_plugin("fbr_BaseToolPlugin_tools_directory_and_git")
+                BaseToolPlugin: BaseToolPlugin.factory_plugin("fbr_tools_minimal_directory__git__ts_tools")
             } as AssistantOptions;
         }
         default:
