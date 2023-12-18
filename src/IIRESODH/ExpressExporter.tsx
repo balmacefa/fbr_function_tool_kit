@@ -50,7 +50,7 @@ export class ExpressOpenAIAssistantSessionExporter {
     console.log("....");
     // Create and configure the livereload server
     const liveReloadServer = livereload.createServer();
-    liveReloadServer.watch(["**/*.ejs"]);
+    liveReloadServer.watch(["*.ejs"]);
 
     // Use connect-livereload middleware
     this.app.use(
@@ -70,8 +70,35 @@ export class ExpressOpenAIAssistantSessionExporter {
   private setupRoutesnit() {
     // TODO: change this name of function
     // Existing route for "/iiresodh/"
+
+    const common_data = {
+      menu_list: [
+        {
+          title: "Buscador",
+          icon: "search",
+          url_path: "/iiresodh/buscador",
+        },
+        {
+          title: "Repositorio",
+          icon: "document",
+          url_path: "/iiresodh/repositorio",
+        },
+        // {
+        //   title: "Herramientas",
+        //   icon: "tools",
+        //   url_path: "/iiresodh/buscador",
+        // },
+      ],
+    };
+
     this.app.get("/iiresodh/", (req: Request, res: Response) => {
       res.render("landing_page", { layout: "base_layout" });
+    });
+    this.app.get("/iiresodh/buscador", (req: Request, res: Response) => {
+      res.render("Buscador/index_page", {
+        layout: "base_layout",
+        ...common_data,
+      });
     });
 
     // Redirect from "/" to "/iiresodh/"
