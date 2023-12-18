@@ -1,0 +1,86 @@
+<!--  -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>IIRESODH / SIAJ</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- HTMX CDN -->
+    <script src="https://unpkg.com/htmx.org"></script>
+
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.min.js"
+      integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- Showdown CDN , ths s a mardown render library, I using combined with jquery -->
+    <script src="https://cdn.jsdelivr.net/npm/showdown@1.9.1/dist/showdown.min.js"></script>
+    <!-- FontAwesome CDN -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://maxst.icons8.com/vue-static/landings/line-awesome/font-awesome-line-awesome/css/all.min.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css"
+    />
+
+    <!-- Fonts google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- class="font-['Montserrat']" -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- class="font-['Montserrat']" -->
+  </head>
+  <body class="h-full min-h-screen">
+    <!-- Header or navigation can go here -->
+    <!-- Content injected from other EJS views -->
+    
+    
+
+<div class="h-full w-full">
+  <!-- First column -->
+  <div class="flex flex-col h-full">
+    <!-- Header Content -->
+    <header class="">
+      <%- header_content %>
+    </header>
+    <main class="flex flex-row h-full w-full">
+      <aside>
+        <%- aside %>
+      </aside>
+      <article class="container mx-auto p-4">
+        <%- main_content %>
+      </div>
+      </article>
+    </main>
+  </div>
+</div>
+
+
+    <!-- Footer can go here -->
+
+    <!-- Add your scripts here -->
+  </body>
+</html>
+
+
+
+
+
+

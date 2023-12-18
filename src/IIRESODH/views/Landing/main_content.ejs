@@ -1,0 +1,103 @@
+<!--
+  Heads up! 👋
+
+  This component comes with some `rtl` classes. Please remove them if they are not needed in your project.
+-->
+
+<section class="">
+  <img src="https://scontent.fsyq3-1.fna.fbcdn.net/v/t39.30808-6/277536083_7190586281015053_3767803549504178377_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=783fdb&_nc_ohc=yvoOEYh5fTsAX_fTNSN&_nc_ht=scontent.fsyq3-1.fna&oh=00_AfCJw_qhOh6IWqPoUQbq2K3nRMkolivNMYxI-NZ2Oc7gEg&oe=658492EC" alt="Banner Image" class="w-full h-auto">
+
+
+  <div class="mx-auto  lg:flex lg:items-center lg:px-8 lg:py-20">
+    <div class="w-full text-center ltr:sm:text-left rtl:sm:text-right p-16">
+      <h1 class="text-3xl font-extrabold sm:text-5xl">
+        SAIJ
+      </h1>
+
+      <p class="mt-4 sm:text-xl/relaxed">
+        Asistente para realizar investigaciones jurídicas y ejecutar estrategias de litigio con enfoque en derechos humanos. El SAIJ utiliza la tecnología y la inteligencia artificial para construir conocimiento y las capacidades de las personas defensoras de derechos humanos y estudiantes. [fin social del producto: misión / visión]
+      </p>
+  </div>
+</section>
+
+
+<div class="p-4 my-8">
+  <div class="NavMenu w-full grid grid-cols-1 md:grid-cols-2 gap-8">
+    <a href="/iiresodh/buscador" class="GBuscador w-full h-48 relative block">
+      <div class=" w-full h-full absolute bg-lime-300"></div>
+      <div class="Buscador w-40 h-10 absolute left-8 top-8 text-black text-xl font-bold">Buscador<br/><br/></div>
+      <div class=" w-48 absolute left-8 top-24 text-neutral-600 text-xs font-bold">Permite localizar Documentos Jurídicos, Jurisprudencia.<br/><br/></div>
+    </a>
+
+    <a href="/iiresodh/repositorio" class="GRepo w-full h-48 relative block">
+      <div class="Rectangle2035 w-full h-full absolute bg-fuchsia-200"></div>
+      <div class=" w-48 absolute left-8 top-24 text-neutral-600 text-xs font-bold">Repositorio de Procedimientos y Formatos de Actividades jurídicas estandarizadas<br/><br/></div>
+      <div class="Repositorio w-48 absolute left-8 top-8 text-black text-xl font-bold">Repositorio</div>
+    </a>
+
+    <a href="/iiresodh/" class="GSysTools w-full h-48 relative block">
+      <div class=" w-full h-full absolute bg-yellow-300"></div>
+      <div class=" w-48 absolute left-8 top-28 text-neutral-600 text-xs font-bold">Resumir documentos, sintetizar, validar documentos<br/></div>
+      <div class=" w-48 absolute left-8 top-8 text-black text-xl font-bold">Herramientas<br/>de sistematización</div>
+    </a>
+
+    <a href="/iiresodh/" class="GSysTools w-full h-48 relative block">
+      <div class=" w-full h-full absolute bg-violet-200"></div>
+      <div class=" w-48 absolute left-8 top-28 text-neutral-600 text-xs font-bold">Resumir documentos, sintetizar, validar documentos<br/></div>
+      <div class=" w-48 absolute left-8 top-8 text-black text-xl font-bold">Herramientas<br/>de sistematización</div>
+    </a>
+  </div>
+</div>
+
+
+  <!-- Grupo 3: Lista de Recursos -->
+  <div class="bg-gray-100 grid justify-items-center p-4">
+    <body>
+      Here is a mermaid diagram:
+      <pre class="mermaid h-full w-full grid justify-items-center">
+         mindmap
+  root((mindmap))
+    Origins
+      Long history
+      ::icon(fa fa-book)
+      Popularisation
+        British popular psychology author Tony Buzan
+    Research
+      On effectiveness<br/>and features
+      On Automatic creation
+        Uses
+            Creative techniques
+            Strategic planning
+            Argument mapping
+    Tools
+      Pen and paper
+      Mermaid
+    </pre>
+    </body>
+  </div>
+</div>
+
+<script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+  mermaid.initialize({ startOnLoad: true });
+
+  $(document).ready(function () {
+    // Wait for the Mermaid diagram to be rendered
+    setTimeout(function () {
+      // Selecting all node groups in the SVG and adding a click event
+      $("svg .mindmap-node").click(function () {
+        alert("Node clicked: " + $(this).text());
+      });
+
+      // Example: Change color on hover
+      $("svg .mindmap-node").hover(
+        function () {
+          $(this).find("path, circle").css("fill", "lightblue");
+        },
+        function () {
+          $(this).find("path, circle").css("fill", "");
+        }
+      );
+    }, 1000); // Adjust the timeout as necessary
+  });
+</script>

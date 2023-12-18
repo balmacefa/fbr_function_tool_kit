@@ -56,3 +56,4 @@ Descripci�n: Pasos para investigar y analizar archivos que pueden ser �tiles
 
 - [] Implemnetar
   https://github.com/MarketingPipeline/Markdown-Tag
+- [] GPT HELPs tools common thinking -> Pointing out the correct usage of

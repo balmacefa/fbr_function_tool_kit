@@ -1,27 +1,11 @@
-<!--  -->
+<!--  < % code % >
+... which is code that is evaluated but not printed out. -->
+<% var header_content = include('../components/header'); %>
+<% var aside = include('../components/side_menu'); %>
+<% var main_content = include('main_content'); %>
 
-<div
-  id="src\IIRESODH\views\landing_page.ejs"
-  class="h-full w-full landing_page bg-slate-200"
->
-  <!-- First column -->
-  <div class="flex flex-col h-full">
-    <!-- Content for the first column -->
-    <header class="">
-      <!-- Header Content -->
-      <%- include('../components/header') %>
-    </header>
-    <main class="flex flex-row h-full w-full">
-      <aside class="">
-        <!-- Menu  -->
-        <%- include('../components/side_menu') %>
-      </aside>
-      <article class="grow p-4">
-        <!-- this is left to rifgth drection -->
-        <%- include('main_content') %>
-      </article>
-    </main>
-  </div>
-
-  <!-- Second, growing column -->
-</div>
+<%- include('../Layouts/index', {
+  header_content: header_content,
+  aside: aside,
+  main_content: main_content,
+}) %>

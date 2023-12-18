@@ -1,12 +1,10 @@
-import connectLivereload from "connect-livereload";
 import { Express, Request, Response } from "express";
-import expressLayouts from "express-ejs-layouts";
-import livereload from "livereload";
 import morgan from "morgan";
 import { CreateAssistantOptions } from "../ChatHTMX/AssistantsFactory";
 import { FBR_GlobalPrisma } from "../ChatHTMX/DB/PrismaManager";
 import { OpenAIAssistantSessionManager } from "../ChatHTMX/OpenAIAssistantSessionManager";
 import { MainUtils } from "../HostMachine";
+import { GlobalCommons, GlobalCommons_ui_data } from "./UI_TYPE";
 
 /**
  * Resumen del archivo ExpressOpenAIAssistantSessionExporter.tsx
@@ -35,31 +33,13 @@ export class ExpressOpenAIAssistantSessionExporter {
 
   private prisma_wrapper = FBR_GlobalPrisma.getInstance();
 
-  constructor(args: { app: Express }) {
+  constructor(args: { app: Express, views_drc: string }) {
     this.app = args.app;
     this.sessionManager = OpenAIAssistantSessionManager.getInstance();
 
-    // Use expressLayouts middleware
-    this.app.use(expressLayouts);
-
     // TODO: add dev mode check
     // Set the directory for the views
-    const views_drc = MainUtils.root_directory("src/IIRESODH/views");
-    this.app.set("views", views_drc);
-
-    console.log("....");
-    // Create and configure the livereload server
-    const liveReloadServer = livereload.createServer();
-    liveReloadServer.watch(["*.ejs"]);
-
-    // Use connect-livereload middleware
-    this.app.use(
-      connectLivereload({
-        src: views_drc,
-        port: 3000,
-      })
-    );
-    console.log("....");
+    this.app.set("views", args.views_drc);
 
     // Set the view engine to EJS
     this.app.set("view engine", "ejs");
@@ -67,73 +47,27 @@ export class ExpressOpenAIAssistantSessionExporter {
     this.setupRoutes();
   }
 
-  private setupRoutesnit() {
-    // TODO: change this name of function
-    // Existing route for "/iiresodh/"
-
-    const common_data = {
-      menu_list: [
-        {
-          title: "Buscador",
-          icon: "search",
-          url_path: "/iiresodh/buscador",
-        },
-        {
-          title: "Repositorio",
-          icon: "document",
-          url_path: "/iiresodh/repositorio",
-        },
-        // {
-        //   title: "Herramientas",
-        //   icon: "tools",
-        //   url_path: "/iiresodh/buscador",
-        // },
-      ],
-    };
-
-    this.app.get("/iiresodh/", (req: Request, res: Response) => {
-      res.render("landing_page", { layout: "base_layout" });
-    });
-    this.app.get("/iiresodh/buscador", (req: Request, res: Response) => {
-      res.render("Buscador/index_page", {
-        layout: "base_layout",
-        ...common_data,
-      });
-    });
-
-    this.app.get("/iiresodh/repositorio", (req: Request, res: Response) => {
-      res.render("Repositorio/index_page", {
-        layout: "base_layout",
-        ...common_data,
-      });
-    });
-    this.app.get("/iiresodh/diagramas/:id", (req: Request, res: Response) => {
-      res.render("Diagrama/index_page", {
-        layout: "base_layout",
-        ...common_data,
-      });
-    });
-
-    // Redirect from "/" to "/iiresodh/"
-    this.app.get("/", (req: Request, res: Response) => {
-      res.redirect("/iiresodh/");
-    });
-
-    // 404 Error Handler
-    this.app.use((req: Request, res: Response) => {
-      res.status(404).send("Page not found");
-      // Alternatively, you can render a custom 404 page if you have one
-      // res.status(404).render("404.page", { layout: "error_layout" });
-    });
-  }
   private setupRoutes() {
     this.setupRoutesnit();
+    this.setupChatRoutes();
+  }
+  private setupChatRoutes() {
+    this.app.get("/iiresodh/chat_app", (req: Request, res: Response) => {
+      // const { userId, title, options } = req.body;
+      // const sessionData = this.sessionManager.createSession(
+      //   userId,
+      //   title,
+      //   options as AssistantOptions
+      // );
+      // res.json(sessionData);
 
-    this.app.get("/iiresodh/", (req: Request, res: Response) => {
-      res.render("landing.page", { layout: "base_layout" });
+      // Adding /chat_app route
+      // Render a view for the /chat_app route
+      res.render("ChatApp/index_page", { ...this.get_ui_common_data(),});
     });
 
-    this.app.get("/chat_app/:userId", async (req: Request, res: Response) => {
+    // This are chat related functons - debe ser heredadas, se puede hacer o
+    this.app.get("/iiresodh/chat_app/:userId", async (req: Request, res: Response) => {
       try {
         const { userId } = req.params;
         // Aquí debes recuperar los chats del usuario utilizando tu lógica de almacenamiento
@@ -142,7 +76,7 @@ export class ExpressOpenAIAssistantSessionExporter {
         const userChats = await this.prisma_wrapper.get_user_sessions(userId);
 
         // Luego, renderiza una vista que muestre los chats en el nav bar del sidebar
-        res.render("sidebar_chat_item_link_loop", { userChats: userChats });
+        res.render("ChatApp/sidebar_chat_item_link_loop", { userChats: userChats, ...this.get_ui_common_data(), });
       } catch (error) {
         console.error(error);
         res.status(500).send("Server error occurred");
@@ -216,17 +150,58 @@ export class ExpressOpenAIAssistantSessionExporter {
             await sessionData.asistant_wrap.get_chat_messages(threadId);
 
           res.render("chat_app", {
-            layout: "base_layout",
+            layout: "ChatApp/base_layout",
+            ...this.get_ui_common_data(),
             chat_data_info: { chat_messages, sessionId },
           });
         } else {
           res.render("chat_app", {
-            layout: "base_layout",
+            layout: "ChatApp/base_layout",
+            ...this.get_ui_common_data(),
             chat_data_info: { chat_messages: { data: [] }, sessionId },
           });
         }
       }
     );
+  }
+
+  public get_ui_common_data():GlobalCommons {
+
+    return {...GlobalCommons_ui_data };
+  }
+  
+  private setupRoutesnit() {
+    // TODO: change this name of function
+    // Existing route for "/iiresodh/"
+
+
+    this.app.get("/iiresodh/", (req: Request, res: Response) => {
+      res.render("Landing/index_page", {  ...this.get_ui_common_data(), });
+    });
+    this.app.get("/iiresodh/buscador", (req: Request, res: Response) => {
+      res.render("Buscador/index_page", {
+        
+        ...this.get_ui_common_data(),
+      });
+    });
+
+    this.app.get("/iiresodh/repositorio", (req: Request, res: Response) => {
+      res.render("Repositorio/index_page", {
+        
+        ...this.get_ui_common_data(),
+      });
+    });
+    this.app.get("/iiresodh/diagramas/:id", (req: Request, res: Response) => {
+      res.render("Diagrama/index_page", {
+        
+        ...this.get_ui_common_data(),
+      });
+    });
+
+    // Redirect from "/" to "/iiresodh/"
+    this.app.get("/", (req: Request, res: Response) => {
+      res.redirect("/iiresodh/");
+    });
   }
 
   // Métodos adicionales para manejar otras funcionalidades pueden ser añadidos aquí
@@ -249,12 +224,13 @@ export class ExpressOpenAIAssistantSessionExporter {
       );
 
       app.use(express.json());
+      const views_drc = MainUtils.root_directory("src/IIRESODH/views");
       app.use(express.urlencoded({ extended: true }));
       // Initialize all Express tool exporter functionalities
       const express_exporter = new ExpressOpenAIAssistantSessionExporter({
         app: app,
+        views_drc
       });
-      express_exporter.setupRoutes();
 
       // Start the server
       const port = 3000; // Replace with your desired port
