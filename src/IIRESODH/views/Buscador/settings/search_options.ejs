@@ -1,0 +1,68 @@
+<!-- Static content for search-options -->
+<div id="search-options" class="tab-content hidden">
+  <div class="mb-6">
+    <!-- Search By -->
+    <div class="mb-4">
+      <label class="block text-gray-700 text-sm font-bold mb-2" for="search-by">
+        Buscar por:
+      </label>
+      <select
+        id="search-by"
+        class="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+      >
+        <option value="header">Encabezado</option>
+        <option value="title">Título</option>
+        <option value="content">Contenido</option>
+        <!-- Additional options -->
+      </select>
+    </div>
+
+    <!-- Sort By -->
+    <div class="mb-4">
+      <label class="block text-gray-700 text-sm font-bold mb-2" for="sort-by">
+        Ordenar por:
+      </label>
+      <select
+        id="sort-by"
+        class="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+      >
+        <option>Relevancia</option>
+        <option value="relevant">Relevancia</option>
+        <option value="date">Fecha</option>
+        <!-- Additional options -->
+      </select>
+    </div>
+
+    <!-- Date Range -->
+    <div class="flex flex-wrap -mx-3 mb-6">
+      <!-- Start Date -->
+      <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+        <label
+          class="block text-gray-700 text-sm font-bold mb-2"
+          for="start-date"
+        >
+          Fecha de inicio:
+        </label>
+        <input
+          class="appearance-none block w-full bg-white text-gray-700 border border-gray-300 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+          id="start-date"
+          type="date"
+        />
+      </div>
+      <!-- End Date -->
+      <div class="w-full md:w-1/2 px-3">
+        <label
+          class="block text-gray-700 text-sm font-bold mb-2"
+          for="end-date"
+        >
+          Fecha de fin:
+        </label>
+        <input
+          class="appearance-none block w-full bg-white text-gray-700 border border-gray-300 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+          id="end-date"
+          type="date"
+        />
+      </div>
+    </div>
+  </div>
+</div>

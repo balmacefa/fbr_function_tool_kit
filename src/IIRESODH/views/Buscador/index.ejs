@@ -1,0 +1,69 @@
+<div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col">
+  <form>
+    <div class="mb-4">
+      <input
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker"
+        id="search"
+        type="text"
+        placeholder="Buscar..."
+      />
+
+      <button
+        class="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        type="button"
+      >
+        Enviar
+      </button>
+    </div>
+  </form>
+  <div class="mb-6">
+    <div class="flex items-center justify-between">
+      <button class="text-black tab-button" data-tab="results">
+        Resultados
+      </button>
+      <button class="text-black tab-button" data-tab="category">
+        País y Categoría
+      </button>
+      <button class="text-black tab-button" data-tab="search-options">
+        Opciones de Búsqueda
+      </button>
+      <button class="text-black tab-button" data-tab="advanced-settings">
+        Ajustes Avanzados
+      </button>
+    </div>
+  </div>
+  <div id="tab_content" class="border-t border-blue-500">
+    <%- include('settings/index' ) %>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function () {
+    // Set the default tab to 'results'
+    $("#results").removeClass("hidden");
+    $(".tab-button[data-tab='results']").addClass("active text-blue-500");
+
+    $(".tab-button").click(function () {
+      var tabName = $(this).data("tab");
+
+      // Hide all tab contents
+      $(".tab-content").addClass("hidden");
+      // Show the selected tab content
+      $("#" + tabName).removeClass("hidden");
+
+      // Remove active and text-blue-500 classes from all tab buttons
+      $(".tab-button").removeClass("active text-blue-500");
+      // Add active class to the clicked tab button
+      $(this).addClass("active");
+
+      // Toggle the text-blue-500 class for the active tab
+      if (tabName === "advanced-settings") {
+        $(this).addClass("text-blue-500");
+      } else {
+        $(".tab-button[data-tab='advanced-settings']").removeClass(
+          "text-blue-500"
+        );
+      }
+    });
+  });
+</script>

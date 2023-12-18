@@ -1,0 +1,95 @@
+<div id="category" class="tab-content hidden">
+  <!-- Classification -->
+  <div class="mb-6">
+    <span class="text-gray-700 text-sm font-bold mb-2">Clasificación:</span>
+    <div class="mt-2">
+      <% if (locals.classifications)
+      locals.classifications.forEach(function(classification) { %>
+      <label class="inline-flex items-center">
+        <input
+          type="checkbox"
+          class="form-checkbox"
+          name="classification[]"
+          value="<%= classification.value %>"
+        />
+        <span class="ml-2"><%= classification.name %></span>
+      </label>
+      <% }); %>
+    </div>
+  </div>
+
+  <!-- Country -->
+  <div class="mb-6">
+    <span class="text-gray-700 text-sm font-bold mb-2">País:</span>
+    <div class="mt-2">
+      <% if(locals.countries) locals.countries.forEach(function(country) { %>
+      <label class="inline-flex items-center">
+        <input
+          type="checkbox"
+          class="form-checkbox"
+          name="country[]"
+          value="<%= country.value %>"
+        />
+        <span class="ml-2"><%= country.name %></span>
+      </label>
+      <% }); %>
+    </div>
+  </div>
+
+  <!-- Categories -->
+  <div class="mb-6">
+    <span class="text-gray-700 text-sm font-bold mb-2">Categorías:</span>
+    <div class="mt-2">
+      <% if(locals.categories) locals.categories.forEach(function(category) { %>
+      <label class="inline-flex items-center">
+        <input
+          type="checkbox"
+          class="form-checkbox"
+          name="categories[]"
+          value="<%= category.value %>"
+        />
+        <span class="ml-2"><%= category.name %></span>
+      </label>
+      <% }); %>
+    </div>
+  </div>
+
+  <!-- Sub-Categories 1 -->
+  <div class="mb-6">
+    <span class="text-gray-700 text-sm font-bold mb-2">Sub-Categorías 1:</span>
+    <div class="mt-2">
+      <%
+      if(locals.subCategories1)locals.subCategories1.forEach(function(subCategory1)
+      { %>
+      <label class="inline-flex items-center">
+        <input
+          type="checkbox"
+          class="form-checkbox"
+          name="subCategories1[]"
+          value="<%= subCategory1.value %>"
+        />
+        <span class="ml-2"><%= subCategory1.name %></span>
+      </label>
+      <% }); %>
+    </div>
+  </div>
+
+  <!-- Sub-Categories 2 -->
+  <div class="mb-6">
+    <span class="text-gray-700 text-sm font-bold mb-2">Sub-Categorías 2:</span>
+    <div class="mt-2">
+      <% if(locals.subCategories2)
+      locals.subCategories2.forEach(function(subCategory2) { %>
+      <label class="inline-flex items-center">
+        <input
+          type="checkbox"
+          class="form-checkbox"
+          name="subCategories2[]"
+          value="<%= subCategory2.value %>"
+        />
+        <span class="ml-2"><%= subCategory2.name %></span>
+      </label>
+      <% }); %>
+    </div>
+  </div>
+</div>

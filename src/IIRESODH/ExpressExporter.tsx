@@ -1,5 +1,7 @@
+import connectLivereload from "connect-livereload";
 import { Express, Request, Response } from "express";
 import expressLayouts from "express-ejs-layouts";
+import livereload from "livereload";
 import morgan from "morgan";
 import { CreateAssistantOptions } from "../ChatHTMX/AssistantsFactory";
 import { FBR_GlobalPrisma } from "../ChatHTMX/DB/PrismaManager";
@@ -40,8 +42,24 @@ export class ExpressOpenAIAssistantSessionExporter {
     // Use expressLayouts middleware
     this.app.use(expressLayouts);
 
+    // TODO: add dev mode check
     // Set the directory for the views
-    this.app.set("views", MainUtils.root_directory("src/IIRESODH/views"));
+    const views_drc = MainUtils.root_directory("src/IIRESODH/views");
+    this.app.set("views", views_drc);
+
+    console.log("....");
+    // Create and configure the livereload server
+    const liveReloadServer = livereload.createServer();
+    liveReloadServer.watch(["**/*.ejs"]);
+
+    // Use connect-livereload middleware
+    this.app.use(
+      connectLivereload({
+        src: views_drc,
+        port: 3000,
+      })
+    );
+    console.log("....");
 
     // Set the view engine to EJS
     this.app.set("view engine", "ejs");
@@ -189,6 +207,7 @@ export class ExpressOpenAIAssistantSessionExporter {
       app.use(
         morgan(":method :url :status :res[content-length] - :response-time ms")
       );
+
       app.use(express.json());
       app.use(express.urlencoded({ extended: true }));
       // Initialize all Express tool exporter functionalities

@@ -1,5 +1,29 @@
-<%- include('components/side_menu', {menu_list:[ { title: "Buscador", icon:
-"search" },{ title: "Repositoriosss", icon: "document" }, { title:
-"Herramientas", icon: "tools" }]}) %>
 <!--  -->
-<%- include('components/browser_sync') %>
+
+<div
+  id="src\IIRESODH\views\landing_page.ejs"
+  class="h-full h-screen w-full landing_page bg-slate-200"
+>
+  <!-- First column -->
+  <div class="flex flex-col h-full">
+    <!-- Content for the first column -->
+    <header class="">
+      <!-- Header Content -->
+      Header Contenssssss
+    </header>
+    <main class="flex flex-row h-full w-full">
+      <aside class="">
+        <!-- Menu  -->
+        <%- include('components/side_menu', {menu_list:[ { title: "Buscador",
+        icon: "search" },{ title: "Repositorio", icon: "document" }, { title:
+        "Herramientas", icon: "tools" }]}) %>
+      </aside>
+      <article class="grow p-4">
+        <!-- this is left to rifgth drection -->
+        <%- include('Buscador/index') %>
+      </article>
+    </main>
+  </div>
+
+  <!-- Second, growing column -->
+</div>
