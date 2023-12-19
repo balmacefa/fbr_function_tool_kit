@@ -1,9 +1,5 @@
 // This file contains type definitions shred between UI and Backend
 
-import { SLUGS } from "../collections/Constants";
-import { TesauroDerechoInternacional } from "./payload-types-copy";
-
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface DocumentLangChain<Metadata extends Record<string, any> = Record<string, any>> {
     pageContent: string;

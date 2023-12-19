@@ -14,5 +14,7 @@ module.exports = {
     "@typescript-eslint/no-unused-vars": "off",
     // ... other rules ...
     "@typescript-eslint/no-var-requires": "off",
+    "@typescript-eslint/consistent-type-definitions": "off",
+
   },
 };
