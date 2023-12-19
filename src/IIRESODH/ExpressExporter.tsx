@@ -8,9 +8,9 @@ import { GlobalCommons, GlobalCommons_ui_data } from "./UI_TYPE";
 import { register_routes_buscador } from "./routes/buscador_post";
 
 /**
- * Resumen del archivo ExpressOpenAIAssistantSessionExporter.tsx
+ * Resumen del archivo ExpressExporter.tsx
  *
- * - Clase: ExpressOpenAIAssistantSessionExporter
+ * - Clase: ExpressExporter
  * - Utiliza Express para manejar rutas y renderizar vistas
  * - Configura rutas GET y POST para el manejo de sesiones de chat
  * - Utiliza un ORM Prisma para la gesti�n de sesiones de usuario
@@ -28,7 +28,7 @@ import { register_routes_buscador } from "./routes/buscador_post";
  *   - Correcciones sugeridas para mejorar el manejo de rutas y vistas
  *   - Creación de sesiones de chat y gestión de mensajes
  */
-export class ExpressOpenAIAssistantSessionExporter {
+export class ExpressExporter {
   private app: Express;
   private sessionManager: OpenAIAssistantSessionManager;
 
@@ -232,7 +232,7 @@ export class ExpressOpenAIAssistantSessionExporter {
       const views_drc = MainUtils.root_directory("src/IIRESODH/views");
       app.use(express.urlencoded({ extended: true }));
       // Initialize all Express tool exporter functionalities
-      const express_exporter = new ExpressOpenAIAssistantSessionExporter({
+      const express_exporter = new ExpressExporter({
         app: app,
         views_drc
       });
@@ -253,7 +253,7 @@ export class ExpressOpenAIAssistantSessionExporter {
 if (typeof require !== "undefined" && require.main === module) {
   (() => {
     const express_server =
-      ExpressOpenAIAssistantSessionExporter.default_server();
+      ExpressExporter.default_server();
 
     // Import Inquirer within the async function if it's not already imported
     // TODO: Update the swagger registry and routes with the ngrok URL

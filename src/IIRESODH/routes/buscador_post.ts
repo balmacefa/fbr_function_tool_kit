@@ -30,30 +30,29 @@ export const register_routes_buscador = (app: Express) => {
     // Define the Zod schema for SelectedValuesType
     const inputSchema = z.object({
         search_filters: z.object({
-            searchText: z.string(),
-            highlight: z.boolean(),
-            searchField: searchFieldListSchema,
-            indexSize: chunkSizeValueSchema
+            searchText: z.string().default(''),
+            indexSize: chunkSizeValueSchema.default('0').transform(Number),
+            highlight: z.boolean().default(false),
+            searchField: searchFieldListSchema.default('content')
         }),
         sorting_options: z.object({
-            order_by: orderByListSchema,
-            datetime_from: z.string(),
-            datetime_to: z.string()
-        }),
+            order_by: orderByListSchema.default(''),
+            datetime_from: z.string().default(''),
+            datetime_to: z.string().default('')
+        }).default({}),
         filter_options: z.object({
-            classification: tesauroDerechoInternacionalClassificationSchema.or(z.literal('')),
-            source_org: z.string(),
-            country: z.string(),
-            category: z.string(),
-            sub_category_1: z.string(),
-            sub_category_2: z.literal('')
-        }),
+            classification: tesauroDerechoInternacionalClassificationSchema.or(z.literal('')).default(''),
+            source_org: z.string().default(''),
+            country: z.string().default(''),
+            category: z.string().default(''),
+            sub_category_1: z.string().default(''),
+            sub_category_2: z.literal('').default('')
+        }).default({}),
         page_options: z.object({
-            current_page: z.number(),
-            hits_limit: z.number()
-        })
+            current_page: z.number().default(1),
+            hits_limit: z.number().default(10)
+        }).default({})
     });
-
     // Export the TypeScript type inferred from the Zod schema
     type inputSchemaType = z.infer<typeof inputSchema>;
 
@@ -61,9 +60,13 @@ export const register_routes_buscador = (app: Express) => {
         "/iiresodh/buscador/nueva_consulta",
         async (req: Request, res: Response) => {
             try {
-                const validationResult = inputSchema.safeParse(req.body);
+                const pre_processed_input = convertToNestedObject(req.body);
+                const validationResult = inputSchema.safeParse(pre_processed_input);
                 if (!validationResult.success) {
-                    return { status: 400, response: { error: 'Invalid input', details: validationResult.error } };
+                    const msg = { status: 400, response: { error: 'Invalid input', details: validationResult.error } };
+
+                    res.status(msg.status).send(msg);
+
                 } else {
 
 
@@ -79,6 +82,7 @@ export const register_routes_buscador = (app: Express) => {
                         hits = await indexer.tesaurio_search(input);
                     } catch (error) {
                         // payload.logger.error(error);
+                        console.error(error);
                         return res.status(500).json({ message: 'Internal Server Error' });
                     }
 
@@ -95,15 +99,15 @@ export const register_routes_buscador = (app: Express) => {
                         prevPage: null,
                     };
 
-                    if (input.search_filters.highlight) {
-                        try {
-                            const guided_reading: Document[] = await indexer.gen_guided_reading(query_text, hits);
-                            paginated_response.hits = guided_reading;
-                        } catch (error) {
-                            // payload.logger.error(error);
-                            return res.status(500).json({ message: 'Internal Server Error' });
-                        }
-                    }
+                    // if (input.search_filters.highlight) {
+                    //     try {
+                    //         const guided_reading: Document[] = await indexer.gen_guided_reading(query_text, hits);
+                    //         paginated_response.hits = guided_reading;
+                    //     } catch (error) {
+                    //         // payload.logger.error(error);
+                    //         return res.status(500).json({ message: 'Internal Server Error' });
+                    //     }
+                    // }
 
                     // render the htmx 
                     // inputs are valid, perform the search

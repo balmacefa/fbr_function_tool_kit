@@ -26,13 +26,15 @@
   </div>
   
   </form>
-  <div
-    id="search_hits_content"
-    class="border-t border-blue-500 w-full flex-col"
-  >
   
-    <%- include('one_hit' ) %> <%- include('one_hit' ) %>
-  </div>
+  <!-- THIS contains render of hits_log  -->
+  <div
+  id="search_hits_content"
+  class="border-t border-blue-500 w-full flex-col"
+  >
+</div>
+<!-- THIS contains render of hits_log  -->
+
 </div>
 
 <script>
@@ -42,12 +44,12 @@
     $(".tab-button[data-tab='results']").addClass("active text-blue-500");
 
     $(".tab-button").click(function () {
-      var tabName = $(this).data("tab");
+      var tabName = "#" + $(this).data("tab");
 
       // Hide all tab contents
       $(".tab-content").addClass("hidden");
       // Show the selected tab content
-      $("#" + tabName).removeClass("hidden");
+      $(tabName).removeClass("hidden");
 
       // Remove active and text-blue-500 classes from all tab buttons
       $(".tab-button").removeClass("active text-blue-500");

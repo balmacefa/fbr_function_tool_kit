@@ -1,61 +1,18 @@
-<!-- This is an updated one_hit.ejs file -->
-<div class="OneHit flex flex-col max-w-full mt-4 bg-white shadow-lg rounded-lg overflow-hidden">
-  <div class="Header p-4 justify-center items-start inline-flex">
-    <div class="w-10 h-5 mr-2 text-neutral-500 text-lg font-bold font-['Montserrat']">
-      <%= locals.headerNumber %>
-    </div>
-    <div class="text-center text-xs font-bold font-['Montserrat']">
-      <%= locals.headerText %>
-    </div>
-  </div>
-
-  <div class="Content">
-    <div class="w-full text-black font-normal font-['Montserrat'] leading-tight tracking-wide swti">
-      <%= locals.mainContent %>
-    </div>
-
-    <div class="p-4 w-full text-gray-600 text-sm font-normal font-['Montserrat'] leading-tight tracking-wide">
-      <%= locals.footerContent %>
-    </div>
-  </div>
-
-  <div class="InfoFooter grid justify-items-center py-3">
-    <div class="space-y-2">
-      <div class="flex justify-end items-baseline space-x-4 italic">
-        <!-- Links and other content -->
-      </div>
-    </div>
-
-    <div class="text-gray-600 text-xs font-normal font-['Roboto'] leading-none tracking-wide">
-      <%= locals.dateInfo %>
-    </div>
-  </div>
-</div>
-
-
-
-
 <!-- This is a one_hit.ejs file -->
-<!-- TODO: change sample content to .ejs variable injection from locals.* variable names -->
-<!-- TODO: add UI settings for jquery swti class on content tracking-wide -->
-<!-- TODO: make the as a card with chadows-->
-<div class="OneHit flex flex-col max-w-full   mt-4">
+
+<div class="OneHit flex flex-col max-w-full  border-y border-blue-500  mt-4 p-y-2 border-y boder">
   <div
     class="Header p-4  justify-center items-start inline-flex"
   >
     <div
       class="w-10 h-5 mr-2 text-neutral-500 text-lg font-bold font-['Montserrat']"
     >
-      02.
+      <%= locals.headerNumber %>.
     </div>
     <div
       class="text-center  text-xs font-bold font-['Montserrat']"
     >
-      Corte IDH. Competencia consultiva. Se ejerce sobre toda disposición de
-      protección de derechos humanos de cualquier tratado aplicable en los
-      Estados americanos cualquiera sea su objeto principal. Casos en que debe
-      abstenerse de responder la consulta. Cuando se pueda debilitar el régimen
-      previsto en la Convención.
+    <%= locals.hit.metadata.header%>
     </div>
   </div>
   <div class="Content">
@@ -63,31 +20,15 @@
     <div
       class="w-full text-black font-normal font-['Montserrat'] leading-tight tracking-wide"
     >
-      52. […] Primero [ ]la competencia consultiva de la Corte puede ejercerse,
-      en general, sobre toda disposición, concerniente a la protección de los
-      derechos humanos, de cualquier tratado internacional aplicable en los
-      Estados americanos, con independencia de que sea bilateral o multilateral,
-      de cuál sea su objeto principal o de que sean o puedan ser partes del
-      mismo Estados ajenos al sistema interamericano.
-      <br />Segundo<br />[…] que, por razones determinantes que expresará en
-      decisión motivada, la Corte podrá abstenerse de responder una consulta si
-      aprecia que, en las circunstancias del caso, la petición excede de los
-      límites de su función consultiva, ya sea porque el asunto planteado
-      concierna principalmente a compromisos internacionales contraídos por un
-      Estado no americano o a la estructura o funcionamiento de órganos u
-      organismos internacionales ajenos al sistema interamericano, ya sea porque
-      el trámite de la solicitud pueda conducir a alterar o a debilitar, en
-      perjuicio del ser humano, el régimen previsto por la Convención; ya sea
-      por otra razón análoga.
+      
+        <%= locals.hit.pageContent %>
+        
     </div>
 
     <div
       class="p-4 w-ful text-gray-600 text-sm font-normal font-['Montserrat'] leading-tight tracking-wide"
-    >
-      CorteIDH. "Otros tratados" objeto de la función consultiva de la Corte
-      (Art. 64 Convención Americana sobre Derechos Humanos), Opinión consultiva
-      OC-1/82 del 24 de setiembre de 1982. Serie A No. 1. Párr. 52.
-      <br />
+      >
+      <%= locals.hit.metadata.source%>
     </div>
   </div>
 
@@ -113,11 +54,6 @@
             </div>
           </div>
         </div>
-    <div
-      class="text-gray-600 text-xs font-normal font-['Roboto'] leading-none tracking-wide"
-    >
-      24 de setiembre de 1982. Serie A No. 1. Párr. 52.
-    </div>
     <!-- <img class="Cnn4 w-11 h-12" src="https://via.placeholder.com/45x48" /> -->
   </div>
 </div>

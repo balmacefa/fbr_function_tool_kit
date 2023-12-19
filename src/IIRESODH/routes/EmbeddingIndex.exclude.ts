@@ -39,13 +39,13 @@ export class EmbeddingIndex {
     }
 
 
-    async tesaurio_search<T = TYPE_post_embedding_search_body>(query_data: T): Promise<Document[]> {
+    async tesaurio_search(query_data: any): Promise<Document[]> {
         const {
             search_filters,
             filter_options,
             sorting_options,
             page_options
-        } = query_data as un;
+        } = query_data;
 
         const k = 25;
 
@@ -101,9 +101,10 @@ export class EmbeddingIndex {
         const results = this.collection.aggregate(pipeline_cleaned);
         const docs: Document[] = [];
         for await (const result of results) {
+            const txt = result.text || result.content;
             const doc: Document = new Document({
-                pageContent: result.text,
-                metadata: omit(result, ['text'])
+                pageContent: txt,
+                metadata: omit(result, ['text', 'content'])
             });
             docs.push(doc);
         }
@@ -154,7 +155,11 @@ export class EmbeddingIndex {
         return { $and: andCriteria };
     }
 
-    private stageFilterOptions(filterOptions: TYPE_post_embedding_search_body['filter_options']): any {
+    private stageFilterOptions(filterOptions?: TYPE_post_embedding_search_body['filter_options']): any {
+        if (!filterOptions) {
+            // Todo: review the porposeu of the method
+            return {};
+        }
         const andCriteria = [];
 
         for (const [key, value] of Object.entries(filterOptions)) {

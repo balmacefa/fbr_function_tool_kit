@@ -1,6 +1,7 @@
 
-<% if (locals.paginated_response) paginated_response.hits.forEach(function(hit_data) { %>
+<% if (locals.paginated_response) locals.paginated_response.hits.forEach(function(hit_data, index) { %>
     <%- include('one_hit', {
-        hit_data: hit_data,
+        hit: hit_data,
+        headerNumber: index +1
     }) %>
 <% }); %>
