@@ -1,21 +1,10 @@
 <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col">
-  <form>
-    <div class="mb-4">
-      <input
-        class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker"
-        id="search"
-        type="text"
-        placeholder="Buscar..."
-      />
+  <form 
+  hx-post="/iiresodh/buscador/nueva_consulta" 
+  hx-target="#search_hits_content"
+  >
+       <%- include('settings/searchField' ) %>
 
-      <button
-        class="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        type="button"
-      >
-        Enviar
-      </button>
-    </div>
-  </form>
   <div class="mb-6">
     <div class="flex items-center justify-between">
       <button class="text-black tab-button" data-tab="results">
@@ -35,10 +24,13 @@
   <div id="tab_content" class="border-t border-blue-500">
     <%- include('settings/index' ) %>
   </div>
+  
+  </form>
   <div
     id="search_hits_content"
     class="border-t border-blue-500 w-full flex-col"
   >
+  
     <%- include('one_hit' ) %> <%- include('one_hit' ) %>
   </div>
 </div>

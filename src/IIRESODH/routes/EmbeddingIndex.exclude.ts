@@ -1,12 +1,11 @@
+/* eslint-disable @typescript-eslint/prefer-for-of */
 import { Document } from "langchain/document";
-import { HuggingFaceInferenceEmbeddings } from 'langchain/embeddings/hf';
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
-import { TokenTextSplitter } from "langchain/text_splitter";
-import { MemoryVectorStore } from "langchain/vectorstores/memory";
 import { MongoDBAtlasVectorSearch } from "langchain/vectorstores/mongodb_atlas";
 import { omit } from "lodash";
 import type { Document as MongoDBDocument } from "mongodb";
 import { Collection, MongoClient } from "mongodb";
+import { TYPE_post_embedding_search_body } from "../shared_types";
 
 const EMBEDDING = 'embedding';
 
@@ -16,25 +15,16 @@ const EMBEDDING = 'embedding';
 
 export class EmbeddingIndex {
     client: MongoDBAtlasVectorSearch;
-    client_hf: MongoDBAtlasVectorSearch;
-    encoder: string = 'context'; // context | details
-    search_for: string = 'content';// content | headers
-    embeddings_hf: HuggingFaceInferenceEmbeddings;
+    encoder = 'context'; // context | details
+    search_for = 'content';// content | headers
     collection: Collection<MongoDBDocument>;
     index_name: string;
 
 
     constructor(
         collection: Collection<MongoDBDocument>,
-        collection_hf: Collection<MongoDBDocument>,
-        index_name: string = "digestos_multi_type_cols_langchain_index",
-        index_name_hf: string = "digestos_multi_type_cols_langchain_index",
+        index_name = "digestos_multi_type_cols_langchain_index",
     ) {
-
-        this.embeddings_hf = new HuggingFaceInferenceEmbeddings({
-            apiKey: process.env.HUGGINGFACEHUB_API_KEY,
-            model: "sentence-transformers/paraphrase-multilingual-mpnet-base-v2"
-        });
 
         this.collection = collection;
         this.index_name = index_name;
@@ -45,27 +35,19 @@ export class EmbeddingIndex {
             collection: this.collection,
             indexName: this.index_name,
         });
-        const vector_store_hf = new MongoDBAtlasVectorSearch(
-            this.embeddings_hf, {
-            collection: collection_hf,
-            indexName: index_name_hf,
-        });
         this.client = vector_store;
-        this.client_hf = vector_store_hf;
     }
 
 
-    async tesaurio_search(query_data: TYPE_post_embedding_search_body): Promise<Document[]> {
+    async tesaurio_search<T = TYPE_post_embedding_search_body>(query_data: T): Promise<Document[]> {
         const {
             search_filters,
             filter_options,
             sorting_options,
             page_options
-        } = query_data;
+        } = query_data as un;
 
         const k = 25;
-
-        payload.logger.info('HIT_FUNC similarity_search_with_type');
 
         const query_vector = await this.client.embeddings.embedQuery(search_filters.searchText);
         // payload.logger.info('HIT_FUNC similarity_search_with_type query_vector:: ' + query_vector);
@@ -203,7 +185,7 @@ export class EmbeddingIndex {
     private stageOrderBy(order_by: string) {
         let order_by_stage = {};
         if (order_by) {
-            let sortColumn = order_by === 'datetime' ? 'createdAt' : order_by === 'relevance' ? 'score' : null;
+            const sortColumn = order_by === 'datetime' ? 'createdAt' : order_by === 'relevance' ? 'score' : null;
             if (sortColumn) {
                 order_by_stage = {
                     $sort: {
@@ -216,7 +198,7 @@ export class EmbeddingIndex {
     }
 
     private sategDatetimeFilter(datetime_from: string, datetime_to: string) {
-        let datetimeFilterCondition: any = {};
+        const datetimeFilterCondition: any = {};
 
         if (datetime_from) {
             datetimeFilterCondition['createdAt'] = { $gte: new Date(datetime_from) };
@@ -232,145 +214,78 @@ export class EmbeddingIndex {
         return datetimeFilterStage;
     }
 
-    async save_collection_property_indexer(payload_document: type__indexer):
-        Promise<boolean> {
-        // Cualquir mtadata que se quiera guardar utilizar el type_payload_indxre_queue
-        // se copiara cerca de la linea 116
-        try {
-            // crat a document
-            const meta1 = omit(payload_document, INDEX_PATH) as metadata_type
-            const metadata: metadata_type = {
-                ...meta1,
-                is_chunk: false,
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
-            }
+    // async gen_guided_reading(query_text: string, _docs: Document[]):
+    //     Promise<Document[]> {
+    //     // 1- gen a vectostore from docs ()
+    //     // 2- search the vectostore with query_text with score
+    //     // 3- filter score with treshold
+    //     // 4- return the docs with index
 
-            const doc: Document = new Document({
-                pageContent: payload_document[INDEX_PATH],
-                metadata: metadata
-            });
+    //     const splitter = new TokenTextSplitter({
+    //         chunkSize: 60,
+    //         chunkOverlap: 0,
+    //     });
 
-            const chunkSize = metadata.chunk_size;
+    //     const docs: Document[] = [];
 
-            if (chunkSize == 0) {
-                const result = await this.client.addDocuments([doc]);
-            }
-            if (chunkSize > 0) {
-                const splitter = new TokenTextSplitter({
-                    chunkSize: chunkSize,
-                    chunkOverlap: 0,
-                });
+    //     for (let i = 0; i < _docs.length; i++) {
+    //         const dd = _docs[i];
+    //         // omit metadata
+    //         dd.metadata['_docs_index'] = i;
 
+    //         const mini_docs = await splitter.splitDocuments([dd]);
 
-                const mini_docs = await splitter.splitDocuments([doc]);
+    //         const original_content = dd.pageContent;
+    //         for (let j = 0; j < mini_docs.length; j++) {
+    //             // chartAtFrom - chartAtTo base on original_content and the result mini_docs[i].pageContent
+    //             const content = mini_docs[j].pageContent;
 
-                const original_content = doc.pageContent;
-                for (let j = 0; j < mini_docs.length; j++) {
+    //             const from = original_content.indexOf(content);
+    //             // if (from === -1) {
+    //             //     payload.logger.error('gen_guided_reading from === -1', { original_content, content });
+    //             // }
+    //             const to = from + content.length;
 
-                    // chartAtFrom - chartAtTo base on original_content and the result mini_docs[i].pageContent
-                    const content = mini_docs[j].pageContent;
+    //             //set metadata
+    //             mini_docs[j].metadata['chart_at_from'] = from;
+    //             mini_docs[j].metadata['chart_at_to'] = to;
 
-                    const from = original_content.indexOf(content);
-                    if (from === -1) {
-                        payload.logger.error('gen_guided_reading from === -1', { original_content, content });
-                    }
-                    const to = from + content.length;
-                    const mini_metadata: chucked_metadata_type = {
-                        ...mini_docs[j].metadata as metadata_type,
-                        is_chunk: true,
-                        chart_at_from: from,
-                        chart_at_to: to,
-                        chunk_index: j,
-                        chunk_count: mini_docs.length,
-
-                    }
-                    //set metadata
-                    mini_docs[j].metadata = mini_metadata;
-                }
-
-                const result = await this.client.addDocuments(mini_docs);
-            }
-
-            return true;
-        } catch (error) {
-            payload.logger.error('save_collection_property_indexer_pair', { error });
-            return false;
-        }
-    }
-
-    async gen_guided_reading(query_text: string, _docs: Document[]):
-        Promise<Document[]> {
-        // 1- gen a vectostore from docs ()
-        // 2- search the vectostore with query_text with score
-        // 3- filter score with treshold
-        // 4- return the docs with index
-
-        const splitter = new TokenTextSplitter({
-            chunkSize: 60,
-            chunkOverlap: 0,
-        });
-
-        const docs: Document[] = [];
-
-        for (let i = 0; i < _docs.length; i++) {
-            const dd = _docs[i];
-            // omit metadata
-            dd.metadata['_docs_index'] = i;
-
-            const mini_docs = await splitter.splitDocuments([dd]);
-
-            const original_content = dd.pageContent;
-            for (let j = 0; j < mini_docs.length; j++) {
-                // chartAtFrom - chartAtTo base on original_content and the result mini_docs[i].pageContent
-                const content = mini_docs[j].pageContent;
-
-                const from = original_content.indexOf(content);
-                if (from === -1) {
-                    payload.logger.error('gen_guided_reading from === -1', { original_content, content });
-                }
-                const to = from + content.length;
-
-                //set metadata
-                mini_docs[j].metadata['chart_at_from'] = from;
-                mini_docs[j].metadata['chart_at_to'] = to;
-
-                docs.push(mini_docs[j]);
-            }
-        }
+    //             docs.push(mini_docs[j]);
+    //         }
+    //     }
 
 
-        // unkown: do we need to get set the char at 'from' and 'to'?
-        const vectorStore = await MemoryVectorStore.fromDocuments(
-            docs,
-            this.embeddings_hf
-        );
+    //     // unkown: do we need to get set the char at 'from' and 'to'?
+    //     const vectorStore = await MemoryVectorStore.fromDocuments(
+    //         docs,
+    //         this.embeddings_hf
+    //     );
 
-        const guided_hits = await vectorStore.similaritySearchWithScore(query_text, _docs.length * 3);
+    //     const guided_hits = await vectorStore.similaritySearchWithScore(query_text, _docs.length * 3);
 
-        // this return and array with score >.4
-        for (let i = 0; i < guided_hits.length; i++) {
-            const mini_doc_score = guided_hits[i][1];
+    //     // this return and array with score >.4
+    //     for (let i = 0; i < guided_hits.length; i++) {
+    //         const mini_doc_score = guided_hits[i][1];
 
-            // if (mini_doc_score < 0.4) {
-            //     payload.logger.info('gen_guided_reading mini_doc_score < 0.4  ::: Score ->' + mini_doc_score);
-            //     continue;
-            // }
-            const mini_doc_hit = guided_hits[i][0];
-            const index = mini_doc_hit.metadata['_docs_index'];
-            const originalChartAtsPairs: Array<{ from: number, to: number, score: number }> = _docs[index].metadata['highlights'] || [];
-            originalChartAtsPairs.push({
-                from: mini_doc_hit.metadata['chart_at_from'],
-                to: mini_doc_hit.metadata['chart_at_to'],
-                score: mini_doc_score
-            });
+    //         // if (mini_doc_score < 0.4) {
+    //         //     payload.logger.info('gen_guided_reading mini_doc_score < 0.4  ::: Score ->' + mini_doc_score);
+    //         //     continue;
+    //         // }
+    //         const mini_doc_hit = guided_hits[i][0];
+    //         const index = mini_doc_hit.metadata['_docs_index'];
+    //         const originalChartAtsPairs: { from: number, to: number, score: number }[] = _docs[index].metadata['highlights'] || [];
+    //         originalChartAtsPairs.push({
+    //             from: mini_doc_hit.metadata['chart_at_from'],
+    //             to: mini_doc_hit.metadata['chart_at_to'],
+    //             score: mini_doc_score
+    //         });
 
-            _docs[index].metadata['highlights'] = originalChartAtsPairs;
-        }
+    //         _docs[index].metadata['highlights'] = originalChartAtsPairs;
+    //     }
 
-        return _docs;
+    //     return _docs;
 
-    }
+    // }
 
 
 
@@ -384,18 +299,16 @@ export function getMongoDbClientCollection(): Collection<MongoDBDocument> {
 
     return collection;
 }
-export function getMongoDbClientCollection_hf(): Collection<MongoDBDocument> {
+// export function getMongoDbClientCollection_hf(): Collection<MongoDBDocument> {
 
-    const client = new MongoClient(process.env.MONGODB_ATLAS_URI || "");
-    const [dbName, collectionName] = "IIRESODH_test.search_index_hf768_dim_cols".split(".");
-    const collection = client.db(dbName).collection(collectionName);
+//     const client = new MongoClient(process.env.MONGODB_ATLAS_URI || "");
+//     const [dbName, collectionName] = "IIRESODH_test.search_index_hf768_dim_cols".split(".");
+//     const collection = client.db(dbName).collection(collectionName);
 
-    return collection;
-}
+//     return collection;
+// }
 
 export const EmbeddingIndexInstance: EmbeddingIndex = new EmbeddingIndex(
     getMongoDbClientCollection(),
-    getMongoDbClientCollection_hf(),
     "digestos_multi_type_cols_langchain_index",
-    "digestos_multi_type_cols_hf_langchain_index",
 )

@@ -5,6 +5,7 @@ import { FBR_GlobalPrisma } from "../ChatHTMX/DB/PrismaManager";
 import { OpenAIAssistantSessionManager } from "../ChatHTMX/OpenAIAssistantSessionManager";
 import { MainUtils } from "../HostMachine";
 import { GlobalCommons, GlobalCommons_ui_data } from "./UI_TYPE";
+import { register_routes_buscador } from "./routes/buscador_post";
 
 /**
  * Resumen del archivo ExpressOpenAIAssistantSessionExporter.tsx
@@ -51,6 +52,7 @@ export class ExpressOpenAIAssistantSessionExporter {
     this.setupRoutesnit();
     this.setupChatRoutes();
     this.setupRoutesBuscador();
+    register_routes_buscador(this.app);
   }
   private setupChatRoutes() {
     this.app.get("/iiresodh/chat_app", (req: Request, res: Response) => {

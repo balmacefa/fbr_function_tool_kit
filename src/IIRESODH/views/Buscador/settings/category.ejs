@@ -1,17 +1,37 @@
 <div id="category" class="tab-content hidden">
   <!-- Classification -->
   <div class="mb-6">
+    <span class="text-gray-700 text-sm font-bold mb-2">Fuentes:</span>
+    <div class="mt-2">
+      <% if (locals.fuentes)
+      locals.fuentes.forEach(function(source_org) { %>
+      <label class="inline-flex items-center">
+        <input
+  type="checkbox"
+  class="form-checkbox"
+  name="filter_options___source_org[]"
+  value="<%= classification.value %>"
+/>
+
+        <span class="ml-2"><%= classification.name %></span>
+      </label>
+      <% }); %>
+    </div>
+  </div>
+  <!-- Classification -->
+  <div class="mb-6">
     <span class="text-gray-700 text-sm font-bold mb-2">Clasificación:</span>
     <div class="mt-2">
       <% if (locals.classifications)
       locals.classifications.forEach(function(classification) { %>
       <label class="inline-flex items-center">
         <input
-          type="checkbox"
-          class="form-checkbox"
-          name="classification[]"
-          value="<%= classification.value %>"
-        />
+  type="checkbox"
+  class="form-checkbox"
+  name="filter_options___classification[]"
+  value="<%= classification.value %>"
+/>
+
         <span class="ml-2"><%= classification.name %></span>
       </label>
       <% }); %>
@@ -25,11 +45,12 @@
       <% if(locals.countries) locals.countries.forEach(function(country) { %>
       <label class="inline-flex items-center">
         <input
-          type="checkbox"
-          class="form-checkbox"
-          name="country[]"
-          value="<%= country.value %>"
-        />
+  type="checkbox"
+  class="form-checkbox"
+  name="filter_options___country[]"
+  value="<%= country.value %>"
+/>
+
         <span class="ml-2"><%= country.name %></span>
       </label>
       <% }); %>
@@ -43,11 +64,12 @@
       <% if(locals.categories) locals.categories.forEach(function(category) { %>
       <label class="inline-flex items-center">
         <input
-          type="checkbox"
-          class="form-checkbox"
-          name="categories[]"
-          value="<%= category.value %>"
-        />
+  type="checkbox"
+  class="form-checkbox"
+  name="filter_options___category[]"
+  value="<%= category.value %>"
+/>
+
         <span class="ml-2"><%= category.name %></span>
       </label>
       <% }); %>
@@ -63,11 +85,12 @@
       { %>
       <label class="inline-flex items-center">
         <input
-          type="checkbox"
-          class="form-checkbox"
-          name="subCategories1[]"
-          value="<%= subCategory1.value %>"
-        />
+  type="checkbox"
+  class="form-checkbox"
+  name="filter_options___sub_category_1[]"
+  value="<%= subCategory1.value %>"
+/>
+
         <span class="ml-2"><%= subCategory1.name %></span>
       </label>
       <% }); %>
@@ -82,11 +105,12 @@
       locals.subCategories2.forEach(function(subCategory2) { %>
       <label class="inline-flex items-center">
         <input
-          type="checkbox"
-          class="form-checkbox"
-          name="subCategories2[]"
-          value="<%= subCategory2.value %>"
-        />
+  type="checkbox"
+  class="form-checkbox"
+  name="filter_options___sub_category_2[]"
+  value="<%= subCategory2.value %>"
+/>
+
         <span class="ml-2"><%= subCategory2.name %></span>
       </label>
       <% }); %>

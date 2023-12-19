@@ -1,11 +1,9 @@
 <div id="advanced-settings" class="tab-content hidden">
-  <!-- Advanced Settings Heading -->
   <h3 class="text-gray-800 text-lg font-semibold mb-4 mt-2 px-4">
     Filtros Avanzados
   </h3>
   <div class="px-4 py-2 bg-white rounded-lg shadow">
     <div class="mb-4">
-      <!-- Underline Toggle -->
       <div class="flex items-center justify-between">
         <label for="underline-toggle" class="text-gray-800 font-medium">
           Subrayado:
@@ -15,7 +13,7 @@
             id="underline-toggle"
             type="checkbox"
             class="sr-only"
-            name="underline"
+            name="search_filters___highlight"
           />
           <div class="block bg-gray-300 w-14 h-8 rounded-full"></div>
           <div
@@ -25,18 +23,20 @@
       </div>
     </div>
     <div class="mb-4">
-      <!-- Index Size Selector -->
       <label for="index-size" class="block text-gray-800 font-medium mb-2">
         Tamaño de Índex:
       </label>
       <div class="relative">
         <select
           id="index-size"
-          name="index-size"
+          name="search_filters___indexSize"
           class="block appearance-none w-full bg-gray-50 border border-gray-300 text-gray-700 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
         >
-          <option>1024</option>
-          <!-- More options here -->
+          <option value="0">Minimal</option>
+          <option value="120">Compact</option>
+          <option value="512">Standard</option>
+          <option value="1024">Extended</option>
+          <option value="1635">Maximal</option>
         </select>
         <div
           class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"

@@ -6,8 +6,7 @@ import { EmbeddingIndexInstance } from './EmbeddingIndex.exclude';
 
 
 
-
-export const register_routes_buscador = async (app: Express) => {
+export const register_routes_buscador = (app: Express) => {
 
 
 
@@ -26,7 +25,7 @@ export const register_routes_buscador = async (app: Express) => {
 
     const searchFieldListSchema = z.enum(['content', 'header', 'title']);
 
-    const chunkSizeValueSchema = z.enum([0, 120, 512, 1024, 1635]);
+    const chunkSizeValueSchema = z.enum(['0', '120', '512', '1024', '1635']);
 
     // Define the Zod schema for SelectedValuesType
     const inputSchema = z.object({
@@ -68,9 +67,7 @@ export const register_routes_buscador = async (app: Express) => {
                 } else {
 
 
-                    const input = validationResult.data;
-
-
+                    const input: inputSchemaType = validationResult.data;
 
                     const query_text = input.search_filters.searchText;
                     const indexer = EmbeddingIndexInstance;
@@ -85,7 +82,7 @@ export const register_routes_buscador = async (app: Express) => {
                         return res.status(500).json({ message: 'Internal Server Error' });
                     }
 
-                    const json_res: post_result_handler_embedding_search = {
+                    const paginated_response: post_result_handler_embedding_search = {
                         hits: hits,
                         totalDocs: hits.length,
                         page: 1,
@@ -101,7 +98,7 @@ export const register_routes_buscador = async (app: Express) => {
                     if (input.search_filters.highlight) {
                         try {
                             const guided_reading: Document[] = await indexer.gen_guided_reading(query_text, hits);
-                            json_res.hits = guided_reading;
+                            paginated_response.hits = guided_reading;
                         } catch (error) {
                             // payload.logger.error(error);
                             return res.status(500).json({ message: 'Internal Server Error' });
@@ -109,16 +106,8 @@ export const register_routes_buscador = async (app: Express) => {
                     }
 
                     // render the htmx 
-
-                    return res.status(200).json(json_res);
-
-
-
-
-
-
                     // inputs are valid, perform the search
-                    res.render("ChatApp/sidebar_chat_item_link",);
+                    res.render("Buscador/hits_log", { paginated_response: paginated_response });
                 }
             } catch (error) {
                 console.error(error);
@@ -128,78 +117,26 @@ export const register_routes_buscador = async (app: Express) => {
     );
 };
 
-
-export const handler_embedding_search_gpt: PayloadHandler = async (req, res, next) => {
-
-    // payload
-    const { payload } = req;
-    // api/v1/digestos_multi_type_col/embedding_search
-    payload.logger.info('Hit URL: /api/v1' + API_ROUTES.digestos_search.url);
-
-    const input: TYPE_post_embedding_search_body = {
-        search_filters: {
-            searchText: req.body.prompt,
-            highlight: false,
-            searchField: 'header',
-            indexSize: 1024,
-        },
-        sorting_options: {
-            order_by: 'relevance',
-            datetime_from: '',
-            datetime_to: '',
-        },
-        filter_options: {
-            classification: '',
-            source_org: '',
-            country: '',
-            category: '',
-            sub_category_1: '',
-            sub_category_2: ''
-        },
-        page_options: {
-            current_page: 1,
-            hits_limit: 25,
-        }
-    };
-
-    const query_text = input.search_filters.searchText;
-    let indexer = EmbeddingIndexInstance;
-    let hits: Document[];
-
-
-
-    try {
-        // perform the embbeding search and return the result
-        hits = await indexer.tesaurio_search(input);
-        payload.logger.info('hits size' + hits.length);
-
-    } catch (error) {
-        payload.logger.error(error);
-        return res.status(500).json({ message: 'Internal Server Error' });
-    }
-
-    let json_res: post_result_handler_embedding_search = {
-        hits: hits,
-        totalDocs: hits.length,
-        page: 1,
-        limit: 25,
-        totalPages: 1,
-        pagingCounter: 1,
-        hasNextPage: false,
-        hasPrevPage: false,
-        nextPage: null,
-        prevPage: null,
-    };
-
-    if (input.search_filters.highlight) {
-        try {
-            const guided_reading: Document[] = await indexer.gen_guided_reading(query_text, hits);
-            json_res.hits = guided_reading;
-        } catch (error) {
-            payload.logger.error(error);
-            return res.status(500).json({ message: 'Internal Server Error' });
-        }
-    }
-
-    return res.status(200).json(json_res);
-};
+export function convertToNestedObject(data: any) {
+    const result = {};
+    Object.keys(data).forEach(key => {
+        const parts = key.split('___');
+        let current: any = result;
+        parts.forEach((part, index) => {
+            if (index === parts.length - 1) {
+                current[part] = data[key];
+            } else {
+                if (!current[part]) {
+                    current[part] = {};
+                }
+                current = current[part];
+            }
+        });
+    });
+    return result;
+    // Example usage
+    // const formData = {
+    //     'search_filters___highlight': true,
+    //     'search_filters___indexSize': 1024
+    // };
+}

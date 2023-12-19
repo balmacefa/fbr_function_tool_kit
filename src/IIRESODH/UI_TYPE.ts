@@ -3,7 +3,9 @@ export const locals = {
     chat_data_info: {
 
     },
-    'include': `<% var main_content = include('main_content'); %>
+    'include': `
+    
+<% var main_content = include('main_content'); %>
 
 <%- include('../Layouts/index', {
   header_content: header_content,
@@ -11,7 +13,25 @@ export const locals = {
   main_content: main_content,
 }) %>
 
+<%- include('index') %>
+
 `,
+    for: `
+    
+
+ <% if(locals.countries) locals.countries.forEach(function(country) { %>
+      <label class="inline-flex items-center">
+        <input
+          type="checkbox"
+          class="form-checkbox"
+          name="country[]"
+          value="<%= country.value %>"
+        />
+        <span class="ml-2"><%= country.name %></span>
+      </label>
+      <% }); %>
+
+    `,
     variable: `
     
     ... code that is evaluated but not printed out.
