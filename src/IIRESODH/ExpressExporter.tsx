@@ -50,6 +50,7 @@ export class ExpressOpenAIAssistantSessionExporter {
   private setupRoutes() {
     this.setupRoutesnit();
     this.setupChatRoutes();
+    this.setupRoutesBuscador();
   }
   private setupChatRoutes() {
     this.app.get("/iiresodh/chat_app", (req: Request, res: Response) => {
@@ -66,6 +67,7 @@ export class ExpressOpenAIAssistantSessionExporter {
       res.render("ChatApp/index_page", { ...this.get_ui_common_data(),});
     });
 
+    
     // This are chat related functons - debe ser heredadas, se puede hacer o
     this.app.get("/iiresodh/chat_app/:userId", async (req: Request, res: Response) => {
       try {
@@ -84,7 +86,7 @@ export class ExpressOpenAIAssistantSessionExporter {
     });
 
     this.app.post(
-      "/chat_app/htmx/session_create",
+      "/iiresodh/chat_app/htmx/session_create",
       async (req: Request, res: Response) => {
         try {
           const { userId, title } = req.body;
@@ -104,7 +106,7 @@ export class ExpressOpenAIAssistantSessionExporter {
             });
 
           res.render(
-            "sidebar_chat_item_link",
+            "ChatApp/sidebar_chat_item_link",
             { chat: new_session_data },
             (err, html) => {
               if (err) {
@@ -126,7 +128,7 @@ export class ExpressOpenAIAssistantSessionExporter {
     );
 
     this.app.get(
-      "/chat_app/htmx/session_view/:sessionId",
+      "/iiresodh/chat_app/htmx/session_view/:sessionId",
       async (req: Request, res: Response) => {
         const { sessionId } = req.params;
 
@@ -149,14 +151,12 @@ export class ExpressOpenAIAssistantSessionExporter {
           const chat_messages =
             await sessionData.asistant_wrap.get_chat_messages(threadId);
 
-          res.render("chat_app", {
-            layout: "ChatApp/base_layout",
+          res.render("ChatApp/index_page", {
             ...this.get_ui_common_data(),
             chat_data_info: { chat_messages, sessionId },
           });
         } else {
-          res.render("chat_app", {
-            layout: "ChatApp/base_layout",
+          res.render("ChatApp/index_page", {
             ...this.get_ui_common_data(),
             chat_data_info: { chat_messages: { data: [] }, sessionId },
           });
@@ -178,12 +178,7 @@ export class ExpressOpenAIAssistantSessionExporter {
     this.app.get("/iiresodh/", (req: Request, res: Response) => {
       res.render("Landing/index_page", {  ...this.get_ui_common_data(), });
     });
-    this.app.get("/iiresodh/buscador", (req: Request, res: Response) => {
-      res.render("Buscador/index_page", {
-        
-        ...this.get_ui_common_data(),
-      });
-    });
+
 
     this.app.get("/iiresodh/repositorio", (req: Request, res: Response) => {
       res.render("Repositorio/index_page", {
@@ -204,6 +199,14 @@ export class ExpressOpenAIAssistantSessionExporter {
     });
   }
 
+  private setupRoutesBuscador() {
+        this.app.get("/iiresodh/buscador", (req: Request, res: Response) => {
+      res.render("Buscador/index_page", {
+        
+        ...this.get_ui_common_data(),
+      });
+    });
+  }
   // Métodos adicionales para manejar otras funcionalidades pueden ser añadidos aquí
 
   public static default_server() {
