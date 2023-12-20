@@ -1,10 +1,14 @@
-import path from "path";
 import { MainUtils } from "../HostMachine";
 import { BaseToolPlugin } from "../ToolFunction/BaseToolPlugin";
 import { GPT_MODELS } from "./GPTS_Codes";
 import { AssistantOptions } from "./OpenAIAssistantWrapper";
 
-const CurrentPath = path.resolve(__dirname);
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+// This is currrent folder
+
+const CurrentPath = dirname(fileURLToPath(import.meta.url));
 
 export enum AgentType {
     TaskMaster = "TaskMaster",
