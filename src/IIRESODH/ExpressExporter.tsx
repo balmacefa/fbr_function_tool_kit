@@ -1,7 +1,7 @@
 import { Express, Request, Response } from "express";
 import morgan from "morgan";
 import { CreateAssistantOptions } from "../ChatHTMX/AssistantsFactory";
-import { FBR_GlobalPrisma } from "../ChatHTMX/DB/PrismaManager";
+import { FBR_ChatDBSupport } from "../ChatHTMX/DB/PrismaManager";
 import { OpenAIAssistantSessionManager } from "../ChatHTMX/OpenAIAssistantSessionManager";
 import { MainUtils } from "../HostMachine";
 import { GlobalCommons, GlobalCommons_ui_data } from "./UI_TYPE";
@@ -28,13 +28,15 @@ import { register_routes_buscador } from "./routes/buscador_post";
  *   - Correcciones sugeridas para mejorar el manejo de rutas y vistas
  *   - Creación de sesiones de chat y gestión de mensajes
  */
+
+const DB_NAME = "IIRESODH_test";
 export class ExpressExporter {
   private app: Express;
   private sessionManager: OpenAIAssistantSessionManager;
 
-  private prisma_wrapper = FBR_GlobalPrisma.getInstance();
+  private prisma_wrapper = new FBR_ChatDBSupport(DB_NAME);
 
-  constructor(args: { app: Express, views_drc: string }) {
+  constructor(args: { app: Express; views_drc: string }) {
     this.app = args.app;
     this.sessionManager = OpenAIAssistantSessionManager.getInstance();
 
@@ -66,26 +68,31 @@ export class ExpressExporter {
 
       // Adding /chat_app route
       // Render a view for the /chat_app route
-      res.render("ChatApp/index_page", { ...this.get_ui_common_data(),});
+      res.render("ChatApp/index_page", { ...this.get_ui_common_data() });
     });
 
-    
     // This are chat related functons - debe ser heredadas, se puede hacer o
-    this.app.get("/iiresodh/chat_app/:userId", async (req: Request, res: Response) => {
-      try {
-        const { userId } = req.params;
-        // Aquí debes recuperar los chats del usuario utilizando tu lógica de almacenamiento
-        // Por ejemplo, supongamos que tienes una función llamada getChatsByUserId
+    this.app.get(
+      "/iiresodh/chat_app/:userId",
+      async (req: Request, res: Response) => {
+        try {
+          const { userId } = req.params;
+          // Aquí debes recuperar los chats del usuario utilizando tu lógica de almacenamiento
+          // Por ejemplo, supongamos que tienes una función llamada getChatsByUserId
 
-        const userChats = await this.prisma_wrapper.get_user_sessions(userId);
+          const userChats = await this.prisma_wrapper.get_user_sessions(userId);
 
-        // Luego, renderiza una vista que muestre los chats en el nav bar del sidebar
-        res.render("ChatApp/sidebar_chat_item_link_loop", { userChats: userChats, ...this.get_ui_common_data(), });
-      } catch (error) {
-        console.error(error);
-        res.status(500).send("Server error occurred");
+          // Luego, renderiza una vista que muestre los chats en el nav bar del sidebar
+          res.render("ChatApp/sidebar_chat_item_link_loop", {
+            userChats: userChats,
+            ...this.get_ui_common_data(),
+          });
+        } catch (error) {
+          console.error(error);
+          res.status(500).send("Server error occurred");
+        }
       }
-    });
+    );
 
     this.app.post(
       "/iiresodh/chat_app/htmx/session_create",
@@ -167,30 +174,25 @@ export class ExpressExporter {
     );
   }
 
-  public get_ui_common_data():GlobalCommons {
-
-    return {...GlobalCommons_ui_data };
+  public get_ui_common_data(): GlobalCommons {
+    return { ...GlobalCommons_ui_data };
   }
-  
+
   private setupRoutesnit() {
     // TODO: change this name of function
     // Existing route for "/iiresodh/"
 
-
     this.app.get("/iiresodh/", (req: Request, res: Response) => {
-      res.render("Landing/index_page", {  ...this.get_ui_common_data(), });
+      res.render("Landing/index_page", { ...this.get_ui_common_data() });
     });
-
 
     this.app.get("/iiresodh/repositorio", (req: Request, res: Response) => {
       res.render("Repositorio/index_page", {
-        
         ...this.get_ui_common_data(),
       });
     });
     this.app.get("/iiresodh/diagramas/:id", (req: Request, res: Response) => {
       res.render("Diagrama/index_page", {
-        
         ...this.get_ui_common_data(),
       });
     });
@@ -202,9 +204,8 @@ export class ExpressExporter {
   }
 
   private setupRoutesBuscador() {
-        this.app.get("/iiresodh/buscador", (req: Request, res: Response) => {
+    this.app.get("/iiresodh/buscador", (req: Request, res: Response) => {
       res.render("Buscador/index_page", {
-        
         ...this.get_ui_common_data(),
       });
     });
@@ -234,7 +235,7 @@ export class ExpressExporter {
       // Initialize all Express tool exporter functionalities
       const express_exporter = new ExpressExporter({
         app: app,
-        views_drc
+        views_drc,
       });
 
       // Start the server
@@ -252,8 +253,7 @@ export class ExpressExporter {
 
 if (typeof require !== "undefined" && require.main === module) {
   (() => {
-    const express_server =
-      ExpressExporter.default_server();
+    const express_server = ExpressExporter.default_server();
 
     // Import Inquirer within the async function if it's not already imported
     // TODO: Update the swagger registry and routes with the ngrok URL

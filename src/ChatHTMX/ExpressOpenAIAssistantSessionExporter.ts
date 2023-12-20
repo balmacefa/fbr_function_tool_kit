@@ -3,7 +3,7 @@ import expressLayouts from "express-ejs-layouts";
 import morgan from "morgan";
 import { MainUtils } from "../HostMachine";
 import { CreateAssistantOptions } from "./AssistantsFactory";
-import { FBR_GlobalPrisma } from "./DB/PrismaManager";
+import { FBR_ChatDBSupport } from "./DB/PrismaManager";
 import { OpenAIAssistantSessionManager } from "./OpenAIAssistantSessionManager";
 
 /**
@@ -27,11 +27,14 @@ import { OpenAIAssistantSessionManager } from "./OpenAIAssistantSessionManager";
  *   - Correcciones sugeridas para mejorar el manejo de rutas y vistas
  *   - Creación de sesiones de chat y gestión de mensajes
  */
+
+const DB_NAME = "IIRESODH_test";
+
 export class ExpressOpenAIAssistantSessionExporter {
   private app: Express;
   private sessionManager: OpenAIAssistantSessionManager;
 
-  private prisma_wrapper = FBR_GlobalPrisma.getInstance();
+  private prisma_wrapper = new FBR_ChatDBSupport(DB_NAME);
 
   constructor(args: { app: Express }) {
     this.app = args.app;
