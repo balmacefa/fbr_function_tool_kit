@@ -192,7 +192,7 @@ export const ToolChangeRootDirectory = (): ToolFunction => {
 
     const tool_fn = async (input: IOInput): IOResponse => {
         try {
-            MainUtils.root_path = input.newRootPath;
+            MainUtils.set_root_path(input.newRootPath);
             return { success: true };
         } catch (error) {
             throw new Error(`Error: ${error}`);
@@ -219,7 +219,7 @@ export const ToolGetRootDirectory = (): ToolFunction => {
 
     const tool_fn = async (): IOResponse => {
         try {
-            const rootPath = MainUtils.root_path;
+            const rootPath = MainUtils.get_root_path();
             return { rootPath };
         } catch (error) {
             throw new Error(`Error: ${error}`);

@@ -7,7 +7,7 @@ const FindFiles = require('file-regex');
 /** */
 export class MainUtils {
 
-    public static root_path = '';
+    private static root_path = '';
 
     // dic_map
     static by_extesion = MainUtils.read_directory_by_ext;
@@ -15,11 +15,18 @@ export class MainUtils {
     // save_file
     static save_file = MainUtils.write_file_from_root;
     /** */
+    static get_root_path(): string {
+        return MainUtils.root_path;
+    }
+    static set_root_path(new_root_path: string) {
+        // MainUtils.root_path = `${process.env.FBR___MainUtilsInitRootPath}`;
+        MainUtils.root_path = new_root_path;
+    }
     static root_directory(append_path = ''): string {
 
         if (MainUtils.root_path === '') {
             // Todu: change to .evn config
-            MainUtils.root_path = `${process.env.MainUtilsInitRootPath}`;
+            throw new Error('ERROR ON @balmcefa/fbr_function_tool_kit HostMachine MainUtils.root_path is not setup for this project!')
         }
 
         return path.join(MainUtils.root_path, append_path);
