@@ -1,7 +1,10 @@
+import path from "path";
 import { MainUtils } from "../HostMachine";
 import { BaseToolPlugin } from "../ToolFunction/BaseToolPlugin";
 import { GPT_MODELS } from "./GPTS_Codes";
 import { AssistantOptions } from "./OpenAIAssistantWrapper";
+
+const CurrentPath = path.resolve(__dirname);
 
 export enum AgentType {
     TaskMaster = "TaskMaster",
@@ -17,7 +20,7 @@ export function CreateAssistantOptions(agentType: AgentType = AgentType.TypeScri
     console.log('creating agent: ', agentType)
     switch (agentType) {
         case AgentType.TaskMaster: {
-            const prompt = MainUtils.read_file_from_root('src/ChatHTMX/prompts/TaskMaster.agent.promt.md').fileContent;
+            const prompt = MainUtils.read_file_from_path(CurrentPath + '/prompts/TaskMaster.agent.promt.md');
             return {
                 model: GPT_MODELS.LAST_AND_BEST.model,
                 instructions: prompt,
@@ -26,7 +29,7 @@ export function CreateAssistantOptions(agentType: AgentType = AgentType.TypeScri
             } as AssistantOptions;
         }
         case AgentType.TypeScriptTodo: {
-            const prompt = MainUtils.read_file_from_root('src/ChatHTMX/prompts/typescript_todo.agent.promt.md').fileContent;
+            const prompt = MainUtils.read_file_from_path(CurrentPath + '/prompts/typescript_todo.agent.promt.md');
             return {
                 model: GPT_MODELS.GPT_3_5_TURBO_1106.model,
                 instructions: prompt,

@@ -19,7 +19,6 @@ export class MainUtils {
         return MainUtils.root_path;
     }
     static set_root_path(new_root_path: string) {
-        // MainUtils.root_path = `${process.env.FBR___MainUtilsInitRootPath}`;
         MainUtils.root_path = new_root_path;
     }
     static root_directory(append_path = ''): string {
@@ -34,10 +33,14 @@ export class MainUtils {
 
     /** */
     static read_file_from_root(append_path: string): { fileContent: string } {
-        const rootPath = MainUtils.root_directory();
-        const filePath = path.join(rootPath, append_path);
-        const fileContent = fs.readFileSync(filePath, 'utf8');
+        const filePath = MainUtils.root_directory(append_path);
+        const fileContent = MainUtils.read_file_from_path(filePath);
         return { fileContent };
+    }
+    static join_path(a: string, b: string): string { return path.join(a, b) }
+    static read_file_from_path(filePath: string): string {
+        const fileContent = fs.readFileSync(filePath, 'utf8');
+        return fileContent;
     }
 
     /** */
