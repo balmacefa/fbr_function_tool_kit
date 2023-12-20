@@ -87,7 +87,7 @@ export class OpenAPISchemaGenerator {
                     body: {
                         content: {
                             'application/json': {
-                                schema: toolFunction.inputSchema,
+                                schema: toolFunction.inputSchema as z.AnyZodObject,
                             },
                         },
                         required: true,
@@ -98,7 +98,7 @@ export class OpenAPISchemaGenerator {
                         description: '201 ok - COMPLETE RESPONSE',
                         content: {
                             'application/json': {
-                                schema: toolFunction.responseSchema,
+                                schema: toolFunction.responseSchema as z.AnyZodObject,
                             },
                         },
                     },
