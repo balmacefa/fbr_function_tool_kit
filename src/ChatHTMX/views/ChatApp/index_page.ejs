@@ -1,5 +1,11 @@
 <!--  < % code % >
 ... which is code that is evaluated but not printed out. -->
-<% var header_content = include('../components/header'); %> <% var main_content
-= include('main_content'); %> <%- include(chat_landing_ejs, { header_content:
-header_content, aside: 'aside', main_content: main_content, }) %>
+<% var header_content = include('../components/header'); %>
+<!--  -->
+<% var main_content = include('main_content'); %>
+<!--  -->
+<% var aside = include('../components/side_menu'); %>
+<!--  -->
+
+<%- include(chat_landing_ejs, { header_content: header_content, aside: aside,
+main_content: main_content, }) %>

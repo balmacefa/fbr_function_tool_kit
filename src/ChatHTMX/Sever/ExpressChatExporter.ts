@@ -79,7 +79,7 @@ export class ExpressChatExporter extends ExpressBaseExporter {
         return show_cases;
     }
     get_manifest_by_assistants_id(id: string) {
-        return this.manifests.find(el => el.name);
+        return this.manifests.find(el => el.name === id);
     }
 
     setupRoutes() {
