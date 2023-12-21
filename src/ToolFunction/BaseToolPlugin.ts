@@ -83,6 +83,7 @@ export class BaseToolPlugin {
     }
 
     public async call_func(action: AgentAction) {
+        console.log('Incoming action request: ', action);
         const foundFunc = this.functions.find(func => (func.get_operation_id() === action.tool));
         if (!foundFunc) {
             const res = {

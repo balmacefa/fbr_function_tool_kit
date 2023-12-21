@@ -51,7 +51,6 @@ export const DirectoryStructureViewer = (): ToolFunction => {
 
             const { directoryPath, depth, directoryFilter } = input_validated.data;
             const path = MainUtils.root_directory(directoryPath);
-            console.log('path', path);
 
             const entries = await readdirp.promise(path, {
                 // fileFilter: fileFilter,
@@ -60,7 +59,6 @@ export const DirectoryStructureViewer = (): ToolFunction => {
                 depth: depth,
                 // directoryFilter: (di) => di.basename.length === 9
             });
-            console.log('entries', entries);
             let entries_flat = entries.map((entry) => {
                 return entry.path;
             });
@@ -78,7 +76,7 @@ export const DirectoryStructureViewer = (): ToolFunction => {
 
 
     const tfn = new ToolFunction<IOInput, IOResponse>(
-        'DirectoryStructureViewer',
+        'Generate_Directory_Structure_Tree',
         'This tool create a directory tree of the current workspace or root path',
         tool_fn,
         input_schema,
@@ -89,9 +87,9 @@ export const DirectoryStructureViewer = (): ToolFunction => {
     return tfn;
 };
 
-export const TextFileReader = (): ToolFunction => {
+export const Absolute_File_String_Reader_Tool = (): ToolFunction => {
     const input_schema = z.object({
-        filePath: z.string().describe('Path to the file to read'),
+        absolutePath: z.string().describe('Absolute Path to the file to read'),
     });
     const response_schema = z.object({
         content: z.string().describe('Textual content of the file'),
@@ -102,13 +100,39 @@ export const TextFileReader = (): ToolFunction => {
 
     // eslint-disable-next-line require-await
     const tool_fn = async (input: IOInput): IOResponse => {
-        const content: string = MainUtils.read_file_from_root(input.filePath).fileContent;
+        const content: string = MainUtils.read_file_from_path(input.absolutePath);
         return { content: content };
     };
 
     const tfn = new ToolFunction<IOInput, IOResponse>(
-        'TextFileReader',
+        'Absolute_File_String_Reader_Tool',
         'Read file content',
+        tool_fn,
+        input_schema,
+        response_schema
+    );
+    return tfn;
+};
+export const Local_File_String_Reader_Tool = (): ToolFunction => {
+    const input_schema = z.object({
+        absolutePath: z.string().describe('Relative Path to the file to read'),
+    });
+    const response_schema = z.object({
+        content: z.string().describe('Textual content of the file'),
+    });
+
+    type IOInput = z.infer<typeof input_schema>;
+    type IOResponse = Promise<z.infer<typeof response_schema>>;
+
+    // eslint-disable-next-line require-await
+    const tool_fn = async (input: IOInput): IOResponse => {
+        const content: string = MainUtils.read_file_from_path(input.absolutePath);
+        return { content: content };
+    };
+
+    const tfn = new ToolFunction<IOInput, IOResponse>(
+        'Local_File_String_Reader_Tool',
+        'Read file content relative to the current project location',
         tool_fn,
         input_schema,
         response_schema
@@ -240,7 +264,8 @@ export const ToolGetRootDirectory = (): ToolFunction => {
 export const DirectoryToolFunctionList = [
     // TODO: use factory patter, to get this function tool, base on herent
     DirectoryStructureViewer(),
-    TextFileReader(),
+    Local_File_String_Reader_Tool(),
+    Absolute_File_String_Reader_Tool(),
     MultiFileContentViewer(),
     ToolSaveFileContent(),
     ToolCreateDirectory(),
@@ -249,6 +274,7 @@ export const DirectoryToolFunctionList = [
 ]
 export const MinimalDirectoryToolFunctionList = [
     DirectoryStructureViewer(),
-    TextFileReader(),
+    Local_File_String_Reader_Tool(),
+    Absolute_File_String_Reader_Tool(),
     ToolSaveFileContent(),
 ]

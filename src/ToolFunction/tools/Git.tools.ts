@@ -33,7 +33,7 @@ export const ToolExecuteGitCommand = (): ToolFunction => {
     };
 
     const tfn = new ToolFunction<IOInput, IOResponse>(
-        'ToolExecuteGitCommand',
+        'GIT_CLI_Tools',
         'Execute a Git command on the root path',
         tool_fn,
         input_schema,

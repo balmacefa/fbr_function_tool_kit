@@ -13,9 +13,10 @@ const DB_NAME = "IIRESODH_test";
 
 
 
-import { dirname } from 'path';
+import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { Full_stack_Software_Architect, Tailwind_HTMX_alpine_jquery } from "../../Assistants/AssistantBase";
+import { MainUtils } from "../../HostMachine";
 import OpenAIAssistantWrapper, { AssistantManifest } from "../OpenAI/OpenAIAssistantWrapper";
 export const CurrentPath = dirname(fileURLToPath(import.meta.url));
 
@@ -360,6 +361,14 @@ export class ExpressChatExporter extends ExpressBaseExporter {
 
 if (typeof require !== "undefined" && require.main === module) {
     (() => {
+
+
+        // Setup the MainUtils Root Direcotry for easy , copyrelative path integration
+        const currentPath = path.join(path.join(CurrentPath, '../'));
+        console.info('Current Main path', path.join()) // set it to the root of this sub project module!
+        MainUtils.set_root_path(currentPath);
+
+
         ExpressChatExporter.default_server();
         // Import Inquirer within the async function if it's not already imported
         // TODO: Update the swagger registry and routes with the ngrok URL

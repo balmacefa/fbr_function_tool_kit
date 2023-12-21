@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ToolFunction } from '../ToolFunction';
-import { TextFileReader } from './Directory.tools';
+import { Absolute_File_String_Reader_Tool } from './Directory.tools';
 
 export const MultiFileContentViewer = (): ToolFunction => {
     const input_schema = z.object({
@@ -20,7 +20,7 @@ export const MultiFileContentViewer = (): ToolFunction => {
         const { filePaths } = input;
         const fileContents = await Promise.all(filePaths.map(async (filePath) => {
             try {
-                const reader = TextFileReader();
+                const reader = Absolute_File_String_Reader_Tool();
                 // H1- Correction from tool_fn to toolFn
                 const content = await reader.toolFn({ filePath });
                 return { filePath, content: content.content };
