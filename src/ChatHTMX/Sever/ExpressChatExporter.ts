@@ -1,12 +1,13 @@
 import { Express, Request, Response } from "express";
 import morgan from "morgan";
 // import { CreateAssistantOptions } from "../ChatHTMX";
+import ejs from "ejs";
 import _ from "lodash";
-import { CreateAssistantOptions } from "../AssistantsFactory";
 import { FBR_ChatDBSupport } from "../DB/FBR_ChatDBSupport";
-import { OpenAIAssistantSessionManager } from "../OpenAI/OpenAIAssistantSessionManager";
 import { GetChatView } from "../views/ViewsPath";
 import { ExpressBaseExporter } from "./ExpressBaseExporter";
+
+
 
 const DB_NAME = "IIRESODH_test";
 
@@ -14,29 +15,37 @@ const DB_NAME = "IIRESODH_test";
 
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { Full_stack_Software_Architect, Tailwind_HTMX_alpine_jquery } from "../../Assistants/AssistantBase";
+import OpenAIAssistantWrapper, { AssistantManifest } from "../OpenAI/OpenAIAssistantWrapper";
 export const CurrentPath = dirname(fileURLToPath(import.meta.url));
+
+
+
+
 
 export class ExpressChatExporter extends ExpressBaseExporter {
     // private absolute_index_path: string;
     common_data: any;
+    manifests: AssistantManifest[];
     routes_definitions(): Record<string, string> {
         throw new Error("Method not implemented.");
     }
     private app: Express;
-    private sessionManager: OpenAIAssistantSessionManager;
+    // private sessionManager: OpenAIAssistantSessionManager;
     // private views_drc: string;
     private chat_db_wrapper = new FBR_ChatDBSupport(DB_NAME);
     R: Record<string, string>;
 
 
-    constructor(args: { app: Express, chat_landing_ejs_inject_on_locals__main_content?: string, path_main: string, context_common_data: Record<string, string> }) {
+    constructor(args: { app: Express, manifests: AssistantManifest[], chat_landing_ejs_inject_on_locals__main_content?: string, path_main: string, context_common_data: Record<string, string> }) {
         super();
         this.app = args.app;
-        this.sessionManager = OpenAIAssistantSessionManager.getInstance();
+        // this.sessionManager = OpenAIAssistantSessionManager.getInstance();
 
         // TODO: add dev mode check
         // Set the directory for the views
 
+        this.manifests = args.manifests;
         const sub_path_main = args.path_main + "/chat_app";
         this.R = {
 
@@ -54,6 +63,23 @@ export class ExpressChatExporter extends ExpressBaseExporter {
                 args.chat_landing_ejs_inject_on_locals__main_content : GetChatView("index"),
         }, args.context_common_data);
         this.common_data = combinned_common_data
+    }
+
+    _getShowCaseAssistantManifest(): AssistantManifest[] {
+        return this.manifests.filter(el => (el.show_case && el.ejs_render_path))
+    }
+
+    renderShowCaseAssistantManifest(): AssistantManifest[] {
+        const show_cases = this._getShowCaseAssistantManifest();
+
+        show_cases.forEach(el => {
+            el.renderHTML = ejs.render(el.ejs_render_path, el.ejs_variables)
+        });
+
+        return show_cases;
+    }
+    get_manifest_by_assistants_id(id: string) {
+        return this.manifests.find(el => el.name);
     }
 
     setupRoutes() {
@@ -98,25 +124,36 @@ export class ExpressChatExporter extends ExpressBaseExporter {
 
         this.app.post(R.chat__post_create_session, async (req: Request, res: Response) => {
             try {
-                const { userId, title } = req.body;
-                const sessionData = this.sessionManager.createSession(
-                    userId,
-                    title,
-                    CreateAssistantOptions()
-                );
+                const { userId, title, asistant_id } = req.body;
 
-                await sessionData.asistant_wrap.get_or_create_assistant();
+                const manifest = this.get_manifest_by_assistants_id(asistant_id)
+
+                if (!manifest) {
+                    // return error message
+                    return res.render(GetChatView("error_message"), {
+                        error___details: 'Manifest Not Found',
+                        message_json: "Error on this.app.post(R.chat__post_create_session"
+                    });
+                }
+
+                const asistant_wrap = new OpenAIAssistantWrapper(manifest);
+
+                await asistant_wrap.get_or_create_assistant();
 
                 const new_session_data =
                     await this.chat_db_wrapper.create_user_session({
-                        assistantId: sessionData.asistant_wrap.assistantId as string,
+                        assistantId: asistant_wrap.assistantId as string,
                         userId: userId,
                         title,
+                        manifestId: manifest.name
                     });
 
                 res.render(
-                    "ChatApp/sidebar_chat_item_link",
-                    { chat: new_session_data },
+                    GetChatView("sidebar_chat_item_link"),
+                    {
+                        ...this.get_ui_common_data(),
+                        chat: new_session_data,
+                    },
                     (err, html) => {
                         if (err) {
                             // Handle the error, for example, by sending an error response
@@ -136,7 +173,7 @@ export class ExpressChatExporter extends ExpressBaseExporter {
                 console.error(error);
                 return res.render(GetChatView("error_message"), {
                     error___details: 'Session not created',
-                    message_json: "Error on this.app.post(R.chat__post_new_user_message"
+                    message_json: "Error on this.app.post(R.chat__post_create_session"
                 });
             }
         }
@@ -158,17 +195,20 @@ export class ExpressChatExporter extends ExpressBaseExporter {
                         });
                     }
 
-                    const sessionData = this.sessionManager.createSession(
-                        session_data.userId as string,
-                        session_data.title as string,
-                        CreateAssistantOptions()
-                    );
+                    const manifest = this.get_manifest_by_assistants_id(session_data.manifestId);
 
-                    await sessionData.asistant_wrap.get_or_create_assistant(
-                        session_data.assistantId
-                    );
+                    if (!manifest) {
+                        // return error message
+                        return res.render(GetChatView("error_message"), {
+                            error___details: 'Session not created',
+                            message_json: "Error on this.app.post(R.chat__post_new_user_message"
+                        });
+                    }
 
-                    const new_message = await sessionData.asistant_wrap.execute_agent(
+                    const asistant_wrap = new OpenAIAssistantWrapper(manifest);
+                    await asistant_wrap.get_or_create_assistant(session_data.assistantId);
+
+                    const new_message = await asistant_wrap.execute_agent(
                         content,
                         session_data.threadId
                     );
@@ -182,12 +222,13 @@ export class ExpressChatExporter extends ExpressBaseExporter {
                     // load all messages and replace XD!
                     // them get messages
                     const chat_messages =
-                        await sessionData.asistant_wrap.get_chat_messages(
+                        await asistant_wrap.get_chat_messages(
                             `${new_message.threadId}`
                         );
 
                     res.render(GetChatView("chat_chatlog_messages"), {
                         chat_data_info: { chat_messages, sessionId },
+                        ...this.get_ui_common_data()
                     });
                 } catch (error) {
                     console.error(error);
@@ -201,35 +242,58 @@ export class ExpressChatExporter extends ExpressBaseExporter {
 
         this.app.get(R.chat__get_view_user_chat,
             async (req: Request, res: Response) => {
-                const { sessionId } = req.params;
+                try {
+                    const { sessionId } = req.params;
 
-                const session_data = await this.chat_db_wrapper.get_session(sessionId);
+                    const session_data = await this.chat_db_wrapper.get_session(sessionId);
 
-                const sessionData = this.sessionManager.createSession(
-                    session_data?.userId as string,
-                    session_data?.title as string,
-                    CreateAssistantOptions()
-                );
+                    if (!session_data) {
 
-                const threadId = session_data?.threadId;
+                        return res.render(GetChatView("error_message"), {
+                            error___details: 'Session not found',
+                            message_json: "Error on this.app.post(R.chat__get_view_user_chat"
+                        });
+                    }
 
-                if (threadId) {
-                    // them load the messages
-                    await sessionData.asistant_wrap.get_or_create_assistant(
-                        session_data?.assistantId
-                    );
-                    // them get messages
-                    const chat_messages =
-                        await sessionData.asistant_wrap.get_chat_messages(threadId);
+                    const manifest = this.get_manifest_by_assistants_id(session_data.manifestId);
 
-                    res.render(GetChatView("index_page"), {
-                        ...this.get_ui_common_data(),
-                        chat_data_info: { chat_messages, sessionId },
-                    });
-                } else {
-                    res.render(GetChatView("index_page"), {
-                        ...this.get_ui_common_data(),
-                        chat_data_info: { chat_messages: { data: [] }, sessionId },
+                    if (!manifest) {
+                        // return error message
+                        return res.render(GetChatView("error_message"), {
+                            error___details: 'Manifest Not Found Error',
+                            message_json: "Error on R.chat__get_view_user_chat"
+                        });
+                    }
+
+                    const asistant_wrap = new OpenAIAssistantWrapper(manifest);
+                    await asistant_wrap.get_or_create_assistant(session_data.assistantId);
+
+                    const threadId = session_data?.threadId;
+
+                    if (threadId) {
+                        // them load the messages
+                        await asistant_wrap.get_or_create_assistant(
+                            session_data?.assistantId
+                        );
+                        // them get messages
+                        const chat_messages =
+                            await asistant_wrap.get_chat_messages(threadId);
+
+                        res.render(GetChatView("index_page"), {
+                            ...this.get_ui_common_data(),
+                            chat_data_info: { chat_messages, sessionId },
+                        });
+                    } else {
+                        res.render(GetChatView("index_page"), {
+                            ...this.get_ui_common_data(),
+                            chat_data_info: { chat_messages: { data: [] }, sessionId },
+                        });
+                    }
+                } catch (error) {
+                    console.error(error);
+                    return res.render(GetChatView("error_message"), {
+                        error___details: 'Server error occurred on R.chat__get_view_user_chat',
+                        message_json: JSON.stringify((error as any)?.message)
                     });
                 }
             }
@@ -255,11 +319,19 @@ export class ExpressChatExporter extends ExpressBaseExporter {
 
             app.use(express.json());
             app.use(express.urlencoded({ extended: true }));
+
+
+            const list_of_agents: AssistantManifest[] = [
+                Tailwind_HTMX_alpine_jquery(),
+                Full_stack_Software_Architect(),
+            ]
+
             // Initialize all Express tool exporter functionalities
             const express_exporter = new ExpressChatExporter({
                 app: app,
                 context_common_data: {},
-                path_main: ''
+                path_main: '',
+                manifests: list_of_agents
             });
             express_exporter.setupRoutes();
             // Start the server

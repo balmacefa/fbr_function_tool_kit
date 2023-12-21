@@ -1,6 +1,0 @@
-<% if (locals.chat_data_info) if (locals.chat_data_info.chat_messages)
-locals.chat_data_info.chat_messages.data.forEach(function(message) { %>
-<!--  -->
-<%- include('chat_single_message', { message: message }) %>
-<!--  -->
-<% }); %>

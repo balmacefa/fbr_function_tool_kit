@@ -9,16 +9,23 @@ export function getMongoDbClientCollection(dbName: string, collectionName: strin
     const collection = client.db(dbName).collection(collectionName);
     return collection;
 }
+interface FBR_ChatDBSupportColl extends MongoDBDocument {
+    _id: ObjectId,
+    id: string,
+    userId: string,
+    assistantId: string,
+    manifestId: string,
+    title: string,
+}
 
 export class FBR_ChatDBSupport {
-    private static instance?: FBR_ChatDBSupport;
-    private chatSessionCollection: Collection<MongoDBDocument>;
+    private chatSessionCollection: Collection<FBR_ChatDBSupportColl>;
 
     public constructor(dbName: string, collectionName = 'FBR_ChatSessionData') {
-        this.chatSessionCollection = getMongoDbClientCollection(dbName, 'FBR_ChatSessionData');
+        this.chatSessionCollection = getMongoDbClientCollection(dbName, collectionName) as unknown as Collection<FBR_ChatDBSupportColl>;
     }
-    private addStringId(document: MongoDBDocument): MongoDBDocument {
-        return { ...document, id: document._id.toString() };
+    private addStringId(document: MongoDBDocument): FBR_ChatDBSupportColl {
+        return { ...document, id: document._id.toString() } as FBR_ChatDBSupportColl;
     }
 
     public async get_user_sessions(userId: string) {
@@ -26,13 +33,13 @@ export class FBR_ChatDBSupport {
         return sessions.map(this.addStringId);
     }
 
-    public async get_session(sessionId: string) {
-        const session = await this.chatSessionCollection.findOne(this.get_id_pairs(sessionId),);
-        return session ? this.addStringId(session) : null;
+    public async get_session(sessionId: string): Promise<FBR_ChatDBSupportColl | undefined> {
+        const session = await this.chatSessionCollection.findOne(this.get_id_pairs(sessionId)) as FBR_ChatDBSupportColl | undefined;
+        return session ? this.addStringId(session) : undefined;
     }
 
-    public async create_user_session(data: any) {
-        const result = await this.chatSessionCollection.insertOne(data);
+    public async create_user_session(data: Omit<FBR_ChatDBSupportColl, "id" | "_id">) {
+        const result = await this.chatSessionCollection.insertOne(data as FBR_ChatDBSupportColl);
         return this.addStringId({ ...data, _id: result.insertedId });
     }
 

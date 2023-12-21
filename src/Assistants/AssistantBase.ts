@@ -1,26 +1,46 @@
+import { GPT_MODELS } from "../ChatHTMX";
+import { AssistantManifest } from "../ChatHTMX/OpenAI/OpenAIAssistantWrapper";
+import { MainUtils } from "../HostMachine";
+import { BaseToolPlugin } from "../ToolFunction/BaseToolPlugin";
 
-// abstract class AssistantBase {
-//     protected client: OpenAIClient;
-//     protected assistant: Assistant;
-//     protected name: string;
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
 
-//     constructor(client: OpenAIClient, name: string) {
-//         this.client = client;
-//         this.name = name;
-//         this.assistant = this.initAssistant();
-//     }
+// This is currrent folder
 
-//     protected abstract initAssistant(): Assistant;
+const CurrentPath = dirname(fileURLToPath(import.meta.url));
 
-//     async sendMessage(message: string): Promise<string> {
-//         // Logic to send a message to the assistant and get a response
-//     }
 
-//     getName(): string {
-//         return this.name;
-//     }
+/**
+ * Factory function to create AssistantOptions based on the provided AgentType.
+ * @param agentType The type of agent from the AgentType enum.
+ * @returns AssistantOptions based on the provided agent type.
+ */
+export function Tailwind_HTMX_alpine_jquery(): AssistantManifest {
 
-//     // Additional common methods or utilities that all assistants might need
-// }
+    const prompt = MainUtils.read_file_from_path(CurrentPath + '/prompts/Tailwind_HTMX_alpine_jquery.agent.md');
+    const manifest: AssistantManifest = {
+        model: GPT_MODELS.LAST_AND_BEST.model,
+        instructions: prompt,
+        name: 'Tailwind_HTMX_alpine_jquery - v1.0.0',
+        BaseToolPlugin: BaseToolPlugin.factory_plugin("fbr_BaseToolPlugin_tools_directory_and_git"),
+        ejs_render_path: "",
+        ejs_variables: {},
+        show_case: false
+    }
+    return manifest;
+}
+export function Full_stack_Software_Architect(): AssistantManifest {
 
-// export default AssistantBase;
+    const prompt = MainUtils.read_file_from_path(CurrentPath + '/prompts/Full_stack_Software_Architect.agent.md');
+    const manifest: AssistantManifest = {
+        model: GPT_MODELS.LAST_AND_BEST.model,
+        instructions: prompt,
+        name: 'Full_stack_Software_Architect - v1.0.0',
+        BaseToolPlugin: BaseToolPlugin.factory_plugin("fbr_BaseToolPlugin_tools_directory_and_git"),
+        ejs_render_path: "",
+        ejs_variables: {},
+        show_case: false
+    }
+    return manifest;
+}
