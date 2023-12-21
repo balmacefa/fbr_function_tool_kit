@@ -149,27 +149,37 @@ export class ExpressChatExporter extends ExpressBaseExporter {
                         manifestId: manifest.name
                     });
 
-                res.render(
-                    GetChatView("sidebar_chat_item_link"),
-                    {
-                        ...this.get_ui_common_data(),
-                        chat: new_session_data,
-                    },
-                    (err, html) => {
-                        if (err) {
-                            // Handle the error, for example, by sending an error response
-                            console.error(err);
-                            return res.render(GetChatView("error_message"), {
-                                error___details: 'Session not found',
-                                message_json: err
-                            });
-                        } else {
-                            // html is the rendered content
-                            const renderedContent = html;
-                            res.send(renderedContent);
-                        }
-                    }
-                );
+                // R.chat__get_view_user_chat, set params to new_session_data.id
+
+                const redirect_user = this.replacePattern(R.chat__get_view_user_chat, new_session_data.id);
+
+                res.setHeader('HX-Redirect', redirect_user);
+                res.status(200).send('redirect to header HX-Redirect');
+
+
+
+                // res.render(
+                //     GetChatView("sidebar_chat_item_link"),
+                //     {
+                //         ...this.get_ui_common_data(),
+                //         chat: new_session_data,
+                //     },
+                //     (err, html) => {
+                //         if (err) {
+                //             // Handle the error, for example, by sending an error response
+                //             console.error(err);
+                //             return res.render(GetChatView("error_message"), {
+                //                 error___details: 'Session not found',
+                //                 message_json: err
+                //             });
+                //         } else {
+                //             // html is the rendered content
+                //             const renderedContent = html;
+                //             res.send(renderedContent);
+                //         }
+                //     }
+                // );
+
             } catch (error) {
                 console.error(error);
                 return res.render(GetChatView("error_message"), {

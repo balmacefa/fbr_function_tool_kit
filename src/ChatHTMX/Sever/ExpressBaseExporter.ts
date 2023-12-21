@@ -25,6 +25,14 @@ export abstract class ExpressBaseExporter {
         return this.common_data
     }
 
+    public replacePattern(baseStr: string, subs: string): string {
+        // This regular expression looks for a pattern starting with ':' followed by any characters
+        // until it encounters a '/', or end of the string
+        const pattern = /:([^/]+)/;
+        // Replace the found pattern with the 'subs' string
+        return baseStr.replace(pattern, subs);
+    }
+
     // abstract __default_server(): void;
     abstract setupRoutes(): void;
     abstract routes_definitions(): any;
