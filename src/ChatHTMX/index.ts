@@ -1,3 +1,6 @@
+export * from './Sever/ExpressBaseExporter'
+export * from './Sever/ExpressChatExporter'
+
 export * from './OpenAI/OpenAIAssistantSessionManager'
 
 export * from './AssistantsFactory'

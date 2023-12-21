@@ -1,60 +1,64 @@
 import { Express, Request, Response } from "express";
 import morgan from "morgan";
 // import { CreateAssistantOptions } from "../ChatHTMX";
-
-import { MainUtils } from "../../HostMachine";
+import _ from "lodash";
 import { CreateAssistantOptions } from "../AssistantsFactory";
 import { FBR_ChatDBSupport } from "../DB/FBR_ChatDBSupport";
 import { OpenAIAssistantSessionManager } from "../OpenAI/OpenAIAssistantSessionManager";
+import { GetChatView } from "../views/Path";
 import { ExpressBaseExporter } from "./ExpressBaseExporter";
 
 const DB_NAME = "IIRESODH_test";
 
 
+
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+export const CurrentPath = dirname(fileURLToPath(import.meta.url));
+
 export class ExpressChatExporter extends ExpressBaseExporter {
+    // private absolute_index_path: string;
     common_data: any;
     routes_definitions(): Record<string, string> {
         throw new Error("Method not implemented.");
     }
     private app: Express;
     private sessionManager: OpenAIAssistantSessionManager;
-
+    // private views_drc: string;
     private chat_db_wrapper = new FBR_ChatDBSupport(DB_NAME);
     R: Record<string, string>;
 
 
-    constructor(args: { app: Express; views_drc: string, path_main: string, context_common_data: Record<string, string> }) {
+    constructor(args: { app: Express, chat_landing_ejs?: string, path_main: string, context_common_data: Record<string, string> }) {
         super();
         this.app = args.app;
         this.sessionManager = OpenAIAssistantSessionManager.getInstance();
 
         // TODO: add dev mode check
         // Set the directory for the views
-        this.app.set("views", args.views_drc);
 
-        // Set the view engine to EJS
-        this.app.set("view engine", "ejs");
         const sub_path_main = args.path_main + "/chat_app";
         this.R = {
 
             chat: sub_path_main,
             chat__post_create_session: sub_path_main + "/htmx/session_create",
+            chat__get_view_user_chat: sub_path_main + "/htmx/session_view/:sessionId",
             chat__post_new_user_message: sub_path_main + "/htmx/session_view/action/new_user_message",
             chat__get_user_chats: sub_path_main + "/:userId",
-            chat__get_view_user_chat: sub_path_main + "/htmx/session_view/:sessionId",
 
         };
-        this.common_data = {
+
+        const combinned_common_data = _.merge({
             R: this.R,
-            ...args.context_common_data
-        }
-        this.setupRoutes();
+            chat_landing_ejs: args.chat_landing_ejs ? args.chat_landing_ejs : GetChatView("index"),
+        }, args.context_common_data);
+        this.common_data = combinned_common_data
     }
 
     setupRoutes() {
         this.setupChatRoutes(this.R);
     }
-    setupChatRoutes(R: Record<string, string>) {
+    private setupChatRoutes(R: Record<string, string>) {
         this.app.get(R.chat, (req: Request, res: Response) => {
             // const { userId, title, options } = req.body;
             // const sessionData = this.sessionManager.createSession(
@@ -66,7 +70,7 @@ export class ExpressChatExporter extends ExpressBaseExporter {
 
             // Adding /chat_app route
             // Render a view for the /chat_app route
-            res.render("ChatApp/index_page", { ...this.get_ui_common_data() });
+            res.render(GetChatView("index_page"), { ...this.get_ui_common_data() });
         });
 
         // This are chat related functons - debe ser heredadas, se puede hacer o
@@ -80,7 +84,7 @@ export class ExpressChatExporter extends ExpressBaseExporter {
                     const userChats = await this.chat_db_wrapper.get_user_sessions(userId);
 
                     // Luego, renderiza una vista que muestre los chats en el nav bar del sidebar
-                    res.render("ChatApp/sidebar_chat_item_link_loop", {
+                    res.render(GetChatView("sidebar_chat_item_link_loop"), {
                         userChats: userChats,
                         ...this.get_ui_common_data(),
                     });
@@ -116,7 +120,7 @@ export class ExpressChatExporter extends ExpressBaseExporter {
                         if (err) {
                             // Handle the error, for example, by sending an error response
                             console.error(err);
-                            return res.render("Buscador/error_on_hit", {
+                            return res.render(GetChatView("error_message"), {
                                 error___details: 'Session not found',
                                 message_json: err
                             });
@@ -129,7 +133,7 @@ export class ExpressChatExporter extends ExpressBaseExporter {
                 );
             } catch (error) {
                 console.error(error);
-                return res.render("Buscador/error_on_hit", {
+                return res.render(GetChatView("error_message"), {
                     error___details: 'Session not created',
                     message_json: "Error on this.app.post(R.chat__post_new_user_message"
                 });
@@ -147,7 +151,7 @@ export class ExpressChatExporter extends ExpressBaseExporter {
 
                     if (!session_data) {
 
-                        return res.render("Buscador/error_on_hit", {
+                        return res.render(GetChatView("error_message"), {
                             error___details: 'Session not found',
                             message_json: "Error on this.app.post(R.chat__post_new_user_message"
                         });
@@ -181,12 +185,12 @@ export class ExpressChatExporter extends ExpressBaseExporter {
                             `${new_message.threadId}`
                         );
 
-                    res.render("ChatApp/chat_chatlog_messages", {
+                    res.render(GetChatView("chat_chatlog_messages"), {
                         chat_data_info: { chat_messages, sessionId },
                     });
                 } catch (error) {
                     console.error(error);
-                    return res.render("Buscador/error_on_hit", {
+                    return res.render(GetChatView("error_message"), {
                         error___details: 'Server error occurred',
                         message_json: JSON.stringify((error as any)?.message)
                     });
@@ -217,12 +221,12 @@ export class ExpressChatExporter extends ExpressBaseExporter {
                     const chat_messages =
                         await sessionData.asistant_wrap.get_chat_messages(threadId);
 
-                    res.render("ChatApp/index_page", {
+                    res.render(GetChatView("index_page"), {
                         ...this.get_ui_common_data(),
                         chat_data_info: { chat_messages, sessionId },
                     });
                 } else {
-                    res.render("ChatApp/index_page", {
+                    res.render(GetChatView("index_page"), {
                         ...this.get_ui_common_data(),
                         chat_data_info: { chat_messages: { data: [] }, sessionId },
                     });
@@ -249,16 +253,14 @@ export class ExpressChatExporter extends ExpressBaseExporter {
             );
 
             app.use(express.json());
-            const views_drc = MainUtils.root_directory("packages/siaj/src/views");
             app.use(express.urlencoded({ extended: true }));
             // Initialize all Express tool exporter functionalities
             const express_exporter = new ExpressChatExporter({
                 app: app,
-                views_drc,
                 context_common_data: {},
                 path_main: ''
             });
-
+            express_exporter.setupRoutes();
             // Start the server
             const port = `${process.env.PORT || 5000}`; // Replace with your desired port
             const server = app.listen(port, () => {
@@ -274,8 +276,7 @@ export class ExpressChatExporter extends ExpressBaseExporter {
 
 if (typeof require !== "undefined" && require.main === module) {
     (() => {
-        const express_server = ExpressChatExporter.default_server();
-
+        ExpressChatExporter.default_server();
         // Import Inquirer within the async function if it's not already imported
         // TODO: Update the swagger registry and routes with the ngrok URL
         // [Your logic to update Swagger registry and routes goes here]

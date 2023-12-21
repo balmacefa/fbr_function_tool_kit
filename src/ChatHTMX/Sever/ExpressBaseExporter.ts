@@ -3,6 +3,8 @@
 
 export abstract class ExpressBaseExporter {
     abstract common_data: any;
+    abstract R: Record<string, string>;
+
 
     public extractFirstKeyValues(arr: Record<string, string>[]) {
         if (arr.length === 0) {
@@ -18,7 +20,10 @@ export abstract class ExpressBaseExporter {
 
         return arr.map(item => item[firstKey]);
     }
-    public get_ui_common_data() { return this.common_data }
+    public get_ui_common_data() {
+        // console.log(this.common_data)
+        return this.common_data
+    }
 
     // abstract __default_server(): void;
     abstract setupRoutes(): void;

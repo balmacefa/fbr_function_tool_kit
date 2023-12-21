@@ -4,6 +4,11 @@ import { MaybePromise } from '../types';
 // const { __dirname } = getGlobals(import.meta.url);
 const FindFiles = require('file-regex');
 
+
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+export const CurrentPath = dirname(fileURLToPath(import.meta.url));
+
 /** */
 export class MainUtils {
 

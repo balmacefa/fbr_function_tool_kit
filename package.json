@@ -27,6 +27,7 @@
     "dev_": "env-cmd -e base,dev, tsx watch src/ChatHTMX/DB/PrismaManager.ts",
     "dev__": "env-cmd -e base,dev, tsx watch src/ChatHTMX/ExpressOpenAIAssistantSessionExporter.tsx",
     "dev:iiresodh": "env-cmd -e base,dev, tsx watch src/IIRESODH/ExpressExporter.tsx",
+    "dev:chat": "env-cmd -e base,dev, tsx watch src/ChatHTMX/Sever/ExpressChatExporter.ts",
     "watch": "npx reloadify --port 3000 --folder src/IIRESODH/views",
     "watch_": "browser-sync start --proxy http://localhost:3000  -w --files '*.ejs'",
     "dev": "run-p dev:iiresodh",

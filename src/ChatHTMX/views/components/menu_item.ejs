@@ -1,0 +1,10 @@
+<!-- Nav Icon with no background color and a bottom border for non-active items -->
+<a href="<%= locals.url_path %>">
+  <div
+    class="<%- locals.url_path === R.server_hit_path ? 'bg-slate-300 shadow-lg border-r-4 border-red-400': 'hover:bg-slate-200 hover:shadow-lg shadow-sm border-b-2 border-slate-600' %> nav-icon w-24 h-24 p-8 flex-col justify-center items-center gap-2 flex transition-all duration-300"
+  >
+    <!-- Replace 'fa-icon' with your icon -->
+    <i class="<%= locals.icon %>" fill="currentColor"></i>
+    <div class="text-center text-xs font-bold h-48"><%= locals.title %></div>
+  </div>
+</a>
