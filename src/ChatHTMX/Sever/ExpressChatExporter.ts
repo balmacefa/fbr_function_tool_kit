@@ -5,7 +5,7 @@ import _ from "lodash";
 import { CreateAssistantOptions } from "../AssistantsFactory";
 import { FBR_ChatDBSupport } from "../DB/FBR_ChatDBSupport";
 import { OpenAIAssistantSessionManager } from "../OpenAI/OpenAIAssistantSessionManager";
-import { GetChatView } from "../views/Path";
+import { GetChatView } from "../views/ViewsPath";
 import { ExpressBaseExporter } from "./ExpressBaseExporter";
 
 const DB_NAME = "IIRESODH_test";
@@ -29,7 +29,7 @@ export class ExpressChatExporter extends ExpressBaseExporter {
     R: Record<string, string>;
 
 
-    constructor(args: { app: Express, chat_landing_ejs?: string, path_main: string, context_common_data: Record<string, string> }) {
+    constructor(args: { app: Express, chat_landing_ejs_inject_on_locals__main_content?: string, path_main: string, context_common_data: Record<string, string> }) {
         super();
         this.app = args.app;
         this.sessionManager = OpenAIAssistantSessionManager.getInstance();
@@ -50,7 +50,8 @@ export class ExpressChatExporter extends ExpressBaseExporter {
 
         const combinned_common_data = _.merge({
             R: this.R,
-            chat_landing_ejs: args.chat_landing_ejs ? args.chat_landing_ejs : GetChatView("index"),
+            chat_landing_ejs: args.chat_landing_ejs_inject_on_locals__main_content ?
+                args.chat_landing_ejs_inject_on_locals__main_content : GetChatView("index"),
         }, args.context_common_data);
         this.common_data = combinned_common_data
     }

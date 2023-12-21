@@ -8,6 +8,7 @@ const FindFiles = require('file-regex');
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 export const CurrentPath = dirname(fileURLToPath(import.meta.url));
+// path.join(root_path, append_path)
 
 /** */
 export class MainUtils {
