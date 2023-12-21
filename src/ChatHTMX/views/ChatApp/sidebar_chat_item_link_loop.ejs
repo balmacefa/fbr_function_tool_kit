@@ -1,0 +1,5 @@
+<% if (locals.userChats) locals.userChats.forEach(function(chat) { %>
+<!--  -->
+<%- include('sidebar_chat_item_link', { chat: chat }) %>
+<!--  -->
+<% }); %>

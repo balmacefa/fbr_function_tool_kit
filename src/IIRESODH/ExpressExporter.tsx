@@ -1,7 +1,7 @@
 import { Express, Request, Response } from "express";
 import morgan from "morgan";
 import { CreateAssistantOptions } from "../ChatHTMX/AssistantsFactory";
-import { FBR_ChatDBSupport } from "../ChatHTMX/DB/PrismaManager";
+import { FBR_ChatDBSupport } from "../ChatHTMX/DB/FBR_ChatDBSupport";
 import { OpenAIAssistantSessionManager } from "../ChatHTMX/OpenAIAssistantSessionManager";
 import { MainUtils } from "../HostMachine";
 import { GlobalCommons, GlobalCommons_ui_data } from "./UI_TYPE";

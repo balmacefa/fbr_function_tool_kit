@@ -1,7 +1,7 @@
 import { MainUtils } from "../HostMachine";
 import { BaseToolPlugin } from "../ToolFunction/BaseToolPlugin";
 import { GPT_MODELS } from "./GPTS_Codes";
-import { AssistantOptions } from "./OpenAIAssistantWrapper";
+import { AssistantOptions } from "./OpenAI/OpenAIAssistantWrapper";
 
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
