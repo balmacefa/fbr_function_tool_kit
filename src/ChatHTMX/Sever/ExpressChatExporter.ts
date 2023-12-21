@@ -37,7 +37,7 @@ export class ExpressChatExporter extends ExpressBaseExporter {
     R: Record<string, string>;
 
 
-    constructor(args: { app: Express, manifests: AssistantManifest[], chat_landing_ejs_inject_on_locals__main_content?: string, path_main: string, context_common_data: Record<string, string> }) {
+    constructor(args: { app: Express, manifests: AssistantManifest[], chat_landing_ejs_inject_on_locals__main_content?: string, sub_path_main: string, context_common_data: Record<string, string> }) {
         super();
         this.app = args.app;
         // this.sessionManager = OpenAIAssistantSessionManager.getInstance();
@@ -46,7 +46,7 @@ export class ExpressChatExporter extends ExpressBaseExporter {
         // Set the directory for the views
 
         this.manifests = args.manifests;
-        const sub_path_main = args.path_main + "/chat_app";
+        const { sub_path_main } = args;
         this.R = {
 
             chat: sub_path_main,
@@ -330,7 +330,7 @@ export class ExpressChatExporter extends ExpressBaseExporter {
             const express_exporter = new ExpressChatExporter({
                 app: app,
                 context_common_data: {},
-                path_main: '',
+                sub_path_main: '/chat_app',
                 manifests: list_of_agents
             });
             express_exporter.setupRoutes();
