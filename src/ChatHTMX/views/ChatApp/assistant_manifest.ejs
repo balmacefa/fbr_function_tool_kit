@@ -1,0 +1,108 @@
+<div
+  id="open_asistant_manifest"
+  x-show="open_asistant_manifest"
+  class="fixed inset-0 bg-gray-900 bg-opacity-50 overflow-y-auto h-full w-full z-10"
+  x-cloak
+>
+  <div
+    class="relative top-20 mx-auto p-5 border w-2/3 shadow-lg rounded-md bg-gray-700"
+  >
+    <div class="bg-gray-800 p-4">
+      <div class="p-4 flex justify-between items-start">
+        <h2 class="text-2xl font-bold text-white break-words">Aistentes GPT</h2>
+
+        <button
+          name="instructions"
+          @click="open_asistant_manifest = false"
+          class="modal-button text-white"
+        >
+          <i class="fas fa-window-close fa-3xl"></i>
+          Close
+        </button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <% if (locals.chat_manifests)
+        locals.chat_manifests.forEach(function(manifest) { %>
+
+        <!-- Repeat this section for each card manifest -->
+        <div
+          x-data="{ open: false }"
+          class="bg-gray-700 rounded-lg overflow-hidden"
+        >
+          <img
+            src="https://api.dicebear.com/7.x/shapes/svg?seed=Garfield"
+            alt="avatar"
+          />
+          <div class="p-4 flex justify-between items-start">
+            <h2
+              class="text-sm md:text-xl lg:text-2xl font-bold text-white break-words"
+            >
+              <%- manifest.name %>
+            </h2>
+
+            <button
+              name="instructions"
+              @click="open = !open"
+              class="modal-button text-white"
+            >
+              <i class="fas fa-info-circle fa-3xl"></i>
+            </button>
+          </div>
+          <div class="p-4">
+            <% if (manifest.description !== ''){ %>
+            <p class="text-gray-100">Description:</p>
+            <p class="text-gray-100"><%- manifest.description %></p>
+            <% } %>
+            <div class="text-gray-400">Model: <%- manifest.model %></div>
+
+            <button
+              hx-post="<%- locals.R.chat__post_create_session %>"
+              hx-trigger="click"
+              hx-vals='{"userId": "649c9e6009a907a8543f46e4",
+                "asistant_id": "<%- manifest.name %>",
+               "title": "New Chat"}'
+              class="mt-4 bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:shadow-outline"
+            >
+              Iniciar Chat
+            </button>
+          </div>
+          <div
+            x-show="open"
+            class="fixed inset-0 bg-gray-900 bg-opacity-50 overflow-y-auto h-full w-full"
+            x-cloak
+          >
+            <div
+              class="top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-gray-700 z-20"
+            >
+              <div class="mt-3 text-center">
+                <div
+                  class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100"
+                >
+                  <i class="fas fa-check-circle text-green-600"></i>
+                </div>
+                <h3 class="text-lg leading-6 font-medium text-white">
+                  Instructions
+                </h3>
+                <div class="mt-2 px-7 py-3">
+                  <p class="text-sm text-gray-300">
+                    <%- manifest.instructions %>
+                  </p>
+                </div>
+                <div class="items-center px-4 py-3">
+                  <button
+                    @click="open = false"
+                    class="px-4 py-2 bg-green-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-300"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--  -->
+        <% }); %>
+      </div>
+    </div>
+  </div>
+</div>

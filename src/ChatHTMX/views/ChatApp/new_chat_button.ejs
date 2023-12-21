@@ -1,9 +1,5 @@
 <a
-  hx-post="<%- locals.R.chat__post_create_session %>"
-  hx-target="#chatapp___session_list_container"
-  hx-trigger="click"
-  hx-swap="afterbegin"
-  hx-vals='{"userId": "649c9e6009a907a8543f46e4", "title": "New Chat"}'
+  @click="open_asistant_manifest = true"
   class="flex py-3 px-3 items-center gap-3 rounded-md hover:bg-gray-500/10 transition-colors duration-200 text-white cursor-pointer text-sm mb-1 flex-shrink-0 border border-white/20"
 >
   <svg

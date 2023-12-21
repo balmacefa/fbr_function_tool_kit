@@ -26,7 +26,7 @@ export const CurrentPath = dirname(fileURLToPath(import.meta.url));
 export class ExpressChatExporter extends ExpressBaseExporter {
     // private absolute_index_path: string;
     common_data: any;
-    manifests: AssistantManifest[];
+    chat_manifests: AssistantManifest[];
     routes_definitions(): Record<string, string> {
         throw new Error("Method not implemented.");
     }
@@ -45,7 +45,7 @@ export class ExpressChatExporter extends ExpressBaseExporter {
         // TODO: add dev mode check
         // Set the directory for the views
 
-        this.manifests = args.manifests;
+        this.chat_manifests = args.manifests;
         const { sub_path_main } = args;
         this.R = {
 
@@ -58,6 +58,7 @@ export class ExpressChatExporter extends ExpressBaseExporter {
         };
 
         const combinned_common_data = _.merge({
+            chat_manifests: this.chat_manifests,
             R: this.R,
             chat_landing_ejs: args.chat_landing_ejs_inject_on_locals__main_content ?
                 args.chat_landing_ejs_inject_on_locals__main_content : GetChatView("index"),
@@ -66,7 +67,7 @@ export class ExpressChatExporter extends ExpressBaseExporter {
     }
 
     _getShowCaseAssistantManifest(): AssistantManifest[] {
-        return this.manifests.filter(el => (el.show_case && el.ejs_render_path))
+        return this.chat_manifests.filter(el => (el.show_case && el.ejs_render_path))
     }
 
     renderShowCaseAssistantManifest(): AssistantManifest[] {
@@ -79,7 +80,7 @@ export class ExpressChatExporter extends ExpressBaseExporter {
         return show_cases;
     }
     get_manifest_by_assistants_id(id: string) {
-        return this.manifests.find(el => el.name === id);
+        return this.chat_manifests.find(el => el.name === id);
     }
 
     setupRoutes() {

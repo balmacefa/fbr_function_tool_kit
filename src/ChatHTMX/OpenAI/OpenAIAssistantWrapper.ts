@@ -8,8 +8,9 @@ import { BaseToolPlugin } from "../../ToolFunction/BaseToolPlugin";
 export interface AssistantOptions {
     model: string;
     assistantId?: string;
-    name?: string;
+    name: string;
     instructions?: string;
+    description: string;
     BaseToolPlugin?: BaseToolPlugin;
 }
 
