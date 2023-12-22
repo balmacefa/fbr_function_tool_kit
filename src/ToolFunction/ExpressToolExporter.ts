@@ -94,7 +94,7 @@ export class ExpressToolExporter {
 
     public static default_server(base_tool_plugin: BaseToolPlugin) {
         import('express')
-            .then(async express => {
+            .then(express => {
                 const app = express.default(); // Note the use of .default here
                 app.use(express.json()); // To support JSON-encoded bodies
                 app.use(function (req, res, next) {
@@ -116,7 +116,7 @@ export class ExpressToolExporter {
 
                 // Start the server
                 const port = 3000; // Replace with your desired port
-                const server = app.listen(port, async () => {
+                const server = app.listen(port, () => {
                     console.log(`Server running on port ${port}`);
 
                 });

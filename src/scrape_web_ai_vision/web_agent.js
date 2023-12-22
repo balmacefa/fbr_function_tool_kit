@@ -35,7 +35,7 @@ async function input(text) {
     output: process.stdout,
   });
 
-  await (async () => {
+  await (() => {
     return new Promise((resolve) => {
       rl.question(text, (prompt) => {
         the_prompt = prompt;
@@ -125,7 +125,7 @@ async function highlight_links(page) {
   });
 }
 
-async function waitForEvent(page, event) {
+function waitForEvent(page, event) {
   return page.evaluate((event) => {
     return new Promise((r, _) => {
       document.addEventListener(event, function (e) {
@@ -184,8 +184,8 @@ async function waitForEvent(page, event) {
 
   let url;
   let screenshot_taken = false;
-
-  while (true) {
+  let continue_loop = true;
+  while (continue_loop) {
     if (url) {
       console.log("Crawling " + url);
       await page.goto(url, {

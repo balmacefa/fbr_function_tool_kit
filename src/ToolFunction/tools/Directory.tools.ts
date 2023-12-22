@@ -4,6 +4,7 @@ import { MainUtils } from '../../HostMachine';
 import { ToolFunction } from '../ToolFunction';
 
 import { extendZodWithOpenApi } from "@asteasolutions/zod-to-openapi";
+import { MaybePromise } from '../../types';
 import { MultiFileContentViewer } from './MultiFileContentViewer.tools';
 
 
@@ -96,10 +97,9 @@ export const Absolute_File_String_Reader_Tool = (): ToolFunction => {
     });
 
     type IOInput = z.infer<typeof input_schema>;
-    type IOResponse = Promise<z.infer<typeof response_schema>>;
+    type IOResponse = MaybePromise<z.infer<typeof response_schema>>;
 
-    // eslint-disable-next-line require-await
-    const tool_fn = async (input: IOInput): IOResponse => {
+    const tool_fn = (input: IOInput): IOResponse => {
         const content: string = MainUtils.read_file_from_path(input.absolutePath);
         return { content: content };
     };
@@ -121,10 +121,9 @@ export const Local_File_String_Reader_Tool = (): ToolFunction => {
     const response_schema = z.string().describe('Return the string file full content');
 
     type IOInput = z.infer<typeof input_schema>;
-    type IOResponse = Promise<z.infer<typeof response_schema>>;
+    type IOResponse = MaybePromise<z.infer<typeof response_schema>>;
 
-    // eslint-disable-next-line require-await
-    const tool_fn = async (input: IOInput): IOResponse => {
+    const tool_fn = (input: IOInput): IOResponse => {
         const content: string = MainUtils.read_file_from_root(input.absolutePath).fileContent;
         return content;
     };
@@ -211,9 +210,9 @@ export const ToolChangeRootDirectory = (): ToolFunction => {
     });
 
     type IOInput = z.infer<typeof input_schema>;
-    type IOResponse = Promise<z.infer<typeof response_schema>>;
+    type IOResponse = MaybePromise<z.infer<typeof response_schema>>;
 
-    const tool_fn = async (input: IOInput): IOResponse => {
+    const tool_fn = (input: IOInput): IOResponse => {
         try {
             MainUtils.set_root_path(input.newRootPath);
             return { success: true };
@@ -238,9 +237,9 @@ export const ToolGetRootDirectory = (): ToolFunction => {
     });
     const inputSchema = z.object({}).strict();
 
-    type IOResponse = Promise<z.infer<typeof response_schema>>;
+    type IOResponse = MaybePromise<z.infer<typeof response_schema>>;
 
-    const tool_fn = async (): IOResponse => {
+    const tool_fn = (): IOResponse => {
         try {
             const rootPath = MainUtils.get_root_path();
             return { rootPath };

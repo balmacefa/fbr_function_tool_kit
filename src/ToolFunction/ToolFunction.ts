@@ -1,4 +1,5 @@
 import { AnyZodObject, z } from 'zod';
+import { MaybePromise } from '../types';
 
 type SuccessResponse = {
     succeded: true;
@@ -19,7 +20,7 @@ type ResultToolFunction = SuccessResponse | ErrorResponse;
 export class ToolFunction<TI = any, TO = any> {
     name: string;
     description: string;
-    toolFn: (input: TI) => TO;
+    toolFn: (input: TI) => MaybePromise<TO>;
     inputSchema?: AnyZodObject | z.ZodString;
     responseSchema?: AnyZodObject | z.ZodString;
     host: string
@@ -43,7 +44,7 @@ export class ToolFunction<TI = any, TO = any> {
         this.prefix_path = prefix_path ? prefix_path : '';
     }
 
-    execute(input: TI): TO {
+    execute(input: TI): MaybePromise<TO> {
         return this.toolFn(input);
     }
 
