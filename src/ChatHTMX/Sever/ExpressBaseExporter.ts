@@ -34,6 +34,6 @@ export abstract class ExpressBaseExporter {
     }
 
     // abstract __default_server(): void;
-    abstract setupRoutes(): void;
+    abstract setupRoutes(): Promise<void>;
     abstract routes_definitions(): any;
 }

@@ -84,7 +84,9 @@ export class ExpressChatExporter extends ExpressBaseExporter {
         return this.chat_manifests.find(el => el.name === id);
     }
 
-    setupRoutes() {
+    async setupRoutes() {
+        // lets init the mongo instance
+        await this.chat_db_wrapper.init();
         this.setupChatRoutes(this.R);
     }
     private setupChatRoutes(R: Record<string, string>) {
@@ -313,7 +315,7 @@ export class ExpressChatExporter extends ExpressBaseExporter {
     }
 
     static default_server() {
-        import("express").then((express) => {
+        import("express").then(async (express) => {
             const app = express.default(); // Note the use of .default here
             app.use(express.json()); // To support JSON-encoded bodies
             app.use(function (req, res, next) {
@@ -345,7 +347,7 @@ export class ExpressChatExporter extends ExpressBaseExporter {
                 sub_path_main: '/chat_app',
                 manifests: list_of_agents
             });
-            express_exporter.setupRoutes();
+            await express_exporter.setupRoutes();
             // Start the server
             const port = `${process.env.PORT || 5000}`; // Replace with your desired port
             const server = app.listen(port, () => {
