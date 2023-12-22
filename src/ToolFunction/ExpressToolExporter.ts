@@ -12,16 +12,21 @@ export class ExpressToolExporter {
     public open_api_url: string;
     public validate_ouput_schema = false;
 
+    public route_post_prefix: string;
+
+
     constructor(
         args: {
             app: Express;
             base_tool_plugin: BaseToolPlugin;
             open_api_url: string;
+            route_post_prefix?: string
         }
     ) {
         this.app = args.app;
         this.base_tool_plugin = args.base_tool_plugin;
         this.open_api_url = args.open_api_url;
+        this.route_post_prefix = args.route_post_prefix || '/tools_export';
     }
 
     public export_tools_routes() {
@@ -77,6 +82,7 @@ export class ExpressToolExporter {
         OpenApiSwaggerDocsExpress.add_swagger_route({
             app: this.app,
             open_api,
+            url_prefix: this.route_post_prefix
         });
     }
 

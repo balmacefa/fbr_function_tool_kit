@@ -22,7 +22,7 @@ export class BaseToolPlugin {
             version: string,
             host: string,
             functions: ToolFunction[],
-
+            prefix_path?: string,
         }
     ) {
         this.functions = args.functions;
@@ -30,6 +30,12 @@ export class BaseToolPlugin {
         this.identifier = args.identifier;
         this.version = args.version;
         this.host = args.host;
+
+        // loop over the functions and set the host
+        this.functions.forEach(ell => {
+            ell.host = args.host;
+            ell.prefix_path = args.prefix_path || '';
+        });
     }
 
     private validateIdentifier(identifier: string): void {
@@ -45,11 +51,11 @@ export class BaseToolPlugin {
         const response = TF_request_body['content']['application/json'].schema;
         return response;
     }
-    public generateSwaggerSpec(TF: ToolFunction): any {
+    private generateSwaggerSpec(TF: ToolFunction): any {
         const openschema = new OpenAPISchemaGenerator({
             title: TF.name,
             description: TF.description,
-            url: TF.get_path(this.host),
+            url: this.host,
             version: this.version
         });
 

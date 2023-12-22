@@ -34,7 +34,7 @@ export class ExpressChatExporter extends ExpressBaseExporter {
     private app: Express;
     // private sessionManager: OpenAIAssistantSessionManager;
     // private views_drc: string;
-    private chat_db_wrapper = new FBR_ChatDBSupport(DB_NAME);
+    private chat_db_wrapper = new FBR_ChatDBSupport({});
     R: Record<string, string>;
 
 

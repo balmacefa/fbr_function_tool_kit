@@ -72,7 +72,7 @@ export class OpenAPISchemaGenerator {
 
     public registerToolFunctionSchema(toolFunction: ToolFunction) {
         // Implementation for generating the OpenAPI schema...
-        console.log('get_openapi_schema');
+        console.log('get_openapi_schema for fnc ' + toolFunction.name);
         // Create new order
         this.registry.registerPath(
             {
@@ -86,9 +86,11 @@ export class OpenAPISchemaGenerator {
                 request: {
                     body: {
                         content: {
-                            'application/json': {
-                                schema: toolFunction.inputSchema as z.AnyZodObject,
-                            },
+                            ...(toolFunction.inputSchema ? {
+                                'application/json': {
+                                    schema: toolFunction.inputSchema,
+                                },
+                            } : {}),
                         },
                         required: true,
                     }
@@ -97,9 +99,11 @@ export class OpenAPISchemaGenerator {
                     201: {
                         description: '201 ok - COMPLETE RESPONSE',
                         content: {
-                            'application/json': {
-                                schema: toolFunction.responseSchema as z.AnyZodObject,
-                            },
+                            ...(toolFunction.responseSchema ? {
+                                'application/json': {
+                                    schema: toolFunction.responseSchema,
+                                },
+                            } : {}),
                         },
                     },
                     ...CommonZodSchemas.Response403,
