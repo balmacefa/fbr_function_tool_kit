@@ -15,11 +15,7 @@ export interface AssistantOptions {
 }
 
 export interface AssistantManifest extends AssistantOptions {
-    ejs_render_path: string;
-    ejs_variables: any;
     show_case: boolean;
-
-    renderHTML?: string;
 }
 
 interface ExcutorOutput {

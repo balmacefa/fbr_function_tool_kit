@@ -102,8 +102,10 @@ export class ToolFunction<TI = any, TO = any> {
         console.info(`Using tool: ${this.name}, with json string input: \n ${JSON.stringify(requestBody)} \n`);
         const res = await this.processRequest(requestBody, false);
         if (res.succeded) {
+            console.log(`Using tool: ${this.name}, outputs: \n ${JSON.stringify(res.response)} \n`)
             return JSON.stringify(res.response);
         }
+        console.error(`Using tool: ${this.name}, ERROR: \n ${JSON.stringify(res.error)} \n`)
         return JSON.stringify(res);
     }
 
