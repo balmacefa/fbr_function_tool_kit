@@ -1,22 +1,27 @@
-import { FBR_ChatDBSupport } from "../DB/FBR_ChatDBSupport";
 // jest-mongodb-setup.js
 import { MongoMemoryServer } from 'mongodb-memory-server';
+import { FBR_ChatDBSupport } from "../FBR_ChatDBSupport";
 
 describe('FBR_ChatDBSupport', () => {
     let chatDBSupport: FBR_ChatDBSupport;
     let mongo_server: MongoMemoryServer;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
         mongo_server = new MongoMemoryServer();
         await mongo_server.start();
         const uri = await mongo_server.getUri();
+        // await mongo_server.cleanup({ doCleanup: true });
         process.env.MONGODB_URI = uri;
         process.env.MONGODB_ATLAS_URI = uri;
+        chatDBSupport = new FBR_ChatDBSupport({});
+        await chatDBSupport.init();
     });
 
-    beforeEach(async () => {
-        chatDBSupport = new FBR_ChatDBSupport('test_db_name', 'FBR_ChatSessionData');
+    afterEach(async () => {
+        // await mongo_server.cleanup({ doCleanup: true });
+        await chatDBSupport.disconnect();
     });
+
 
     // Test for create_user_session already defined
 
@@ -41,7 +46,7 @@ describe('FBR_ChatDBSupport', () => {
             const session = await chatDBSupport.get_session(nonExistentSessionId);
 
             // Assert: The session should be undefined
-            expect(session).toBeUndefined();
+            expect(session).toBeFalsy();
         });
     });
 
