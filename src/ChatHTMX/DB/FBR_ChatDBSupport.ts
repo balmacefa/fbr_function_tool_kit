@@ -33,23 +33,43 @@ export class FBR_ChatDBSupport {
         return sessions.map(this.addStringId);
     }
 
-    public async get_session(sessionId: string): Promise<FBR_ChatDBSupportColl | undefined> {
-        const session = await this.chatSessionCollection.findOne(this.get_id_pairs(sessionId)) as FBR_ChatDBSupportColl | undefined;
-        return session ? this.addStringId(session) : undefined;
-    }
 
     public async create_user_session(data: Omit<FBR_ChatDBSupportColl, "id" | "_id">) {
         const result = await this.chatSessionCollection.insertOne(data as FBR_ChatDBSupportColl);
         return this.addStringId({ ...data, _id: result.insertedId });
     }
 
-    public get_id_pairs(sessionId: string) { return { _id: new ObjectId(sessionId) } }
+    public get_id_pairs(sessionId: string) {
+        if (!ObjectId.isValid(sessionId)) {
+            return undefined;
+        }
+        return {
+            _id: new ObjectId(sessionId)
+        };
+    }
 
-    public async update_session_threadId(sessionId: any, threadId: string | null) {
-        const result = await this.chatSessionCollection.updateOne(
-            this.get_id_pairs(sessionId),
+    public async get_session(sessionId: string): Promise<FBR_ChatDBSupportColl | undefined> {
+        const idPairs = this.get_id_pairs(sessionId);
+        if (!idPairs) {
+            return undefined;
+        }
+        const session = await this.chatSessionCollection.findOne(idPairs) as FBR_ChatDBSupportColl | undefined;
+        return session ? this.addStringId(session) : undefined;
+    }
+
+    public async update_session_threadId(sessionId: string, threadId: string | null): Promise<FBR_ChatDBSupportColl | undefined> {
+        // Convert sessionId to ObjectId format
+        const idPairs = this.get_id_pairs(sessionId);
+        if (!idPairs) {
+            return undefined;
+        }
+        // Update the threadId of the session
+        await this.chatSessionCollection.updateOne(
+            idPairs,
             { $set: { threadId } }
         );
+
+        // Return the updated session
         return await this.get_session(sessionId);
     }
 

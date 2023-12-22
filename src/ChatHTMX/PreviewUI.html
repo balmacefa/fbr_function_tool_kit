@@ -47,8 +47,6 @@
   <body class="h-full min-h-screen">
     <!-- Header or navigation can go here -->
     <!-- Content injected from other EJS views -->
-    
-    
 
 <div class="h-full w-full">
   <!-- First column -->
@@ -62,29 +60,49 @@
         <%- aside %>
       </aside>
       <article class="container mx-auto p-4">
-        
-
-
-
-
-
-<!-- INSERT CODE HERE -->
-<!-- INSERT CODE HERE -->
-<!-- INSERT CODE HERE -->
-
-
-
-
-
-
-
-      </div>
+        <style>
+          .send-button {
+            width: 100%; /* Width ajustado */
+            height: 3rem; /* Altura aumentada */
+            background-color: #708090; /* Fondo slate */
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Centrar el icono */
+          }
+          .send-button svg {
+            margin-right: 0; /* Alineación del icono */
+          }
+        </style>
+        <form id="chatForm" ...>
+          ...
+          <textarea
+            id="textarea_input_chat"
+            name="content"
+            ...
+            placeholder="Send a message..."
+            class="..."
+            oninput="..."
+          ></textarea>
+          <button
+            type="submit"
+            class="send-button absolute p-1 rounded-md bottom-1.5 md:bottom-2.5 right-1 md:right-2"
+          >
+            <svg
+              ...
+              class="h-6 w-6" /* Tamaño del icono aumentado */
+              ...
+            >
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+          </button>
+          ...
+        </form>
       </article>
     </main>
   </div>
 </div>
     <!-- Add your scripts here -->
         <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js" integrity="sha256-yPqP9Fer3NIS83oH7y8pLJmQEd/6vKpXf7Hh4Adsplg=" crossorigin="anonymous"></script>
-
   </body>
 </html>

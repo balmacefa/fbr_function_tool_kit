@@ -79,6 +79,7 @@ export class ToolFunction<TI = any, TO = any> {
         }
     }
     public async processRequestPlain(requestBody: any): Promise<string> {
+        console.info(`Using tool: ${this.name}, with json string input: \n ${JSON.stringify(requestBody)} \n`)
         return JSON.stringify((await this.processRequest(requestBody, false)).response);
     }
 

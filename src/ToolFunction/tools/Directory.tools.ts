@@ -117,17 +117,16 @@ export const Local_File_String_Reader_Tool = (): ToolFunction => {
     const input_schema = z.object({
         absolutePath: z.string().describe('Relative Path to the file to read'),
     });
-    const response_schema = z.object({
-        content: z.string().describe('Textual content of the file'),
-    });
+
+    const response_schema = z.string().describe('Return the string file full content');
 
     type IOInput = z.infer<typeof input_schema>;
     type IOResponse = Promise<z.infer<typeof response_schema>>;
 
     // eslint-disable-next-line require-await
     const tool_fn = async (input: IOInput): IOResponse => {
-        const content: string = MainUtils.read_file_from_path(input.absolutePath);
-        return { content: content };
+        const content: string = MainUtils.read_file_from_root(input.absolutePath).fileContent;
+        return content;
     };
 
     const tfn = new ToolFunction<IOInput, IOResponse>(
