@@ -57,7 +57,13 @@ export class ToolFunction<TI = any, TO = any> {
     }
 
     validate_input(data: any) {
-        return (this.inputSchema as AnyZodObject).safeParse(data);
+        if (!this.inputSchema) {
+            return { success: true, data, error: undefined }
+
+        } else {
+
+            return (this.inputSchema).safeParse(data);
+        }
     }
 
     validate_output(data: any) {

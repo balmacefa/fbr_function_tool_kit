@@ -1,26 +1,15 @@
 import { Express, Request, Response } from "express";
-import morgan from "morgan";
-// import { CreateAssistantOptions } from "../ChatHTMX";
-import ejs from "ejs";
 import _ from "lodash";
-import { FBR_ChatDBSupport } from "../DB/FBR_ChatDBSupport";
-import { GetChatView } from "../views/ViewsPath";
-import { ExpressBaseExporter } from "./ExpressBaseExporter";
-
-
-
-const DB_NAME = "IIRESODH_test";
-
-
-
+import morgan from "morgan";
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { Full_stack_Software_Architect, Tailwind_HTMX_alpine_jquery } from "../../Assistants/AssistantBase";
 import { MainUtils } from "../../HostMachine";
+import { FBR_ChatDBSupport } from "../DB/FBR_ChatDBSupport";
 import OpenAIAssistantWrapper, { AssistantManifest } from "../OpenAI/OpenAIAssistantWrapper";
+import { GetChatView } from "../views/ViewsPath";
+import { ExpressBaseExporter } from "./ExpressBaseExporter";
 export const CurrentPath = dirname(fileURLToPath(import.meta.url));
-
-
 
 
 
@@ -68,18 +57,18 @@ export class ExpressChatExporter extends ExpressBaseExporter {
     }
 
     _getShowCaseAssistantManifest(): AssistantManifest[] {
-        return this.chat_manifests.filter(el => (el.show_case && el.ejs_render_path))
+        return this.chat_manifests.filter(el => (el.show_case))
     }
 
-    renderShowCaseAssistantManifest(): AssistantManifest[] {
-        const show_cases = this._getShowCaseAssistantManifest();
+    // renderShowCaseAssistantManifest(): AssistantManifest[] {
+    //     const show_cases = this._getShowCaseAssistantManifest();
 
-        show_cases.forEach(el => {
-            el.renderHTML = ejs.render(el.ejs_render_path, el.ejs_variables)
-        });
+    //     show_cases.forEach(el => {
+    //         el.renderHTML = ejs.render(el.ejs_render_path, el.ejs_variables)
+    //     });
 
-        return show_cases;
-    }
+    //     return show_cases;
+    // }
     get_manifest_by_assistants_id(id: string) {
         return this.chat_manifests.find(el => el.name === id);
     }

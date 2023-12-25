@@ -48,6 +48,9 @@ export class BaseToolPlugin {
         const firstKey = Object.keys(swaggerSpec.paths)[0];
         const pathObject = swaggerSpec.paths[firstKey];
         const TF_request_body = pathObject.post?.requestBody as any;
+        if (!TF_request_body['content']['application/json']) {
+            return null;
+        }
         const response = TF_request_body['content']['application/json'].schema;
         return response;
     }
