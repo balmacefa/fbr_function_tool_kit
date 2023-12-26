@@ -12,7 +12,6 @@ describe('FBR_ChatDBSupport', () => {
         const uri = await mongo_server.getUri();
         // await mongo_server.cleanup({ doCleanup: true });
         process.env.MONGODB_URI = uri;
-        process.env.MONGODB_ATLAS_URI = uri;
         chatDBSupport = new FBR_ChatDBSupport({});
         await chatDBSupport.init();
     });
