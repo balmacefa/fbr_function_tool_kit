@@ -1,6 +1,16 @@
 // import { CreateAssistantOptions } from "../ChatHTMX";
 
 
+
+export const replaceColonParamsPattern = (baseStr: string, subs: string): string => {
+    // This regular expression looks for a pattern starting with ':' followed by any characters
+    // until it encounters a '/', or end of the string
+    const pattern = /:([^/]+)/;
+    // Replace the found pattern with the 'subs' string
+    return baseStr.replace(pattern, subs);
+}
+
+
 export abstract class ExpressBaseExporter {
     abstract common_data: any;
     abstract R: Record<string, string>;

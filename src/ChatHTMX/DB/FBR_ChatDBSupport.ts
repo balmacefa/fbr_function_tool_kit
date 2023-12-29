@@ -1,5 +1,5 @@
 import type { InferSchemaType } from 'mongoose';
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import { MaybePromise } from '../../types';
 
 const fbrChatDBSupportCollSchema = new mongoose.Schema({
@@ -37,6 +37,24 @@ export abstract class DatabaseSupport<T> {
     }
     abstract get_collection_name(): MaybePromise<string>;
     abstract get_collection_schema(): MaybePromise<mongoose.Schema<T>>;
+
+    /**
+ * Fetches a document by its ID.
+ * @param {string} id - The unique identifier of the document.
+ * @returns {Promise<T>} - The document 
+ */
+    public async fetchById(id: string): Promise<T> {
+        // Validate the ID format
+        if (!Types.ObjectId.isValid(id)) {
+            throw new Error("Invalid ID format");
+        }
+
+        const document = await this.dbModel.findById(id).exec();
+        if (document) {
+            return document;
+        }
+        throw new Error("ID not found Error");
+    }
 }
 
 
