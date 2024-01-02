@@ -13,7 +13,7 @@ export const replaceColonParamsPattern = (baseStr: string, subs: string): string
 
 export abstract class ExpressBaseExporter {
     abstract common_data: any;
-    abstract R: Record<string, string>;
+    abstract R: any;
 
 
     public extractFirstKeyValues(arr: Record<string, string>[]) {

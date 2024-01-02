@@ -1,5 +1,6 @@
-import type { InferSchemaType } from 'mongoose';
+import type { FilterQuery, InferSchemaType } from 'mongoose';
 import mongoose, { Types } from 'mongoose';
+import { PaginationData } from '../../../../../../../ios_cms_iiresodh/node_payload_app/src/components/shared_types';
 import { MaybePromise } from '../../types';
 
 const fbrChatDBSupportCollSchema = new mongoose.Schema({
@@ -12,6 +13,19 @@ const fbrChatDBSupportCollSchema = new mongoose.Schema({
 });
 
 type FBR_ChatDBSupportCollData = InferSchemaType<typeof fbrChatDBSupportCollSchema>;
+
+export interface PaginationQuery<T> {
+    totalDocs: number;
+    limit: number;
+    totalPages: number;
+    page: number;
+    pagingCounter: number;
+    hasPrevPage: boolean;
+    hasNextPage: boolean;
+    prevPage: null | number;
+    nextPage: null | number;
+    docs: T[]; // The array of documents of type T
+}
 
 
 export abstract class DatabaseSupport<T> {
@@ -51,10 +65,57 @@ export abstract class DatabaseSupport<T> {
 
         const document = await this.dbModel.findById(id).exec();
         if (document) {
-            return document;
+            return { ...document.toObject(), id: (document._id as any).toString() };
         }
         throw new Error("ID not found Error");
     }
+
+
+    /**
+     * Gets paginated documents from the database.
+     * @param {number} page - The page number.
+     * @param {number} limit - The number of items per page.
+     * @param {Object} query - Optional query object to filter results.
+     * @returns {Promise<PaginationData & { docs: T[] }>} - The paginated documents.
+     */
+    public async getPaginated(page: number, limit: number, query: FilterQuery<T> = {}): Promise<PaginationQuery<T>> {
+        const totalDocs = await this.dbModel.countDocuments(query);
+        const totalPages = Math.ceil(totalDocs / limit);
+        const offset = (page - 1) * limit;
+
+        const documents = await this.dbModel.find(query)
+            .skip(offset)
+            .limit(limit)
+            .exec();
+
+        const docs = documents.map((doc) => {
+            return { ...doc.toObject({ getters: true, virtuals: true }), id: (doc._id as any).toString() }
+        }) as T[];
+
+        // const docs = documents.map((doc: Document) => doc.toObject()) as T[];
+
+        return {
+            totalDocs,
+            limit,
+            totalPages,
+            page,
+            pagingCounter: offset + 1,
+            hasPrevPage: page > 1,
+            hasNextPage: page < totalPages,
+            prevPage: page > 1 ? page - 1 : null,
+            nextPage: page < totalPages ? page + 1 : null,
+            docs
+        };
+    }
+
+
+    public async create_one(data: T) {
+        const new_record = new this.dbModel(data);
+        await new_record.save();
+        // TODO: change as any for proppr  types
+        return { ...new_record.toObject(), id: (new_record._id as any).toString() };
+    }
+
 }
 
 
@@ -73,9 +134,7 @@ export class FBR_ChatDBSupport extends DatabaseSupport<FBR_ChatDBSupportCollData
     }
 
     public async create_user_session(data: FBR_ChatDBSupportCollData) {
-        const newSession = new this.dbModel(data);
-        await newSession.save();
-        return { ...newSession.toObject(), id: newSession._id.toString() };
+        return await this.create_one(data);
     }
 
     public async get_session(sessionId: string): Promise<FBR_ChatDBSupportCollData | null | undefined> {
