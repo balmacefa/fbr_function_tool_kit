@@ -3,11 +3,12 @@ import { AgentExecutor } from "langchain/agents";
 import { AgentAction, AgentFinish, AgentStep } from "langchain/dist/schema";
 import { OpenAIAssistantRunnable } from 'langchain/experimental/openai_assistant';
 import { StructuredTool } from "langchain/tools";
+import { isString } from "lodash";
 import { BaseToolPlugin } from "../../ToolFunction/BaseToolPlugin";
 
 export interface AssistantOptions {
     model: string;
-    assistantId?: string;
+    assistantId?: string | null;
     name: string;
     instructions?: string;
     description: string;
@@ -50,7 +51,7 @@ interface ToolInput {
 class OpenAIAssistantWrapper {
     private assistant: OpenAIAssistantRunnable<true, Record<string, any>> | undefined;
     private BaseToolPlugin?: BaseToolPlugin;
-    assistantId?: string;
+    assistantId?: string | null;
     name?: string;
     instructions?: string;
     private model?: string;
@@ -69,7 +70,8 @@ class OpenAIAssistantWrapper {
 
     public async get_or_create_assistant(assistant_id?: string | undefined | null): Promise<void> {
         // Method to create a new assistant
-        if (assistant_id) {
+        if (assistant_id || isString(this.assistantId)) {
+            assistant_id = assistant_id ? assistant_id : (this.assistantId as string);
             try {
                 // TODO, create a class que herede de OpenAIAssistantRunnable y agregue un metodo para 
                 this.assistant = new OpenAIAssistantRunnable({
@@ -99,7 +101,7 @@ class OpenAIAssistantWrapper {
             ...(this.BaseToolPlugin ? { tools: this.BaseToolPlugin.generate_func_asistant_list() } : {}),
             asAgent: true,
             name: this.name,
-            instructions: this.instructions
+            instructions: this.instructions,
         });
         const assistant_run = new OpenAIAssistantRunnable({
             assistantId: assistant.assistantId,
