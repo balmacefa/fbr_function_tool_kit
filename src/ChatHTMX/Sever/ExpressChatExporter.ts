@@ -131,11 +131,11 @@ export class ExpressChatExporter extends ExpressBaseExporter {
 
                 const asistant_wrap = new OpenAIAssistantWrapper(manifest);
 
-                await asistant_wrap.get_or_create_assistant();
+                await asistant_wrap.get_or_create_assistant(manifest.assistantId);
 
                 const new_session_data =
                     await this.chat_db_wrapper.create_user_session({
-                        assistantId: asistant_wrap.assistantId as string,
+                        assistantId: asistant_wrap.assistantId || '',
                         userId: userId,
                         title,
                         manifestId: manifest.name
