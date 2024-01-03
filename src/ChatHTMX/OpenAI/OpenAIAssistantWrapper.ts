@@ -89,7 +89,7 @@ class OpenAIAssistantWrapper {
         } else {
             this.assistant = await this._create_assistant();
             this.assistantId = (await this.assistant.getAssistant()).id;
-            // todo: add manifest asistance auto save feature here
+            // todo: add manifest asistance auto save feature
         }
 
         console.info("dev: run .invoke(prompt_content) to start or continue a thread")
