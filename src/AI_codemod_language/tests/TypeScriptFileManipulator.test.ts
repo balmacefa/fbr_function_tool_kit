@@ -1,93 +1,93 @@
-// src\AI_codemod_language\tests\TypeScriptFileManipulator.test.ts
-
+import Handlebars from "handlebars";
 import { TypeScriptFileManipulator } from "../manipulators/TypeScriptFileManipulator";
 
+type FileTestConfig = {
+    id: string;
+    file_path: string;
+    queries: string[];
+};
 
-// Define sample data for permutations
-const filePaths = [
-    "src/AI_codemod_language/tests/mocks/A/logger.ts",
-    // "src/AI_codemod_language/tests/mocks/A/User.ts",
-    // "src/AI_codemod_language/tests/mocks/A/UserController.ts"
+const file_path = "src/AI_codemod_language/tests/mocks/A/one_file.ts";
+
+const fileTestConfigs: FileTestConfig[] = [
+    {
+        id: 'TC_01',
+        file_path,
+        queries: [
+            "Query: {{file_path}}fn:log",
+            "Query: {{file_path}}fn:log",
+        ]
+    },
+    {
+        id: 'TC_02',
+        file_path, queries: [
+            "Query: {{file_path}}fn:getUser",
+            "Query: {{file_path}}cls:User",
+            "Modify: {{file_path}}cls:User#email -> [new email definition]",
+            "Add: {{file_path}}fn:newAPIFunction -> [API function definition]",
+            "Delete: {{file_path}}mth:obsoleteMethod",
+            "Search: src/**/*.ts.fn:*SearchQuery*",
+            "DeepFetch: {{file_path}}cls:User.mth:getUserById",
+            "Query: {{file_path}}cls:User.mth:createUser^L##",
+        ]
+    },
+    {
+        id: 'TC_03',
+        file_path,
+        queries: [
+            "Query: {{file_path}}fn:utilityFunction",
+            "Modify: {{file_path}}fn:utilityFunction -> [updated function definition]",
+            "Add: {{file_path}}cls:NewClass -> [class definition]",
+            "Delete: {{file_path}}cls:DeprecatedClass",
+            "Search: src/**/*.ts.cls:NewClass",
+            "DeepFetch: {{file_path}}fn:utilityFunction",
+            "Query: {{file_path}}fn:utilityFunction^L##",
+        ]
+    },
+    {
+        id: 'TC_04',
+        file_path,
+        queries: [
+            "Query: {{file_path}}cls:UserController",
+            "Query: {{file_path}}cls:UserController.mth:createUser",
+            "Modify: {{file_path}}cls:UserController#apiRoute -> [updated route definition]",
+            "Add: {{file_path}}fn:newAPIFunction -> [API function definition]",
+            "Delete: {{file_path}}mth:obsoleteMethod",
+            "Search: src/**/*.ts.fn:*SearchQuery*",
+            "DeepFetch: {{file_path}}cls:UserController.mth:getUserById",
+            "Query: {{file_path}}cls:UserController.mth:createUser^L##",
+        ]
+    },
+    // Additional file configurations can be added here
 ];
-const queryTypes = ["fn", "cls", "prop", "mth"];
-const queryDetails = ["log", "User", "email", "getUserById"];
-const lineNumbers = ["4", "1->6"];
+
+// fileTestConfigs[0].queries[0]({
+//     file_path:''
+// })
 
 
-function createTestCase(filePath: string, queryType: string, queryDetail: string, lineNumber?: string): string {
-    let query = `Query: ${filePath}`;
-    if (queryType) {
-        query += `.${queryType}`;
-    }
-    if (queryDetail) {
-        query += `:${queryDetail}`;
-    }
-    if (lineNumber) {
-        query += `:${lineNumber}`;
-    }
-    return query;
-}
-
-const testCases: { testCaseId: string, description: string, query: string }[] = [];
+const testCases: { file_path: string, testCaseId: string, description: string, query: string }[] = [];
 let testCaseId = 1;
 
-filePaths.forEach(filePath => {
-    queryTypes.forEach(queryType => {
-        queryDetails.forEach(queryDetail => {
-            // Basic query test case
-            testCases.push({
-                testCaseId: `TC_Q_${testCaseId.toString().padStart(3, '0')}`,
-                description: `Query ${queryType} '${queryDetail}' in '${filePath}'`,
-                query: createTestCase(filePath, queryType, queryDetail)
-            });
-            testCaseId++;
-
-            // Line-specific query test cases
-            lineNumbers.forEach(lineNumber => {
-                testCases.push({
-                    testCaseId: `TC_Q_${testCaseId.toString().padStart(3, '0')}`,
-                    description: `Query ${queryType} '${queryDetail}' at line '${lineNumber}' in '${filePath}'`,
-                    query: createTestCase(filePath, queryType, queryDetail, lineNumber)
-                });
-                testCaseId++;
-            });
+fileTestConfigs.forEach(FileTestConfig => {
+    FileTestConfig.queries.forEach(query => {
+        testCases.push({
+            file_path: FileTestConfig.file_path,
+            testCaseId: `TC_Q_${testCaseId.toString().padStart(3, '0')}`,
+            description: `Execute ${query}`,
+            query: Handlebars.compile<{ file_path: string }>(query)({ file_path: FileTestConfig.file_path })
         });
+        testCaseId++;
     });
 });
 
 
-// Assuming TypeScriptFileManipulator has methods to handle these queries
-describe("Generated Query Test Cases", () => {
-    testCases.forEach(({ testCaseId, description, query }) => {
+describe("Query Test Cases", () => {
+    testCases.forEach(({ testCaseId, description, query, file_path }) => {
         test(`${testCaseId}: ${description}`, () => {
-            const tsManipulator = new TypeScriptFileManipulator(query);
+            const tsManipulator = new TypeScriptFileManipulator(file_path);
             const result = tsManipulator.executeQuery(query);
             expect(result).toBeDefined(); // Adjust this expectation based on the actual implementation
         });
     });
 });
-
-
-describe("TypeScriptFileManipulator Query Actions", () => {
-    let tsManipulator: TypeScriptFileManipulator;
-
-    beforeEach(() => {
-        // Assuming 'example.ts' is a valid TypeScript file in the project
-        tsManipulator = new TypeScriptFileManipulator("path/to/example.ts");
-    });
-
-    test("Query a function", () => {
-        const result = tsManipulator.queryFunction("exampleFunction");
-        expect(result).toContain("function exampleFunction");
-    });
-
-    test("Query a class", () => {
-        const result = tsManipulator.queryClass("ExampleClass");
-        expect(result).toContain("class ExampleClass");
-    });
-
-    // More tests for querying properties, methods, etc.
-
-    // Note: Add actual content checks based on the 'example.ts' file content
-});
-

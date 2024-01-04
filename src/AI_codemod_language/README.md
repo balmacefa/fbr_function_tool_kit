@@ -4,6 +4,22 @@
 
 This tool provides a query language designed for AI-to-AI communication in software development, enabling precise and efficient code manipulation and analysis. It uses a structured syntax to query and modify various code elements in a project.
 
+### Purpose and Scope
+
+The tool is designed to facilitate AI-to-AI communication in software development, particularly focusing on code manipulation and analysis through a structured query language.
+
+### Features
+
+It includes detailed query language, precise code manipulation capabilities, and supports various actions such as Query, Modify, Add, Delete, Search, DeepFetch, and batchModify.
+
+### Usage and Syntax
+
+The query language uses full file paths, abbreviations, and special symbols for efficient querying. Actions like Query, Modify, Add, etc., are defined with specific syntax and examples.
+
+#### Technical Stack
+
+The project integrates technologies such as TypeScript, Express with EJS, Swagger UI, GPT Toolset for OpenAI Assistants API, Langchain, and HTMX for Chat UI and CMS rendering.
+
 ## Table of Contents
 
 - [Introduction](#introduction)
@@ -96,17 +112,16 @@ The language incorporates abbreviations and special symbols to streamline querie
 
 - **Abbreviations**:
 
+  - `fl`: Represents the entire file.
   - `fn`: Represents a function.
   - `cls`: Denotes a class.
   - `prop`: Indicates a property.
   - `mth`: Stands for a method.
+  - `lcd`: line of code - Designates a specific line number.
+  - `lcr`: line of code - Range of line.
 
 - **Special Symbols**:
 
-  - `@`: Used for specifying methods.
-  - `#`: Used for specifying properties.
-  - `:`: Designates a specific line number.
-  - `->`: Indicates a range of lines.
   - `*`: Represents a wildcard for broader search queries.
 
 - **Usage Examples**:
