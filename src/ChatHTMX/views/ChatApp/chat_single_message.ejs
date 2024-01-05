@@ -1,24 +1,59 @@
-<li
-  class="message <%= message.role === 'user' ? 'dark:bg-gray-700' : 'dark:bg-gray-600' %> rounded-lg shadow dark:shadow-md mb-4 last:mb-0 relative"
->
-  <div class="message-content p-4 dark:text-gray-200">
-    <% message.content.forEach(function(content) { %> <% if(content.type ===
-    'text') { %>
-    <main class="markdown-content"><%= content.text.value %></main>
-    <% } %>
-    <!-- Add other content type handling if necessary -->
-    <% }); %>
-  </div>
-  <div class="message-metadata absolute -top-5 right-0 mt-4 mr-3">
-    <span class="timestamp text-xs dark:text-gray-400">
+<li class="message <%= message.role === 'user' ? 'dark:bg-gray-700' : 'dark:bg-gray-600' %> rounded-lg shadow dark:shadow-md mb-4 last:mb-0" style="word-wrap: break-word;" x-data="{ activeTab: 'showMarkdown' }">
+
+  <div class="message-metadata my-4 flex items-center text-gray-400">
+    <span class="timestamp text-xs dark:text-gray-400 mr-2">
       <span class="timestamp">
-        <%= new Date(message.created_at * 1000).toLocaleTimeString([], { hour:
-        '2-digit', minute: '2-digit' }) %>
+        <%= new Date(message.created_at * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) %>
       </span>
       <span class="role font-semibold ml-1">
         <%= message.role === 'user' ? 'User' : 'Assistant' %>
       </span>
     </span>
+
+    <div class="flex justify-end space-x-2">
+      <!-- Botón Ver Markdown -->
+      <button x-on:click.prevent="activeTab = 'showMarkdown'" class="px-4 py-2  text-white text-xs font-semibold rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+        Ver Markdown
+      </button>
+
+      <!-- Botón Ver Raw -->
+      <button x-on:click.prevent="activeTab = 'showRaw'" class="px-4 py-2  text-white text-xs font-semibold rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
+        Ver Raw
+      </button>
+
+      <!-- Botón Copiar -->
+      <button x-on:click="navigator.clipboard.writeText($refs.textoParaCopiar.innerText)" class="px-4 py-2 ring-2 text-white text-xs font-semibold rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50">
+        Copiar
+      </button>
+    </div>
+
     <!-- Add other metadata if needed -->
   </div>
+
+
+
+  <div class="message-content p-4dark:text-gray-200">
+
+    <div x-show="activeTab === 'showMarkdown'" id="results" class="tab-content">
+      <% message.content.forEach(function(content) { console.log(message) %> <% if(content.type === 'text') { %>
+      <div id="<%- message.id %>" class="markdoc-content">
+        <%- R.parse_markdoc(content.text.value) %>
+      </div>
+      <% }}); %>
+    </div>
+    
+    <div x-show="activeTab === 'showRaw'" id="results" class="tab-content">
+      <!-- Static content for results -->
+      <div class="raw-content">
+        <% message.content.forEach(function(content) { %> <% if(content.type === 'text') { %>
+        <article class="content" x-ref="textoParaCopiar"><%= content.text.value %></article>
+        <% } %>
+        <!-- Add other content type handling if necessary -->
+        <% }); %>
+      </div>
+    </div>
+
+  </div>
+
+
 </li>

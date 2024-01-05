@@ -1,3 +1,4 @@
+import Markdoc from '@markdoc/markdoc';
 import { Express, Request, Response } from "express";
 import _ from "lodash";
 import morgan from "morgan";
@@ -7,10 +8,10 @@ import { Full_stack_Software_Architect, Tailwind_HTMX_alpine_jquery } from "../.
 import { MainUtils } from "../../HostMachine";
 import { FBR_ChatDBSupport } from "../DB/FBR_ChatDBSupport";
 import OpenAIAssistantWrapper, { AssistantManifest } from "../OpenAI/OpenAIAssistantWrapper";
-import { GetChatView } from "../views/ViewsPath";
+import { ChatHTMXViewsChatAppPath, GetChatView } from "../views/ViewsPath";
 import { ExpressBaseExporter } from "./ExpressBaseExporter";
-export const CurrentPath = dirname(fileURLToPath(import.meta.url));
 
+export const CurrentPath = dirname(fileURLToPath(import.meta.url));
 
 
 export class ExpressChatExporter extends ExpressBaseExporter {
@@ -24,7 +25,7 @@ export class ExpressChatExporter extends ExpressBaseExporter {
     // private sessionManager: OpenAIAssistantSessionManager;
     // private views_drc: string;
     private chat_db_wrapper = new FBR_ChatDBSupport({});
-    R: Record<string, string>;
+    R: any;
 
 
     constructor(args: { app: Express, manifests: AssistantManifest[], chat_landing_ejs_inject_on_locals__main_content?: string, sub_path_main: string, context_common_data: Record<string, string> }) {
@@ -44,7 +45,7 @@ export class ExpressChatExporter extends ExpressBaseExporter {
             chat__get_view_user_chat: sub_path_main + "/htmx/session_view/:sessionId",
             chat__post_new_user_message: sub_path_main + "/htmx/session_view/action/new_user_message",
             chat__get_user_chats: sub_path_main + "/:userId",
-
+            parse_markdoc: this.parse_markdoc
         };
 
         const combinned_common_data = _.merge({
@@ -58,6 +59,16 @@ export class ExpressChatExporter extends ExpressBaseExporter {
 
     _getShowCaseAssistantManifest(): AssistantManifest[] {
         return this.chat_manifests.filter(el => (el.show_case))
+    }
+
+    parse_markdoc(doc: string): string {
+
+        const ast = Markdoc.parse(doc);
+
+        const content = Markdoc.transform(ast);
+
+        const html = Markdoc.renderers.html(content);
+        return html;
     }
 
     // renderShowCaseAssistantManifest(): AssistantManifest[] {
@@ -324,6 +335,8 @@ export class ExpressChatExporter extends ExpressBaseExporter {
             app.use(express.urlencoded({ extended: true }));
 
 
+            // Serve static files from the 'public' directory
+            app.use(express.static(ChatHTMXViewsChatAppPath + '/public'));
             const list_of_agents: AssistantManifest[] = [
                 Tailwind_HTMX_alpine_jquery(),
                 Full_stack_Software_Architect(),

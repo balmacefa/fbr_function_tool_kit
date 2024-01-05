@@ -47,6 +47,7 @@
     "@asteasolutions/zod-to-openapi": "^6.3.0",
     "@langchain/openai": "^0.0.6",
     "@lobehub/chat-plugins-gateway": "^1.8.2",
+    "@markdoc/markdoc": "^0.4.0",
     "@ngrok/ngrok": "^0.9.1",
     "@types/lodash": "^4.14.202",
     "browser-sync": "^2.29.3",

@@ -1,108 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>IIRESODH / SIAJ</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- HTMX CDN -->
-    <script src="https://unpkg.com/htmx.org"></script>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <script
-      src="https://code.jquery.com/jquery-3.7.1.min.js"
-      integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
-      crossorigin="anonymous"
-    ></script>
+  <title>IIRESODH / SIAJ</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- HTMX CDN -->
+  <script src="https://unpkg.com/htmx.org"></script>
 
-    <!-- Showdown CDN , ths s a mardown render library, I using combined with jquery -->
-    <script src="https://cdn.jsdelivr.net/npm/showdown@1.9.1/dist/showdown.min.js"></script>
-    <!-- FontAwesome CDN -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
-    />
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
-    <link
-      rel="stylesheet"
-      href="https://maxst.icons8.com/vue-static/landings/line-awesome/font-awesome-line-awesome/css/all.min.css"
-    />
+  <!-- Showdown CDN , ths s a mardown render library, I using combined with jquery -->
+  <!-- FontAwesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
 
-    <link
-      rel="stylesheet"
-      href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css"
-    />
+  <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/font-awesome-line-awesome/css/all.min.css" />
 
-    <!-- Fonts google -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!-- class="font-['Montserrat']" -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&display=swap"
-      rel="stylesheet"
-    />
-    <!-- class="font-['Montserrat']" -->
-  </head>
-  <body class="h-full min-h-screen">
-    <!-- Header or navigation can go here -->
-    <!-- Content injected from other EJS views -->
+  <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css" />
 
-<div class="h-full w-full">
-  <!-- First column -->
-  <div class="flex flex-col h-full">
-    <!-- Header Content -->
-    <header class="">
-      <%- header_content %>
-    </header>
-    <main class="flex flex-row h-full w-full">
-      <aside>
-        <%- aside %>
-      </aside>
-      <article class="container mx-auto p-4">
-        <style>
-          .send-button {
-            width: 100%; /* Width ajustado */
-            height: 3rem; /* Altura aumentada */
-            background-color: #708090; /* Fondo slate */
-            display: flex;
-            align-items: center;
-            justify-content: center; /* Centrar el icono */
-          }
-          .send-button svg {
-            margin-right: 0; /* Alineación del icono */
-          }
-        </style>
-        <form id="chatForm" ...>
-          ...
-          <textarea
-            id="textarea_input_chat"
-            name="content"
-            ...
-            placeholder="Send a message..."
-            class="..."
-            oninput="..."
-          ></textarea>
-          <button
-            type="submit"
-            class="send-button absolute p-1 rounded-md bottom-1.5 md:bottom-2.5 right-1 md:right-2"
-          >
-            <svg
-              ...
-              class="h-6 w-6" /* Tamaño del icono aumentado */
-              ...
-            >
-              <line x1="22" y1="2" x2="11" y2="13"></line>
-              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-            </svg>
-          </button>
-          ...
-        </form>
-      </article>
-    </main>
+  <!-- Fonts google -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <!-- class="font-['Montserrat']" -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <!-- class="font-['Montserrat']" -->
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/liyasthomas/marcdown/marcdown.min.js"></script>
+
+
+</head>
+
+<body class="h-full min-h-screen">
+  <!-- Header or navigation can go here -->
+  <!-- Content injected from other EJS views -->
+
+  <div class="h-full w-full">
+    <!-- First column -->
+    <div class="flex flex-col h-full">
+      <!-- Header Content -->
+      <header class="">
+        <%- header_content %>
+      </header>
+      <main class="flex flex-row h-full w-full">
+        <aside>
+          <%- aside %>
+        </aside>
+        <article class="container mx-auto p-4">
+
+
+
+
+          <textarea id="getm" placeholder="paste markdown here ✨" onkeyup="keyUp()"></textarea>
+          <button onclick="apply('bold')" title="Bold">B</button>
+          <button onclick="apply('italic')" title="Italic"><i>I</i></button>
+          <button onclick="apply('strike')" title="Strikethrough"><strike>S</strike></button>
+          <button onclick="apply('h1')" title="Header 1">H1</button>
+          <button onclick="apply('h2')" title="Header 2">H2</button>
+          <button onclick="apply('h3')" title="Header 3">H3</button>
+          <button onclick="apply('ul')" title="Unordered list">●</button>
+          <button onclick="apply('ol')" title="Ordered list">1.</button>
+          <button onclick="apply('check')" title="Check list">✔</button>
+          <button onclick="apply('bq')" title="Blockquote">””</button>
+          <button onclick="apply('ic')" title="Inline code">I&lt;></button>
+          <button onclick="apply('bc')" title="Block code">&lt;>B</button>
+          <button onclick="apply('link')" title="Link">A</button>
+          <button onclick="apply('image')" title="Image">I</button>
+          <button onclick="apply('hr')" title="Horizontal rule">——</button>
+          <button onclick="apply('table')" title="Table">⚏</button>
+          <div class="markdown" id="viewer"></div>
+
+
+        </article>
+      </main>
+    </div>
   </div>
-</div>
-    <!-- Add your scripts here -->
-        <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js" integrity="sha256-yPqP9Fer3NIS83oH7y8pLJmQEd/6vKpXf7Hh4Adsplg=" crossorigin="anonymous"></script>
-  </body>
+  <!-- Add your scripts here -->
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js" integrity="sha256-yPqP9Fer3NIS83oH7y8pLJmQEd/6vKpXf7Hh4Adsplg=" crossorigin="anonymous"></script>
+</body>
+
 </html>
