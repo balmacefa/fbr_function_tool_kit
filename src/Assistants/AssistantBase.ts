@@ -24,8 +24,8 @@ export function Tailwind_HTMX_alpine_jquery(): AssistantManifest {
         instructions: prompt,
         name: 'Tailwind_HTMX_alpine_jquery - v1.0.0',
         BaseToolPlugin: BaseToolPlugin.factory_plugin("fbr_BaseToolPlugin_tools_directory_and_git"),
-        ejs_render_path: "",
-        ejs_variables: {},
+        // ejs_render_path: "",
+        // ejs_variables: {},
         show_case: false,
         description: ""
     }
@@ -39,8 +39,8 @@ export function Full_stack_Software_Architect(): AssistantManifest {
         instructions: prompt,
         name: 'Full_stack_Software_Architect - v1.0.0',
         BaseToolPlugin: BaseToolPlugin.factory_plugin("fbr_BaseToolPlugin_tools_directory_and_git"),
-        ejs_render_path: "",
-        ejs_variables: {},
+        // ejs_render_path: "",
+        // ejs_variables: {},
         show_case: false,
         description: ""
     }

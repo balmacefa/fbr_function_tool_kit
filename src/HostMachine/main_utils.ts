@@ -1,3 +1,4 @@
+import * as ejs from 'ejs';
 import fs from "fs";
 import path from "path";
 import { MaybePromise } from '../types';
@@ -47,6 +48,13 @@ export class MainUtils {
     static read_file_from_path(filePath: string): string {
         const fileContent = fs.readFileSync(filePath, 'utf8');
         return fileContent;
+    }
+    static render_ejs_string(ejs_string: string, data: any): string {
+        return ejs.render(ejs_string, { ...data });
+    }
+    static render_ejs_path_file(ejs_path_file: string, data: any): string {
+        const template = MainUtils.read_file_from_path(ejs_path_file);
+        return MainUtils.render_ejs_string(template, { ...data });
     }
 
     /** */

@@ -1,0 +1,30 @@
+<p data-height="369" data-theme-id="24311" data-slug-hash="<%- code %>" data-default-tab="result" data-user="<%- user %>" data-embed-version="2" class="codepen"></p>
+
+
+
+<script>
+  $(document).ready(function() {
+    $('.result-iframe').load(function() {
+
+      const json_data_injection = JSON.parse(`<%- JSON.stringify(attributes)%>`);
+
+      var newText = "NEW TEXT";
+      var newHtml = '';
+
+      // Loop through each character in the new text
+      for (var i = 0; i < newText.length; i++) {
+        if (newText[i] === ' ') {
+          newHtml += '<span> </span>'; // Add a space for spaces in the text
+        } else {
+          newHtml += '<span><i style="opacity: 1; transform: rotate3d(0, 1, 0, 0deg);">' + newText[i] + '</i></span>';
+        }
+      }
+
+      $('.result-iframe').contents().find('body').html();
+    });
+
+
+    // Replace the old text with the new text
+    $('#note').html(newHtml);
+  });
+</script>

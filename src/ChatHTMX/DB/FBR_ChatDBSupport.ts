@@ -120,6 +120,7 @@ export abstract class DatabaseSupport<T> {
 
 
 export class FBR_ChatDBSupport extends DatabaseSupport<FBR_ChatDBSupportCollData> {
+    
     get_collection_name(): MaybePromise<string> {
         const coll_name = 'FBR_ChatSessionData';
         return coll_name;
@@ -151,5 +152,6 @@ export class FBR_ChatDBSupport extends DatabaseSupport<FBR_ChatDBSupportCollData
         await this.dbModel.findByIdAndUpdate(sessionId, { threadId });
         return this.get_session(sessionId);
     }
+    
 
 }

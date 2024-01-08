@@ -1,4 +1,4 @@
-import Markdoc from '@markdoc/markdoc';
+import Markdoc, { Config, Schema } from '@markdoc/markdoc';
 import { Express, Request, Response } from "express";
 import _ from "lodash";
 import morgan from "morgan";
@@ -18,6 +18,7 @@ export class ExpressChatExporter extends ExpressBaseExporter {
     // private absolute_index_path: string;
     common_data: any;
     chat_manifests: AssistantManifest[];
+    markdoc_components: Schema[];
     routes_definitions(): Record<string, string> {
         throw new Error("Method not implemented.");
     }
@@ -28,9 +29,17 @@ export class ExpressChatExporter extends ExpressBaseExporter {
     R: any;
 
 
-    constructor(args: { app: Express, manifests: AssistantManifest[], chat_landing_ejs_inject_on_locals__main_content?: string, sub_path_main: string, context_common_data: Record<string, string> }) {
+    constructor(args: {
+        app: Express,
+        manifests: AssistantManifest[],
+        chat_landing_ejs_inject_on_locals__main_content?: string,
+        sub_path_main: string,
+        context_common_data: Record<string, string>,
+        markdoc_components: Schema[]
+    }) {
         super();
         this.app = args.app;
+        this.markdoc_components = args.markdoc_components;
         // this.sessionManager = OpenAIAssistantSessionManager.getInstance();
 
         // TODO: add dev mode check
@@ -63,9 +72,35 @@ export class ExpressChatExporter extends ExpressBaseExporter {
 
     parse_markdoc(doc: string): string {
 
-        const ast = Markdoc.parse(doc);
+        //         doc = `
+        // # My first custom tag
+        // {% Expediente type="caution", title="Important Information" %}
+        // Your content here...
+        // {% /Expediente %}
 
-        const content = Markdoc.transform(ast);
+        // {% Curiosidad_rubik_cube note="<Insert curioridad sobre el cubo rukik | Important Information>", title="Titulo Hyper llamativo" %}
+        // {% /Curiosidad_rubik_cube %}
+
+
+        //         `.trim();
+
+        const ast = Markdoc.parse(doc);
+        const config: Config = {
+            tags: {
+                // Curiosidad_rubik_cube
+            },
+            // nodes: {
+            //     heading
+            // },
+            variables: {}
+        };
+        this.markdoc_components.forEach((value) => {
+            if (config.tags) {
+                config.tags[value.render as string] = value;
+            }
+        })
+
+        const content = Markdoc.transform(ast, config);
 
         const html = Markdoc.renderers.html(content);
         return html;
@@ -347,7 +382,8 @@ export class ExpressChatExporter extends ExpressBaseExporter {
                 app: app,
                 context_common_data: {},
                 sub_path_main: '/chat_app',
-                manifests: list_of_agents
+                manifests: list_of_agents,
+                markdoc_components: []
             });
             await express_exporter.setupRoutes();
             // Start the server
