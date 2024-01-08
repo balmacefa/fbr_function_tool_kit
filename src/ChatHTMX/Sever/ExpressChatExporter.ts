@@ -39,6 +39,9 @@ export class ExpressChatExporter extends ExpressBaseExporter {
     }) {
         super();
         this.app = args.app;
+        if (args.markdoc_components.length === 0) {
+            throw new Error('markdoc_components is empty');
+        }
         this.markdoc_components = args.markdoc_components;
         // this.sessionManager = OpenAIAssistantSessionManager.getInstance();
 
@@ -71,19 +74,6 @@ export class ExpressChatExporter extends ExpressBaseExporter {
     }
 
     parse_markdoc(doc: string): string {
-
-        //         doc = `
-        // # My first custom tag
-        // {% Expediente type="caution", title="Important Information" %}
-        // Your content here...
-        // {% /Expediente %}
-
-        // {% Curiosidad_rubik_cube note="<Insert curioridad sobre el cubo rukik | Important Information>", title="Titulo Hyper llamativo" %}
-        // {% /Curiosidad_rubik_cube %}
-
-
-        //         `.trim();
-
         const ast = Markdoc.parse(doc);
         const config: Config = {
             tags: {
@@ -94,6 +84,10 @@ export class ExpressChatExporter extends ExpressBaseExporter {
             // },
             variables: {}
         };
+        if (this.markdoc_components.length === 0) {
+            throw new Error('markdoc_components is empty');
+        }
+
         this.markdoc_components.forEach((value) => {
             if (config.tags) {
                 config.tags[value.render as string] = value;
