@@ -1,10 +1,10 @@
 <% locals.server_hit_path = R.chat; %>
 
 <!-- this way content can load header tags, and footer tags -->
-<% var content = include('./main_content'); %>
+<% var main_content_html = include(main_content); %>
 
 <%- include(render_layout_path_top); %>
 <!-- render the content -->
-<%- content %>
+<%- main_content_html %>
 <!-- end content -->
 <%- include(render_layout_path_bottom); %>

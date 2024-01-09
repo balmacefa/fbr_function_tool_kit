@@ -1,6 +1,5 @@
 // import { CreateAssistantOptions } from "../ChatHTMX";
 
-import _ from "lodash";
 
 
 
@@ -16,8 +15,6 @@ export const replaceColonParamsPattern = (baseStr: string, subs: string): string
 export abstract class ExpressBaseExporter<T> {
     abstract common_data: any;
     abstract R: T;
-    abstract render_layout_path_top: string;
-    abstract render_layout_path_bottom: string;
 
     public extractFirstKeyValues(arr: Record<string, string>[]) {
         if (arr.length === 0) {
@@ -37,13 +34,13 @@ export abstract class ExpressBaseExporter<T> {
         // render_layout_path_top: this.render_layout_path_top,
         // render_layout_path_bottom: this.render_layout_path_bottom
 
-        const combinned_common_data = _.merge({
-            render_layout_path_top: this.render_layout_path_top,
-            render_layout_path_bottom: this.render_layout_path_bottom,
-        }, this.common_data);
+        // const combinned_common_data = _.merge({
+        //     render_layout_path_top: this.render_layout_path_top,
+        //     render_layout_path_bottom: this.render_layout_path_bottom,
+        // }, this.common_data);
 
         // console.log(this.common_data)
-        return combinned_common_data
+        return this.common_data;
     }
 
     public replacePattern(baseStr: string, subs: string): string {

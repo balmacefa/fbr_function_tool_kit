@@ -22,8 +22,7 @@ type RType = {
 };
 
 export class ExpressChatExporter extends ExpressBaseExporter<RType> {
-    render_layout_path_top: string;
-    render_layout_path_bottom: string;
+    chat_landing_ejs_inject_on_locals__main_content: string;
     R: RType;
 
     // private absolute_index_path: string;
@@ -44,8 +43,7 @@ export class ExpressChatExporter extends ExpressBaseExporter<RType> {
         sub_path_main: string,
         context_common_data: Record<string, string>,
         markdoc_components: Schema[],
-        render_layout_path_top?: string,
-        render_layout_path_bottom?: string,
+        chat_landing_ejs_inject_on_locals__main_content?: string
     }) {
         super();
         this.app = args.app;
@@ -58,9 +56,7 @@ export class ExpressChatExporter extends ExpressBaseExporter<RType> {
         // TODO: add dev mode check
         // Set the directory for the views
 
-        this.render_layout_path_top = args.render_layout_path_top ? args.render_layout_path_top : GetChatView("/default_layouts/render_layout_path_top");
-
-        this.render_layout_path_bottom = args.render_layout_path_bottom ? args.render_layout_path_bottom : GetChatView("/default_layouts/render_layout_path_bottom");
+        this.chat_landing_ejs_inject_on_locals__main_content = args.chat_landing_ejs_inject_on_locals__main_content ? args.chat_landing_ejs_inject_on_locals__main_content : GetChatView("index_page");
 
         this.chat_manifests = args.manifests;
         const { sub_path_main } = args;
@@ -141,7 +137,10 @@ export class ExpressChatExporter extends ExpressBaseExporter<RType> {
 
             // Adding /chat_app route
             // Render a view for the /chat_app route
-            const html = await MainUtils.render_ejs_path_file(GetChatView("index_page"), { ...this.get_ui_common_data() });
+            const html = await MainUtils.render_ejs_path_file(this.chat_landing_ejs_inject_on_locals__main_content, {
+                ...this.get_ui_common_data(),
+                main_content: GetChatView('main_content')
+            });
             res.send(html);
         });
 
@@ -332,7 +331,7 @@ export class ExpressChatExporter extends ExpressBaseExporter<RType> {
                         const chat_messages =
                             await asistant_wrap.get_chat_messages(threadId);
 
-                        const html = await MainUtils.render_ejs_path_file(GetChatView("index_page"), {
+                        const html = await MainUtils.render_ejs_path_file(this.chat_landing_ejs_inject_on_locals__main_content, {
                             ...this.get_ui_common_data(),
                             chat_data_info: { chat_messages, sessionId },
                         });
