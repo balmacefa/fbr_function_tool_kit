@@ -31,6 +31,7 @@ export interface PaginationQuery<T> {
 export abstract class DatabaseSupport<T> {
     uri: string;
     dbModel!: mongoose.Model<T>;
+    private has_init = false;
 
     constructor(args: { uri?: string }) {
         if (!args.uri) {
@@ -120,7 +121,7 @@ export abstract class DatabaseSupport<T> {
 
 
 export class FBR_ChatDBSupport extends DatabaseSupport<FBR_ChatDBSupportCollData> {
-    
+
     get_collection_name(): MaybePromise<string> {
         const coll_name = 'FBR_ChatSessionData';
         return coll_name;
@@ -152,6 +153,6 @@ export class FBR_ChatDBSupport extends DatabaseSupport<FBR_ChatDBSupportCollData
         await this.dbModel.findByIdAndUpdate(sessionId, { threadId });
         return this.get_session(sessionId);
     }
-    
+
 
 }

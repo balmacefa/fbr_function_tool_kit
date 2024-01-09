@@ -49,12 +49,12 @@ export class MainUtils {
         const fileContent = fs.readFileSync(filePath, 'utf8');
         return fileContent;
     }
-    static render_ejs_string(ejs_string: string, data: any): string {
-        return ejs.render(ejs_string, { ...data });
+    static async render_ejs_string(ejs_string: string, data: any): Promise<string> {
+        return await ejs.render(ejs_string, { ...data }, { async: true });
     }
-    static render_ejs_path_file(ejs_path_file: string, data: any): string {
+    static async render_ejs_path_file(ejs_path_file: string, data: any): Promise<string> {
         const template = MainUtils.read_file_from_path(ejs_path_file);
-        return MainUtils.render_ejs_string(template, { ...data });
+        return await MainUtils.render_ejs_string(template, { ...data });
     }
 
     /** */

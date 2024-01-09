@@ -28,11 +28,11 @@ export const Curiosidad_rubik_cube: Schema = {
 
     title: { type: String, default: "THE CUBE!!" },
   },
-  transform(node, config) {
+  async transform(node, config) {
     const attributes = node.transformAttributes(config);
 
     const codepen = new Tag(
-      MainUtils.render_ejs_path_file(GetMarkdocView('code_pen'),
+      await MainUtils.render_ejs_path_file(GetMarkdocView('code_pen'),
         {
           code: 'Yzgqwxw',
           user: 'Fabian-Balmaceda',

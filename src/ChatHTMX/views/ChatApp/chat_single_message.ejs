@@ -37,11 +37,11 @@
     <div x-show="activeTab === 'showMarkdown'" id="results" class="tab-content">
       <% message.content.forEach(function(content) { console.log(message) %> <% if(content.type === 'text') { %>
       <div id="<%- message.id %>" class="markdoc-content">
-        <%- R.parse_markdoc(content.text.value) %>
+        <%- await R.parse_markdoc(content.text.value) %>
       </div>
       <% }}); %>
     </div>
-    
+
     <div x-show="activeTab === 'showRaw'" id="results" class="tab-content">
       <!-- Static content for results -->
       <div class="raw-content">

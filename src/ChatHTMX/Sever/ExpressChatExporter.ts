@@ -2,19 +2,30 @@ import Markdoc, { Config, Schema } from '@markdoc/markdoc';
 import { Express, Request, Response } from "express";
 import _ from "lodash";
 import morgan from "morgan";
-import path, { dirname } from 'path';
-import { fileURLToPath } from 'url';
+// import path, { dirname } from 'path';
+// import { fileURLToPath } from 'url';
 import { Full_stack_Software_Architect, Tailwind_HTMX_alpine_jquery } from "../../Assistants/AssistantBase";
-import { MainUtils } from "../../HostMachine";
+import { MainUtils } from '../../HostMachine';
 import { FBR_ChatDBSupport } from "../DB/FBR_ChatDBSupport";
 import OpenAIAssistantWrapper, { AssistantManifest } from "../OpenAI/OpenAIAssistantWrapper";
 import { ChatHTMXViewsChatAppPath, GetChatView } from "../views/ViewsPath";
 import { ExpressBaseExporter } from "./ExpressBaseExporter";
 
-export const CurrentPath = dirname(fileURLToPath(import.meta.url));
 
+type RType = {
+    chat: string;
+    chat__post_create_session: string;
+    chat__get_view_user_chat: string;
+    chat__post_new_user_message: string;
+    chat__get_user_chats: string;
+    parse_markdoc: (str: string) => Promise<string>;
+};
 
-export class ExpressChatExporter extends ExpressBaseExporter {
+export class ExpressChatExporter extends ExpressBaseExporter<RType> {
+    render_layout_path_top: string;
+    render_layout_path_bottom: string;
+    R: RType;
+
     // private absolute_index_path: string;
     common_data: any;
     chat_manifests: AssistantManifest[];
@@ -26,16 +37,15 @@ export class ExpressChatExporter extends ExpressBaseExporter {
     // private sessionManager: OpenAIAssistantSessionManager;
     // private views_drc: string;
     private chat_db_wrapper = new FBR_ChatDBSupport({});
-    R: any;
-
 
     constructor(args: {
         app: Express,
         manifests: AssistantManifest[],
-        chat_landing_ejs_inject_on_locals__main_content?: string,
         sub_path_main: string,
         context_common_data: Record<string, string>,
-        markdoc_components: Schema[]
+        markdoc_components: Schema[],
+        render_layout_path_top?: string,
+        render_layout_path_bottom?: string,
     }) {
         super();
         this.app = args.app;
@@ -48,23 +58,24 @@ export class ExpressChatExporter extends ExpressBaseExporter {
         // TODO: add dev mode check
         // Set the directory for the views
 
+        this.render_layout_path_top = args.render_layout_path_top ? args.render_layout_path_top : GetChatView("/default_layouts/render_layout_path_top");
+
+        this.render_layout_path_bottom = args.render_layout_path_bottom ? args.render_layout_path_bottom : GetChatView("/default_layouts/render_layout_path_bottom");
+
         this.chat_manifests = args.manifests;
         const { sub_path_main } = args;
         this.R = {
-
             chat: sub_path_main,
             chat__post_create_session: sub_path_main + "/htmx/session_create",
             chat__get_view_user_chat: sub_path_main + "/htmx/session_view/:sessionId",
             chat__post_new_user_message: sub_path_main + "/htmx/session_view/action/new_user_message",
             chat__get_user_chats: sub_path_main + "/:userId",
-            parse_markdoc: this.parse_markdoc
+            parse_markdoc: (str: string) => this.parse_markdoc(str),
         };
 
         const combinned_common_data = _.merge({
             chat_manifests: this.chat_manifests,
             R: this.R,
-            chat_landing_ejs: args.chat_landing_ejs_inject_on_locals__main_content ?
-                args.chat_landing_ejs_inject_on_locals__main_content : GetChatView("index"),
         }, args.context_common_data);
         this.common_data = combinned_common_data
     }
@@ -73,7 +84,7 @@ export class ExpressChatExporter extends ExpressBaseExporter {
         return this.chat_manifests.filter(el => (el.show_case))
     }
 
-    parse_markdoc(doc: string): string {
+    async parse_markdoc(doc: string): Promise<string> {
         const ast = Markdoc.parse(doc);
         const config: Config = {
             tags: {
@@ -94,7 +105,7 @@ export class ExpressChatExporter extends ExpressBaseExporter {
             }
         })
 
-        const content = Markdoc.transform(ast, config);
+        const content = await Markdoc.transform(ast, config);
 
         const html = Markdoc.renderers.html(content);
         return html;
@@ -118,8 +129,8 @@ export class ExpressChatExporter extends ExpressBaseExporter {
         await this.chat_db_wrapper.init();
         this.setupChatRoutes(this.R);
     }
-    private setupChatRoutes(R: Record<string, string>) {
-        this.app.get(R.chat, (req: Request, res: Response) => {
+    private setupChatRoutes(R: RType) {
+        this.app.get(R.chat, async (req: Request, res: Response) => {
             // const { userId, title, options } = req.body;
             // const sessionData = this.sessionManager.createSession(
             //   userId,
@@ -130,7 +141,8 @@ export class ExpressChatExporter extends ExpressBaseExporter {
 
             // Adding /chat_app route
             // Render a view for the /chat_app route
-            res.render(GetChatView("index_page"), { ...this.get_ui_common_data() });
+            const html = await MainUtils.render_ejs_path_file(GetChatView("index_page"), { ...this.get_ui_common_data() });
+            res.send(html);
         });
 
         // This are chat related functons - debe ser heredadas, se puede hacer o
@@ -144,10 +156,13 @@ export class ExpressChatExporter extends ExpressBaseExporter {
                     const userChats = await this.chat_db_wrapper.get_user_sessions(userId);
 
                     // Luego, renderiza una vista que muestre los chats en el nav bar del sidebar
-                    res.render(GetChatView("sidebar_chat_item_link_loop"), {
+
+                    const html = await MainUtils.render_ejs_path_file(GetChatView("sidebar_chat_item_link_loop"), {
                         userChats: userChats,
                         ...this.get_ui_common_data(),
                     });
+                    res.send(html);
+
                 } catch (error) {
                     console.error(error);
                     res.status(500).send("Server error occurred");
@@ -162,11 +177,14 @@ export class ExpressChatExporter extends ExpressBaseExporter {
                 const manifest = this.get_manifest_by_assistants_id(asistant_id)
 
                 if (!manifest) {
-                    // return error message
-                    return res.render(GetChatView("error_message"), {
-                        error___details: 'Manifest Not Found',
-                        message_json: "Error on this.app.post(R.chat__post_create_session"
-                    });
+
+
+                    const html = await MainUtils.render_ejs_path_file(GetChatView("error_message"),
+                        {
+                            error___details: 'Manifest Not Found',
+                            message_json: "Error on this.app.post(R.chat__post_create_session"
+                        });
+                    return res.status(200).send(html);
                 }
 
                 const asistant_wrap = new OpenAIAssistantWrapper(manifest);
@@ -188,36 +206,14 @@ export class ExpressChatExporter extends ExpressBaseExporter {
                 res.setHeader('HX-Redirect', redirect_user);
                 res.status(200).send('redirect to header HX-Redirect');
 
-
-
-                // res.render(
-                //     GetChatView("sidebar_chat_item_link"),
-                //     {
-                //         ...this.get_ui_common_data(),
-                //         chat: new_session_data,
-                //     },
-                //     (err, html) => {
-                //         if (err) {
-                //             // Handle the error, for example, by sending an error response
-                //             console.error(err);
-                //             return res.render(GetChatView("error_message"), {
-                //                 error___details: 'Session not found',
-                //                 message_json: err
-                //             });
-                //         } else {
-                //             // html is the rendered content
-                //             const renderedContent = html;
-                //             res.send(renderedContent);
-                //         }
-                //     }
-                // );
-
             } catch (error) {
-                console.error(error);
-                return res.render(GetChatView("error_message"), {
-                    error___details: 'Session not created',
-                    message_json: "Error on this.app.post(R.chat__post_create_session"
-                });
+
+                const html = await MainUtils.render_ejs_path_file(GetChatView("error_message"),
+                    {
+                        error___details: 'Manifest Not Found',
+                        message_json: "Error on this.app.post(R.chat__post_create_session"
+                    });
+                return res.status(200).send(html);
             }
         }
         );
@@ -232,20 +228,24 @@ export class ExpressChatExporter extends ExpressBaseExporter {
 
                     if (!session_data) {
 
-                        return res.render(GetChatView("error_message"), {
-                            error___details: 'Session not found',
-                            message_json: "Error on this.app.post(R.chat__post_new_user_message"
-                        });
+                        const html = await MainUtils.render_ejs_path_file(GetChatView("error_message"),
+                            {
+                                error___details: 'Manifest Not Found',
+                                message_json: "Error on this.app.post(R.chat__post_new_user_message"
+                            });
+                        return res.status(200).send(html);
                     }
 
                     const manifest = this.get_manifest_by_assistants_id(session_data.manifestId);
 
                     if (!manifest) {
-                        // return error message
-                        return res.render(GetChatView("error_message"), {
-                            error___details: 'Session not created',
-                            message_json: "Error on this.app.post(R.chat__post_new_user_message"
-                        });
+
+                        const html = await MainUtils.render_ejs_path_file(GetChatView("error_message"),
+                            {
+                                error___details: 'Manifest Not Found',
+                                message_json: "Error on this.app.post(R.chat__post_new_user_message"
+                            });
+                        return res.status(200).send(html);
                     }
 
                     const asistant_wrap = new OpenAIAssistantWrapper(manifest);
@@ -269,16 +269,22 @@ export class ExpressChatExporter extends ExpressBaseExporter {
                             `${new_message.threadId}`
                         );
 
-                    res.render(GetChatView("chat_chatlog_messages"), {
-                        chat_data_info: { chat_messages, sessionId },
-                        ...this.get_ui_common_data()
-                    });
+
+                    const html = await MainUtils.render_ejs_path_file(GetChatView("chat_chatlog_messages"),
+                        {
+                            chat_data_info: { chat_messages, sessionId },
+                            ...this.get_ui_common_data()
+                        });
+                    return res.status(200).send(html);
+
                 } catch (error) {
-                    console.error(error);
-                    return res.render(GetChatView("error_message"), {
-                        error___details: 'Server error occurred',
-                        message_json: JSON.stringify((error as any)?.message)
-                    });
+
+                    const html = await MainUtils.render_ejs_path_file(GetChatView("error_message"),
+                        {
+                            error___details: 'Server error occurred',
+                            message_json: JSON.stringify((error as any)?.message)
+                        });
+                    return res.status(200).send(html);
                 }
             }
         );
@@ -292,20 +298,24 @@ export class ExpressChatExporter extends ExpressBaseExporter {
 
                     if (!session_data) {
 
-                        return res.render(GetChatView("error_message"), {
+
+                        const html = await MainUtils.render_ejs_path_file(GetChatView("error_message"), {
                             error___details: 'Session not found',
                             message_json: "Error on this.app.post(R.chat__get_view_user_chat"
                         });
+                        return res.status(200).send(html);
                     }
 
                     const manifest = this.get_manifest_by_assistants_id(session_data.manifestId);
 
                     if (!manifest) {
-                        // return error message
-                        return res.render(GetChatView("error_message"), {
+
+
+                        const html = await MainUtils.render_ejs_path_file(GetChatView("error_message"), {
                             error___details: 'Manifest Not Found Error',
                             message_json: "Error on R.chat__get_view_user_chat"
                         });
+                        return res.status(200).send(html);
                     }
 
                     const asistant_wrap = new OpenAIAssistantWrapper(manifest);
@@ -322,22 +332,28 @@ export class ExpressChatExporter extends ExpressBaseExporter {
                         const chat_messages =
                             await asistant_wrap.get_chat_messages(threadId);
 
-                        res.render(GetChatView("index_page"), {
+                        const html = await MainUtils.render_ejs_path_file(GetChatView("index_page"), {
                             ...this.get_ui_common_data(),
                             chat_data_info: { chat_messages, sessionId },
                         });
+                        return res.status(200).send(html);
+
                     } else {
-                        res.render(GetChatView("index_page"), {
-                            ...this.get_ui_common_data(),
-                            chat_data_info: { chat_messages: { data: [] }, sessionId },
+
+                        const html = await MainUtils.render_ejs_path_file(GetChatView("error_message"), {
+                            error___details: 'Manifest Not Found Error',
+                            message_json: "Error on R.chat__get_view_user_chat"
                         });
+                        return res.status(200).send(html);
                     }
                 } catch (error) {
                     console.error(error);
-                    return res.render(GetChatView("error_message"), {
+
+                    const html = await MainUtils.render_ejs_path_file(GetChatView("error_message"), {
                         error___details: 'Server error occurred on R.chat__get_view_user_chat',
                         message_json: JSON.stringify((error as any)?.message)
                     });
+                    return res.status(200).send(html);
                 }
             }
         );
@@ -391,21 +407,23 @@ export class ExpressChatExporter extends ExpressBaseExporter {
     }
 }
 
-// Function to configure Express to use EJS
+// // Function to configure Express to use EJS
 
-if (typeof require !== "undefined" && require.main === module) {
-    (() => {
-
-
-        // Setup the MainUtils Root Direcotry for easy , copyrelative path integration
-        const currentPath = path.join(path.join(CurrentPath, '../'));
-        console.info('Current Main path', path.join()) // set it to the root of this sub project module!
-        MainUtils.set_root_path(currentPath);
+// if (typeof require !== "undefined" && require.main === module) {
+//     (() => {
 
 
-        ExpressChatExporter.default_server();
-        // Import Inquirer within the async function if it's not already imported
-        // TODO: Update the swagger registry and routes with the ngrok URL
-        // [Your logic to update Swagger registry and routes goes here]
-    })();
-}
+//         const CurrentPath = dirname(fileURLToPath(import.meta.url));
+
+//         // Setup the MainUtils Root Direcotry for easy , copyrelative path integration
+//         const currentPath = path.join(path.join(CurrentPath, '../'));
+//         console.info('Current Main path', path.join()) // set it to the root of this sub project module!
+//         MainUtils.set_root_path(currentPath);
+
+
+//         ExpressChatExporter.default_server();
+//         // Import Inquirer within the async function if it's not already imported
+//         // TODO: Update the swagger registry and routes with the ngrok URL
+//         // [Your logic to update Swagger registry and routes goes here]
+//     })();
+// }
