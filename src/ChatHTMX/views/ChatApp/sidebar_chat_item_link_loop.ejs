@@ -1,5 +1,5 @@
-<% if (locals.userChats) locals.userChats.forEach(function(chat) { %>
+<%  if (locals.userChats)  for (const chat of locals.userChats) {  %>
 <!--  -->
-<%- await include(GetChatView('sidebar_chat_item_link'0, { chat: chat }); %>
+<%- await include(GetChatView('sidebar_chat_item_link'), { chat: chat }); %>
 <!--  -->
-<% }); %>
+<% }; %>
