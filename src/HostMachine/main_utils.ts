@@ -50,7 +50,8 @@ export class MainUtils {
         return fileContent;
     }
     static async render_ejs_string(ejs_string: string, data: any): Promise<string> {
-        return await ejs.render(ejs_string, { ...data }, { async: true });
+        const html = await ejs.render(ejs_string, { ...data }, { async: true });
+        return html;
     }
     static async render_ejs_path_file(ejs_path_file: string, data: any): Promise<string> {
         const template = MainUtils.read_file_from_path(ejs_path_file);

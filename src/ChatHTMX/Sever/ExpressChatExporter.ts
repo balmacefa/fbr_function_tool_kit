@@ -72,6 +72,8 @@ export class ExpressChatExporter extends ExpressBaseExporter<RType> {
         const combinned_common_data = _.merge({
             chat_manifests: this.chat_manifests,
             R: this.R,
+            index_ejs: this.chat_landing_ejs_inject_on_locals__main_content,
+            GetChatView
         }, args.context_common_data);
         this.common_data = combinned_common_data
     }
@@ -137,10 +139,10 @@ export class ExpressChatExporter extends ExpressBaseExporter<RType> {
 
             // Adding /chat_app route
             // Render a view for the /chat_app route
-            const html = await MainUtils.render_ejs_path_file(this.chat_landing_ejs_inject_on_locals__main_content, {
-                ...this.get_ui_common_data(),
-                main_content: GetChatView('main_content')
-            });
+            const html = await MainUtils.render_ejs_path_file(GetChatView('index_page'),
+                {
+                    ...this.get_ui_common_data(),
+                });
             res.send(html);
         });
 
@@ -331,10 +333,12 @@ export class ExpressChatExporter extends ExpressBaseExporter<RType> {
                         const chat_messages =
                             await asistant_wrap.get_chat_messages(threadId);
 
-                        const html = await MainUtils.render_ejs_path_file(this.chat_landing_ejs_inject_on_locals__main_content, {
-                            ...this.get_ui_common_data(),
-                            chat_data_info: { chat_messages, sessionId },
-                        });
+                        const html = await MainUtils.render_ejs_path_file(GetChatView('index_page'),
+                            {
+                                ...this.get_ui_common_data(),
+                                chat_data_info: { chat_messages, sessionId },
+                            });
+
                         return res.status(200).send(html);
 
                     } else {

@@ -8,24 +8,21 @@ locals.
 -->
 
 <div id="chat_app_container">
-  <main
-    class="overflow-hidden w-full h-screen relative flex"
-    x-data="{ open_asistant_manifest: <%- locals.chat_data_info ? false : true %> }"
-  >
+  <main class="overflow-hidden w-full h-screen relative flex" x-data="{ open_asistant_manifest: <%- locals.chat_data_info ? false : true %> }">
     <!-- A -->
-    <%- include('assistant_manifest'); -%>
+    <%- await include('assistant_manifest'); -%>
     <!-- B -->
-    <%- include('sidebar'); -%>
+    <%- await include('sidebar'); -%>
     <!-- C -->
     <% if (locals.chat_data_info) { %>
     <!-- D -->
-    <%- include('main_content_chat'); -%>
+    <%- await include('main_content_chat'); -%>
     <!-- when main_content_chat is render them open_asistant_manifest should be false-->
     <!-- E -->
     <% } else { %>
     <!-- F -->
     <!-- when main_content_chat is render them main_content_no_chat should be true-->
-    <%- include('main_content_no_chat'); -%>
+    <%- await include('main_content_no_chat'); -%>
     <!-- G -->
     <% } %>
   </main>
