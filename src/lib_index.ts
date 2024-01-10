@@ -1,4 +1,10 @@
 // import { RedisManager } from './CacheRedis/RedisManager';
+
+export {
+    BaseProjectError,
+    FBR_ErrorManager,
+    PromiseResolve
+} from './ErrorManager/ProjectError';
 // TODO: treeshake using roller up
 export {
     AgentType,

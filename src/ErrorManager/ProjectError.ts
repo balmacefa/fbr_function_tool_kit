@@ -1,4 +1,5 @@
 import { Err, Ok, Result } from 'ts-results';
+export type PromiseResolve<R, E> = Promise<Result<R, E>>
 
 export class BaseProjectError extends Error {
     constructor(message: string, public data?: any) {
