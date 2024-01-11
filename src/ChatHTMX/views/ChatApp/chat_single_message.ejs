@@ -32,17 +32,17 @@
 
 
 
-  <div class="message-content p-4dark:text-gray-200">
+  <div class="message-content p-4 dark:text-gray-200">
 
     <div x-show="activeTab === 'showMarkdown'" id="results" class="tab-content">
 
 
       <%  for (const content of message.content) { %>
-      <% if(content.type === 'text') { %>
-      <div id="<%- message.id %>" class="markdoc-content">
+      <% if (content.type === 'text') { %>
+      <div id="markdoc_<%- message.id %>" class="markdoc-content">
         <%- await R.parse_markdoc(content.text.value); %>
       </div>
-      <% }; %>
+      <% } %>
       <% }; %>
 
 
@@ -52,11 +52,13 @@
     <div x-show="activeTab === 'showRaw'" id="results" class="tab-content">
       <!-- Static content for results -->
       <div class="raw-content">
-        <% message.content.forEach(function(content) { %> <% if(content.type === 'text') { %>
-        <article class="content" x-ref="textoParaCopiar"><%= content.text.value %></article>
+
+        <%  for (const content of message.content) { %>
+        <% if (content.type === 'text') { %>
+        <article id="markdoc_<%- message.id %>" class="content" x-ref="textoParaCopiar"><%- content.text.value %></article>
         <% } %>
-        <!-- Add other content type handling if necessary -->
-        <% }); %>
+        <% }; %>
+
       </div>
     </div>
 

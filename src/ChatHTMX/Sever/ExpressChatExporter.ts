@@ -343,9 +343,9 @@ export class ExpressChatExporter extends ExpressBaseExporter<RType> {
 
                     } else {
 
-                        const html = await MainUtils.render_ejs_path_file(GetChatView("error_message"), {
-                            error___details: 'Manifest Not Found Error',
-                            message_json: "Error on R.chat__get_view_user_chat"
+                        const html = await MainUtils.render_ejs_path_file(GetChatView("index_page"), {
+                            ...this.get_ui_common_data(),
+                            chat_data_info: { chat_messages: { data: [] }, sessionId },
                         });
                         return res.status(200).send(html);
                     }
