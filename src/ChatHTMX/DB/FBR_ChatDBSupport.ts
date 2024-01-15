@@ -117,6 +117,26 @@ export abstract class DatabaseSupport<T> {
         return { ...new_record.toObject(), id: (new_record._id as any).toString() };
     }
 
+    /**
+     * Partially updates a document.
+     * @param id The ID of the document to update.
+     * @param updateData The partial data to update.
+     * @returns The updated document.
+     */
+    public async update_partial(id: string, updateData: Partial<T>): Promise<T> {
+
+        const updatedDocument = await this.dbModel.findByIdAndUpdate(
+            id,
+            { $set: updateData },
+            { new: true, runValidators: true }
+        ).exec();
+
+        if (!updatedDocument) {
+            throw new Error("Document not found or update failed");
+        }
+
+        return updatedDocument.toObject() as T;
+    }
 }
 
 
