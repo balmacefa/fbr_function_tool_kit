@@ -87,7 +87,7 @@ describe('TS_Method_Fetcher', () => {
         });
 
         it('should return null if the file is not found', () => {
-            const content = fetcher.fetchClassContent('path/to/nonexistentfile.ts', 'SomeClass');
+            const content = fetcher.fetchFunctionContent('path/to/nonexistentfile.ts', 'SomeClass');
             expect(content).toBeNull();
         });
 
@@ -102,15 +102,44 @@ describe('TS_Method_Fetcher', () => {
         // Additional tests for edge cases or specific scenarios
     });
 
+    describe('fetchPropertyContent from File', () => {
+        it('should return the content of the specified func', () => {
+            const mockFilePath = GetProjectA_path('src/NoComments.ts').replaceAll('\\', '/');
+            const functionName = 'function_foo';
 
-    describe('fetchMethodContent from string', () => {
-        it('should  return the content of the specified method ', () => {
-            const queryString = `Query: ${UserClssPath} cls:User.mth:createUser`;
 
-            const content = fetcher.getMethodContentFromStringQuery(queryString) as string;
+            const content = fetcher.fetchPropertyContent(mockFilePath, functionName) as string;
             expect(content.length > 0).toBeTruthy();
+            expect(content.includes('function_foo(args: string')).toBeTruthy();
         });
+
+        it('should return null if the file is not found', () => {
+            const content = fetcher.fetchPropertyContent('path/to/nonexistentfile.ts', 'SomeClass');
+            expect(content).toBeNull();
+        });
+
+        it('should return null if the Func is not found ', () => {
+            const mockFilePath = GetProjectA_path('src/NoComments.ts').replaceAll('\\', '/');
+            const functionName = 'getUserProfile';
+
+            const content = fetcher.fetchPropertyContent(mockFilePath, functionName);
+            expect(content).toBeNull();
+        });
+
+        // Additional tests for edge cases or specific scenarios
     });
+
+
+    // describe('fetchMethodContent from string', () => {
+    //     it('should  return the content of the specified method ', () => {
+    //         const queryString = `Query: ${UserClssPath} cls:User.mth:createUser`;
+
+    //         const content = fetcher.getMethodContentFromStringQuery(queryString) as string;
+    //         expect(content.length > 0).toBeTruthy();
+    //     });
+    // });
 
     // AfterAll or afterEach blocks for cleanup could be added here if needed
 });
+
+

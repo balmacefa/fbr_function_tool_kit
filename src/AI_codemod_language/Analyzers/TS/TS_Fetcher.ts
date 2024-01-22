@@ -104,27 +104,77 @@ export class TS_Method_Fetcher extends TS_Project_Analyzer {
     }
 
 
-
     /**
-   * Parses the input string query and fetches the content of the specified method.
-   * @param {string} queryString - The query string in the format "Query: {{file_path}}cls:ClassName.mth:MethodName"
-   * @returns {MethodContent | null} The content of the method, or null if not found.
-   */
-    public getMethodContentFromStringQuery(queryString: string): string | null {
-        // Define the regex pattern
-        const regexPattern = /Query: (.+?) cls:(.+?)\.mth:(.+)/;
+     * Fetches the content of a specified property or variable at the file root level.
+     * @param {string} filePath - The path to the TypeScript file.
+     * @param {string} propertyName - The name of the property or variable to fetch.
+     * @returns {string | null} - The content of the property or variable, or null if not found.
+     */
+    public fetchPropertyContent(filePath: string, propertyName: string): string | null {
+        const sourceFile: SourceFile | undefined = this.project.getSourceFile(filePath);
 
-        // Match the string against the regex pattern
-        const matches = queryString.match(regexPattern);
-
-        if (matches) {
-            const [, filePath, className, methodName] = matches;
-
-            // Use the extracted parts to fetch the method content
-            return this.fetchMethodContent(filePath, className, methodName);
-        } else {
-            console.error('String did not match the expected format.');
+        if (!sourceFile) {
+            console.error(`File not found: ${filePath}`);
             return null;
         }
+
+        const variableStatement = sourceFile.getVariableStatement(propertyName);
+        const variableDeclaration = variableStatement?.getDeclarationList().getDeclarations().find(d => d.getName() === propertyName);
+
+        if (variableDeclaration) {
+            return variableDeclaration.getText();
+        } else {
+            console.error(`Property/Variable ${propertyName} not found in ${filePath}`);
+            return null;
+        }
+    }
+
+    /**
+     * Parses the input string query and fetches the content of the specified class, method, function, or property.
+     * @param {string} queryString - The query string in one of the following formats:
+     *                              "Query: {{file_path}} cls:ClassName" for class content
+     *                              "Query: {{file_path}} cls:ClassName.mth:MethodName" for method content
+     *                              "Query: {{file_path}} fn:FunctionName" for function content
+     *                              "Query: {{file_path}} prop:PropertyName" for property content
+     * @returns {string | null} - The content of the class, method, function, or property, or null if not found.
+     */
+    public getContentFromStringQuery(queryString: string): string | null {
+        const methodRegexPattern = /Query: (.+?) cls:(.+?)\.mth:(.+)/;
+        const classRegexPattern = /Query: (.+?) cls:(.+)/;
+        const functionRegexPattern = /Query: (.+?) fn:(.+)/;
+        const propertyRegexPattern = /Query: (.+?) prop:(.+)/;
+
+        let matches;
+
+        // Check if it's a method content request
+        matches = queryString.match(methodRegexPattern);
+        if (matches) {
+            const [, filePath, className, methodName] = matches;
+            return this.fetchMethodContent(filePath, className, methodName);
+        }
+
+        // Check if it's a class content request
+        matches = queryString.match(classRegexPattern);
+        if (matches) {
+            const [, filePath, className] = matches;
+            return this.fetchClassContent(filePath, className);
+        }
+
+        // Check if it's a function content request
+        matches = queryString.match(functionRegexPattern);
+        if (matches) {
+            const [, filePath, functionName] = matches;
+            return this.fetchFunctionContent(filePath, functionName);
+        }
+
+        // Check if it's a property content request
+        matches = queryString.match(propertyRegexPattern);
+        if (matches) {
+            const [, filePath, propertyName] = matches;
+            return this.fetchPropertyContent(filePath, propertyName);
+        }
+
+        console.error('String did not match the expected format.');
+        return null;
     }
 }
