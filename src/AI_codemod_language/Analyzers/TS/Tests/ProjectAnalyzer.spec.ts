@@ -83,26 +83,17 @@ describe('TS_Project_Analyzer', () => {
             }
             expect(analis).toEqual(expected);
         });
-
-        it('should correctly count documented and undocumented class members', () => {
-            // Test for correct counting of documented and undocumented class members
-        });
-
-        // Additional tests for edge cases or specific scenarios
     });
 
     describe('analyzeProject', () => {
         it('should correctly aggregate analysis results of all files in the project', () => {
             // Test for correct aggregation of file analysis results
-        });
+            const projectA_result = analyzer.analyzeProject();
 
-        it('should correctly calculate total documentation coverage for the entire project', () => {
-            // Test for correct calculation of total project documentation coverage
+            expect(projectA_result.totalCoverage).toEqual("55.56%");
+            expect(projectA_result.files.length).toEqual(3);
         });
-
-        // Additional tests for edge cases or specific scenarios
     });
-
 
     describe('getProjectFilePaths', () => {
         it('should return an array of file paths from the TypeScript project', () => {
@@ -110,11 +101,4 @@ describe('TS_Project_Analyzer', () => {
             expect(filePaths.length > 0).toBeTruthy();
         });
     });
-
-    // Additional utility or helper method tests could be added here
-
-    // AfterAll or afterEach blocks for cleanup could be added here if needed
 });
-
-// Note: For testing private methods or properties, consider restructuring the class for better testability,
-// or use techniques such as redefining the method as public during testing or using proxies/reflection.
