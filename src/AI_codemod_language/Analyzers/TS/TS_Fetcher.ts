@@ -1,4 +1,5 @@
 import { ClassDeclaration, FunctionDeclaration, MethodDeclaration, SourceFile } from "ts-morph";
+import { MainUtils } from "../../../HostMachine";
 import { TS_Project_Analyzer } from "./ProjectAnalyzer";
 
 
@@ -130,19 +131,36 @@ export class TS_Method_Fetcher extends TS_Project_Analyzer {
     }
 
     /**
-     * Parses the input string query and fetches the content of the specified class, method, function, or property.
+     * Fetches the entire content of a specified TypeScript file.
+     * @param {string} filePath - The path to the TypeScript file.
+     * @returns {string | null} - The content of the file, or null if not found.
+     */
+    public fetchFileContent(filePath: string): string | null {
+        try {
+            const content = MainUtils.read_file_from_path(filePath);
+            return content;
+        } catch (error) {
+            console.error(`Error reading file: ${filePath}`);
+            return null;
+        }
+    }
+
+    /**
+     * Parses the input string query and fetches the content of the specified class, method, function, property, or the entire file.
      * @param {string} queryString - The query string in one of the following formats:
+     *                              "Query: {{file_path}}" for entire file content
      *                              "Query: {{file_path}} cls:ClassName" for class content
      *                              "Query: {{file_path}} cls:ClassName.mth:MethodName" for method content
      *                              "Query: {{file_path}} fn:FunctionName" for function content
      *                              "Query: {{file_path}} prop:PropertyName" for property content
-     * @returns {string | null} - The content of the class, method, function, or property, or null if not found.
+     * @returns {string | null} - The content of the class, method, function, property, or the entire file, or null if not found.
      */
     public getContentFromStringQuery(queryString: string): string | null {
         const methodRegexPattern = /Query: (.+?) cls:(.+?)\.mth:(.+)/;
         const classRegexPattern = /Query: (.+?) cls:(.+)/;
         const functionRegexPattern = /Query: (.+?) fn:(.+)/;
         const propertyRegexPattern = /Query: (.+?) prop:(.+)/;
+        const fileRegexPattern = /^Query: (.+)$/;
 
         let matches;
 
@@ -174,7 +192,16 @@ export class TS_Method_Fetcher extends TS_Project_Analyzer {
             return this.fetchPropertyContent(filePath, propertyName);
         }
 
+        // Check if it's a file content request
+        matches = queryString.match(fileRegexPattern);
+        if (matches) {
+            const [, filePath] = matches;
+            // Check if any specific type (class/method/function/property) is requested
+            return this.fetchFileContent(filePath);
+        }
+
         console.error('String did not match the expected format.');
         return null;
     }
+
 }

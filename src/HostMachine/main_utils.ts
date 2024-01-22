@@ -45,8 +45,11 @@ export class MainUtils {
         return { fileContent };
     }
     static join_path(a: string, b: string): string { return path.join(a, b) }
-    static read_file_from_path(filePath: string): string {
-        const fileContent = fs.readFileSync(filePath, 'utf8');
+    /** 
+     * read_file_from_path read from the absolute path
+    */
+    static read_file_from_path(absolutePath: string): string {
+        const fileContent = fs.readFileSync(absolutePath, 'utf8');
         return fileContent;
     }
     static async render_ejs_string(ejs_string: string, data: any): Promise<string> {
