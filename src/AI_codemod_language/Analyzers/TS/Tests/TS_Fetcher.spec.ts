@@ -7,6 +7,7 @@ describe('TS_Method_Fetcher', () => {
     let fetcher: TS_Method_Fetcher;
     const tsConfigPath = GetProjectA_tsconfig();
     const UserClssPath = GetProjectA_path('src/User.ts').replaceAll('\\', '/');
+    const NoCommentsPath = GetProjectA_path('src/NoComments.ts').replaceAll('\\', '/');
 
     beforeEach(() => {
         // Common setup for each test, initializing TS_Method_Fetcher instance
@@ -77,7 +78,7 @@ describe('TS_Method_Fetcher', () => {
     });
     describe('fetchFunctionContent from File', () => {
         it('should return the content of the specified func', () => {
-            const mockFilePath = GetProjectA_path('src/NoComments.ts').replaceAll('\\', '/');
+            const mockFilePath = NoCommentsPath
             const functionName = 'function_foo';
 
 
@@ -92,7 +93,7 @@ describe('TS_Method_Fetcher', () => {
         });
 
         it('should return null if the Func is not found ', () => {
-            const mockFilePath = GetProjectA_path('src/NoComments.ts').replaceAll('\\', '/');
+            const mockFilePath = NoCommentsPath
             const functionName = 'getUserProfile';
 
             const content = fetcher.fetchFunctionContent(mockFilePath, functionName);
@@ -104,25 +105,25 @@ describe('TS_Method_Fetcher', () => {
 
     describe('fetchPropertyContent from File', () => {
         it('should return the content of the specified func', () => {
-            const mockFilePath = GetProjectA_path('src/NoComments.ts').replaceAll('\\', '/');
-            const functionName = 'function_foo';
+            const mockFilePath = NoCommentsPath
+            const propertyName = 'foo';
 
 
-            const content = fetcher.fetchPropertyContent(mockFilePath, functionName) as string;
+            const content = fetcher.fetchPropertyContent(mockFilePath, propertyName) as string;
             expect(content.length > 0).toBeTruthy();
             expect(content.includes('function_foo(args: string')).toBeTruthy();
         });
 
         it('should return null if the file is not found', () => {
-            const content = fetcher.fetchPropertyContent('path/to/nonexistentfile.ts', 'SomeClass');
+            const content = fetcher.fetchPropertyContent('path/to/nonexistentfile.ts', 'SomePropertyName');
             expect(content).toBeNull();
         });
 
         it('should return null if the Func is not found ', () => {
-            const mockFilePath = GetProjectA_path('src/NoComments.ts').replaceAll('\\', '/');
-            const functionName = 'getUserProfile';
+            const mockFilePath = NoCommentsPath
+            const propertyName = 'foo';
 
-            const content = fetcher.fetchPropertyContent(mockFilePath, functionName);
+            const content = fetcher.fetchPropertyContent(mockFilePath, propertyName);
             expect(content).toBeNull();
         });
 

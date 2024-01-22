@@ -6,9 +6,8 @@ import { MaybePromise } from '../types';
 const FindFiles = require('file-regex');
 
 
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
-export const CurrentPath = dirname(fileURLToPath(import.meta.url));
+// export const CurrentPath = dirname(fileURLToPath(import.meta.url));
+export const CurrentPath = __dirname;
 // path.join(root_path, append_path)
 
 /** */
