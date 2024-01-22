@@ -75,6 +75,32 @@ describe('TS_Method_Fetcher', () => {
 
         // Additional tests for edge cases or specific scenarios
     });
+    describe('fetchFunctionContent from File', () => {
+        it('should return the content of the specified func', () => {
+            const mockFilePath = GetProjectA_path('src/NoComments.ts').replaceAll('\\', '/');
+            const functionName = 'function_foo';
+
+
+            const content = fetcher.fetchFunctionContent(mockFilePath, functionName) as string;
+            expect(content.length > 0).toBeTruthy();
+            expect(content.includes('function_foo(args: string')).toBeTruthy();
+        });
+
+        it('should return null if the file is not found', () => {
+            const content = fetcher.fetchClassContent('path/to/nonexistentfile.ts', 'SomeClass');
+            expect(content).toBeNull();
+        });
+
+        it('should return null if the Func is not found ', () => {
+            const mockFilePath = GetProjectA_path('src/NoComments.ts').replaceAll('\\', '/');
+            const functionName = 'getUserProfile';
+
+            const content = fetcher.fetchFunctionContent(mockFilePath, functionName);
+            expect(content).toBeNull();
+        });
+
+        // Additional tests for edge cases or specific scenarios
+    });
 
 
     describe('fetchMethodContent from string', () => {

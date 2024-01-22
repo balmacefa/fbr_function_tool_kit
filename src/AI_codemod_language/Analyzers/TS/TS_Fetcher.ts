@@ -1,4 +1,4 @@
-import { ClassDeclaration, MethodDeclaration, SourceFile } from "ts-morph";
+import { ClassDeclaration, FunctionDeclaration, MethodDeclaration, SourceFile } from "ts-morph";
 import { TS_Project_Analyzer } from "./ProjectAnalyzer";
 
 
@@ -73,6 +73,32 @@ export class TS_Method_Fetcher extends TS_Project_Analyzer {
             return classNode.getText();
         } else {
             console.error(`Class ${className} not found in ${filePath}`);
+            return null;
+        }
+    }
+
+
+
+    /**
+     * Fetches the content of a specified function at the file root level.
+     * @param {string} filePath - The path to the TypeScript file.
+     * @param {string} functionName - The name of the function to fetch.
+     * @returns {string | null} - The content of the function, or null if not found.
+     */
+    public fetchFunctionContent(filePath: string, functionName: string): string | null {
+        const sourceFile: SourceFile | undefined = this.project.getSourceFile(filePath);
+
+        if (!sourceFile) {
+            console.error(`File not found: ${filePath}`);
+            return null;
+        }
+
+        const functionNode: FunctionDeclaration | undefined = sourceFile.getFunction(functionName);
+
+        if (functionNode) {
+            return functionNode.getText();
+        } else {
+            console.error(`Function ${functionName} not found in ${filePath}`);
             return null;
         }
     }
