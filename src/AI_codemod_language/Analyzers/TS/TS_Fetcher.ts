@@ -52,6 +52,33 @@ export class TS_Method_Fetcher extends TS_Project_Analyzer {
     }
 
 
+
+    /**
+     * Fetches the content of a specified class from a TypeScript file.
+     * @param {string} filePath - The path to the TypeScript file.
+     * @param {string} className - The name of the class to fetch.
+     * @returns {string | null} - The content of the class, or null if not found.
+     */
+    public fetchClassContent(filePath: string, className: string): string | null {
+        const sourceFile: SourceFile | undefined = this.project.getSourceFile(filePath);
+
+        if (!sourceFile) {
+            console.error(`File not found: ${filePath}`);
+            return null;
+        }
+
+        const classNode: ClassDeclaration | undefined = sourceFile.getClass(className);
+
+        if (classNode) {
+            return classNode.getText();
+        } else {
+            console.error(`Class ${className} not found in ${filePath}`);
+            return null;
+        }
+    }
+
+
+
     /**
    * Parses the input string query and fetches the content of the specified method.
    * @param {string} queryString - The query string in the format "Query: {{file_path}}cls:ClassName.mth:MethodName"

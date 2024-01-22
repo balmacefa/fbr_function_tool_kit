@@ -49,6 +49,33 @@ describe('TS_Method_Fetcher', () => {
         // Additional tests for edge cases or specific scenarios
     });
 
+    describe('fetchClassContent', () => {
+        it('should return the content of the specified method', () => {
+            const mockFilePath = UserClssPath;
+            const mockClassName = 'User';
+
+
+            const content = fetcher.fetchClassContent(mockFilePath, mockClassName) as string;
+            expect(content.length > 0).toBeTruthy();
+            expect(content.length).toEqual(596);
+        });
+
+        it('should return null if the file is not found', () => {
+            const content = fetcher.fetchClassContent('path/to/nonexistentfile.ts', 'SomeClass');
+            expect(content).toBeNull();
+        });
+
+        it('should return null if the Class is not found ', () => {
+            const mockFilePath = UserClssPath;
+            const mockClassName = 'ClassNotFound';
+
+            const content = fetcher.fetchClassContent(mockFilePath, mockClassName);
+            expect(content).toBeNull();
+        });
+
+        // Additional tests for edge cases or specific scenarios
+    });
+
 
     describe('fetchMethodContent from string', () => {
         it('should  return the content of the specified method ', () => {
