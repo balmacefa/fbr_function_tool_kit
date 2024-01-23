@@ -1,6 +1,6 @@
 import { ClassDeclaration, FunctionDeclaration, MethodDeclaration, SourceFile } from "ts-morph";
 import { MainUtils } from "../../../HostMachine";
-import { TS_Project_Analyzer } from "./ProjectAnalyzer";
+import { TS_Project_Analyzer } from "./TS_Project_Analyzer";
 
 
 /**

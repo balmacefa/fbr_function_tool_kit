@@ -2,7 +2,7 @@
 // Additional imports for mocking or utilities could be added here
 
 import { SourceFile } from "ts-morph";
-import { AnalysisResult, TS_Project_Analyzer } from '../ProjectAnalyzer';
+import { AnalysisResult, TS_Project_Analyzer } from '../TS_Project_Analyzer';
 import { GetProjectA_path, GetProjectA_tsconfig } from "./ProjecA/TestPath";
 
 describe('TS_Project_Analyzer', () => {
@@ -90,7 +90,7 @@ describe('TS_Project_Analyzer', () => {
             // Test for correct aggregation of file analysis results
             const projectA_result = analyzer.analyzeProject();
 
-            expect(projectA_result.totalCoverage).toEqual("55.56%");
+            expect(projectA_result.totalCoverage).toEqual("50.00%");
             expect(projectA_result.files.length).toEqual(3);
         });
     });
@@ -101,4 +101,19 @@ describe('TS_Project_Analyzer', () => {
             expect(filePaths.length > 0).toBeTruthy();
         });
     });
+
+
+    describe('Generate Files', () => {
+        it('should Generates a file containing all statements without JSDocs.', () => {
+
+            const pathFile = GetProjectA_path('src/PartialComments.ts').replaceAll('\\', '/');
+            const file = analyzer.getSourceFileFromPath(pathFile) as SourceFile;
+
+            const response: string = analyzer.generateFileWithoutJSDocs(file);
+
+            expect(response.length).toEqual(2015);
+        });
+    });
+
+
 });

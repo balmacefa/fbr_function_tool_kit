@@ -1,4 +1,4 @@
-import { ClassDeclaration, JSDoc, Project, SourceFile, SyntaxKind } from "ts-morph";
+import { ClassDeclaration, ClassMemberTypes, FunctionDeclaration, InterfaceDeclaration, Project, SourceFile, Statement, SyntaxKind, VariableStatement } from "ts-morph";
 
 
 export interface AnalysisResult {
@@ -13,6 +13,7 @@ export interface ProjectAnalysis {
     totalCoverage: string;
 }
 
+export type JSDocstatement = FunctionDeclaration | ClassDeclaration | InterfaceDeclaration | VariableStatement | ClassMemberTypes;
 
 /**
  * @class TS_Project_Analyzer
@@ -68,54 +69,27 @@ export class TS_Project_Analyzer {
         let documentedCount = 0;
         let totalCount = 0;
 
-        function isNotEmptyJsDocs(jsDocs: JSDoc[]) {
-            return jsDocs.length > 0 && jsDocs[0].getInnerText().trim() !== '';
-        }
 
         statements.forEach(statement => {
 
             // Narrowing down the statement type to those which can have JSDoc comments
-            if (statement.isKind(SyntaxKind.FunctionDeclaration) ||
-                statement.isKind(SyntaxKind.ClassDeclaration) ||
-                statement.isKind(SyntaxKind.InterfaceDeclaration) ||
-                statement.isKind(SyntaxKind.VariableStatement)) {
-
-
+            if (this.statement_type_hasJSDoc(statement)) {
                 // Increment the total statements count
                 totalCount++;
-
-                const jsDocs = statement.getJsDocs();
-                if (isNotEmptyJsDocs(jsDocs)) {
+                if (this.hasJSDoc(statement as JSDocstatement)) {
                     documentedCount++;
                 }
-
-
-
 
                 if (statement.isKind(SyntaxKind.ClassDeclaration)) {
                     const classDeclaration = statement.asKind(SyntaxKind.ClassDeclaration) as ClassDeclaration;
                     classDeclaration.getMembers().forEach(member => {
                         totalCount++;
 
-                        // TODO: check also for empty JSdocs, is means there is NOT JSDOC, Example
-                        /**
-                         * 
-                        */
-                        // func definition
-                        //  OR /** */ + 
-                        const jsDocs = member.getJsDocs();
-
-                        if (isNotEmptyJsDocs(jsDocs)) {
+                        if (this.hasJSDoc(member as JSDocstatement)) {
                             documentedCount++;
                         }
-
-
                     });
-
                 }
-
-
-
             }
         });
 
@@ -171,6 +145,121 @@ export class TS_Project_Analyzer {
     public getProjectFilePaths(): string[] {
         const sourceFiles = this.project.getSourceFiles();
         return sourceFiles.map(file => file.getFilePath());
+    }
+
+
+
+    /**
+        * Checks if a node has JSDoc comments.
+        * @param node The node to check.
+        * @returns True if the node has JSDoc comments, false otherwise.
+        */
+    public statement_type_hasJSDoc(statement: Statement): boolean {
+
+        if (statement.isKind(SyntaxKind.FunctionDeclaration) ||
+            statement.isKind(SyntaxKind.ClassDeclaration) ||
+            statement.isKind(SyntaxKind.InterfaceDeclaration) ||
+            statement.isKind(SyntaxKind.ClassExpression) ||
+            statement.isKind(SyntaxKind.VariableStatement)) {
+            return true;
+        }
+        return false;
+
+    }
+    /**
+        * Checks if a node has JSDoc comments.
+        * @param node The node to check.
+        * @returns True if the node has JSDoc comments, false otherwise.
+        */
+    public hasJSDoc(statement: JSDocstatement): boolean {
+        const jsDocs = (statement as JSDocstatement).getJsDocs();
+        return jsDocs.length > 0 && jsDocs[0].getInnerText().trim() !== '';
+
+    }
+
+    /**
+     * Checks if a node lacks JSDoc comments.
+     * @param node The node to check.
+     * @returns True if the node lacks JSDoc comments, false otherwise.
+     */
+    public lacksJSDoc(statement: JSDocstatement): boolean {
+        const jsDocs = (statement as JSDocstatement).getJsDocs();
+        if (jsDocs.length === 0) {
+            return true;
+        } else if (jsDocs[0].getInnerText().trim() === '') {
+            return true;
+        }
+
+        return false;
+    }
+
+
+    /**
+ * Generates a file containing all statements without JSDocs.
+ * @param sourceFile The source file to analyze.
+ * @returns A string representing the file content.
+ */
+    public generateFileWithoutJSDocs(sourceFile: SourceFile, statement_divider = '\n---\n'): string {
+        let fileContent = '';
+
+        // Helper function to process each node
+        const processNode = (node: Statement) => {
+            // Narrowing down the statement type to those which can have JSDoc comments
+            if (this.statement_type_hasJSDoc(node)) {
+                if (this.lacksJSDoc(node as JSDocstatement)) {
+                    fileContent += node.getText() + statement_divider;
+                }
+            }
+
+            if (node.isKind(SyntaxKind.ClassDeclaration)) {
+                const classDeclaration = node.asKind(SyntaxKind.ClassDeclaration) as ClassDeclaration;
+                const members = classDeclaration.getMembers();
+                const membersWithoutJSDoc = members.filter(member => this.lacksJSDoc(member as JSDocstatement));
+
+                // If the class or any member lacks JSDoc, then process the class
+                if (this.lacksJSDoc(classDeclaration as JSDocstatement) || membersWithoutJSDoc.length > 0) {
+                    // Add class opening, e.g., 'class MyClass {'
+                    const clss_name = classDeclaration.getNameNode()?.getText()
+                    fileContent += 'START MEMBERS OF CLASS ' + clss_name + ' {\n';
+
+                    // Add members without JSDoc
+                    membersWithoutJSDoc.forEach(member => {
+                        fileContent += statement_divider + member.getText() + statement_divider;
+                    });
+
+                    fileContent += '} END MEMBERS OF CLASS ' + clss_name + statement_divider;
+                    // Add class closing, e.g., '}'
+                }
+            }
+        };
+
+        // Process each statement in the source file
+        const statements = sourceFile.getStatements();
+        statements.forEach(node => processNode(node));
+
+        return fileContent.trim(); // Remove the trailing statement_divider if it's the last element in the content
+    }
+
+
+    /**
+     * Generates a file containing all statements with JSDocs.
+     * @param sourceFile The source file to analyze.
+     * @returns A string representing the file content.
+     */
+    public generateFileWithJSDocs(sourceFile: SourceFile): string {
+        let fileContent = '';
+        const nodes = [...sourceFile.getClasses(), ...sourceFile.getFunctions(), ...sourceFile.getInterfaces(), ...sourceFile.getTypeAliases()];
+
+        nodes.forEach(node => {
+            if (this.statement_type_hasJSDoc(node)) {
+                if (this.hasJSDoc(node as JSDocstatement)) {
+                    // TODO create a func to get the JSDOC + the content of the node to the response
+                    fileContent += node.getText() + '\n\n';
+                }
+            }
+        });
+
+        return fileContent;
     }
 
 
