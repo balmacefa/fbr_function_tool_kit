@@ -25,6 +25,7 @@ export class TS_Method_Fetcher extends TS_Project_Analyzer {
 
         const variableStatement = sourceFile.getVariableStatement(propertyName);
         if (variableStatement) {
+            variableStatement.getJsDocs().forEach(jsDoc => jsDoc.remove());
             variableStatement.addJsDoc(jsDocString);
         } else {
             console.error(`Property/Variable ${propertyName} not found in ${CommonFilePath}`);
@@ -40,6 +41,7 @@ export class TS_Method_Fetcher extends TS_Project_Analyzer {
 
         const functionNode = sourceFile.getFunction(functionName);
         if (functionNode) {
+            functionNode.getJsDocs().forEach(jsDoc => jsDoc.remove());
             functionNode.addJsDoc(jsDocString);
         } else {
             console.error(`Function ${functionName} not found in ${CommonFilePath}`);
@@ -61,6 +63,7 @@ export class TS_Method_Fetcher extends TS_Project_Analyzer {
 
         const methodNode = classNode.getMethod(methodName);
         if (methodNode) {
+            methodNode.getJsDocs().forEach(jsDoc => jsDoc.remove());
             methodNode.addJsDoc(jsDocString);
         } else {
             console.error(`Method ${methodName} not found in class ${className} at ${UserClssPath}`);
@@ -76,6 +79,7 @@ export class TS_Method_Fetcher extends TS_Project_Analyzer {
 
         const classNode = sourceFile.getClass(className);
         if (classNode) {
+            classNode.getJsDocs().forEach(jsDoc => jsDoc.remove());
             classNode.addJsDoc(jsDocString);
         } else {
             console.error(`Class ${className} not found in ${UserClssPath}`);
@@ -89,9 +93,38 @@ export class TS_Method_Fetcher extends TS_Project_Analyzer {
             return;
         }
 
-        // Adds JSDoc at the start of the file
-        sourceFile.insertText(0, `/**\n * ${jsDocString.split('\n').join('\n * ')}\n */\n\n`);
+        // Find the first non-JSDoc comment or non-whitespace character
+        const fileText = sourceFile.getFullText();
+        const jsDocEndRegex = /\*\/\s*/;
+        let insertPosition = 0;
+
+        // Check if the file starts with a JSDoc comment
+        if (fileText.trimStart().startsWith('/**')) {
+            const match = jsDocEndRegex.exec(fileText);
+            if (match) {
+                // Set insert position to the character just after the end of the JSDoc comment
+                insertPosition = match.index + match[0].length;
+            }
+        }
+
+        // Remove existing text in the range if there's an existing JSDoc
+        if (insertPosition > 0) {
+            sourceFile.removeText(0, insertPosition);
+        }
+
+        // Format new JSDoc string
+        const formattedJsDocString = this.formatJsDocString(jsDocString);
+
+        // Insert new JSDoc at the correct position
+        sourceFile.insertText(0, formattedJsDocString);
     }
+
+    formatJsDocString(jsDocString: string): string {
+        // Format the JSDoc string correctly for insertion
+        return `/**\n * ${jsDocString.split('\n').join('\n * ')}\n */\n\n`;
+    }
+
+
     async saveProject() {
         const sourceFiles = this.project.getSourceFiles();
         const savePromises = sourceFiles.map(file => file.save());
