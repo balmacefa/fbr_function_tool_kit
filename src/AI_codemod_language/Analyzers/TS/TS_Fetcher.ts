@@ -3,12 +3,39 @@ import { MainUtils } from "../../../HostMachine";
 import { TS_Project_Analyzer } from "./TS_Project_Analyzer";
 
 
+const methodRegexPattern = /Query: (.+?) cls:(.+?)\.mth:(.+)/;
+const classRegexPattern = /Query: (.+?) cls:(.+)/;
+const functionRegexPattern = /Query: (.+?) fn:(.+)/;
+const propertyRegexPattern = /Query: (.+?) prop:(.+)/;
+const fileRegexPattern = /^Query: (.+)$/;
+
+
 /**
  * @class TS_Method_Fetcher
  * @description This class provides functionalities to fetch specific method content from a TypeScript file.
  *              It extends the TS_Project_Analyzer to utilize its project configuration and analysis capabilities.
  */
 export class TS_Method_Fetcher extends TS_Project_Analyzer {
+    setPropertyJSDoc(CommonFilePath: string, propertyName: string, jsDocString: string) {
+        throw new Error("Method not implemented.");
+    }
+    setFunctionJSDoc(CommonFilePath: string, functionName: string, jsDocString: string) {
+        throw new Error("Method not implemented.");
+    }
+    setMethodJSDoc(UserClssPath: string, className: string, methodName: string, jsDocString: string) {
+        throw new Error("Method not implemented.");
+    }
+    setClassJSDoc(UserClssPath: string, className: string, jsDocString: string) {
+        throw new Error("Method not implemented.");
+    }
+    setFileJSDoc(UserClssPath: string, jsDocString: string) {
+        throw new Error("Method not implemented.");
+    }
+
+    saveProject() {
+        // Save all modified files, 
+        throw new Error("Method not implemented.");
+    }
 
     /**
      * @constructor
@@ -156,11 +183,6 @@ export class TS_Method_Fetcher extends TS_Project_Analyzer {
      * @returns {string | null} - The content of the class, method, function, property, or the entire file, or null if not found.
      */
     public getContentFromStringQuery(queryString: string): string | null {
-        const methodRegexPattern = /Query: (.+?) cls:(.+?)\.mth:(.+)/;
-        const classRegexPattern = /Query: (.+?) cls:(.+)/;
-        const functionRegexPattern = /Query: (.+?) fn:(.+)/;
-        const propertyRegexPattern = /Query: (.+?) prop:(.+)/;
-        const fileRegexPattern = /^Query: (.+)$/;
 
         let matches;
 
@@ -204,4 +226,63 @@ export class TS_Method_Fetcher extends TS_Project_Analyzer {
         return null;
     }
 
+    /**
+ * Applies the JSDoc comment to the target specified in the query string.
+ * @param {string} queryString - The query string specifying the target.
+ * @param {string} jsDocString - The JSDoc comment string to apply.
+ * @returns {boolean} - true if the JSDoc was successfully applied, false otherwise.
+ */
+    public applyJSDocFromStringQuery(queryString: string, jsDocString: string): string {
+        let matches;
+
+        // Check if it's a method content request
+        matches = queryString.match(methodRegexPattern);
+        if (matches) {
+            const [, filePath, className, methodName] = matches;
+            this.setMethodJSDoc(filePath, className, methodName, jsDocString);
+            this.saveProject();
+            return 'JSDOC upsert correctly!'
+        }
+
+        // Check if it's a class content request
+        matches = queryString.match(classRegexPattern);
+        if (matches) {
+            const [, filePath, className] = matches;
+            this.setClassJSDoc(filePath, className, jsDocString);
+            this.saveProject();
+            return 'JSDOC upsert correctly!'
+        }
+
+        // Check if it's a function content request
+        matches = queryString.match(functionRegexPattern);
+        if (matches) {
+            const [, filePath, functionName] = matches;
+            this.setFunctionJSDoc(filePath, functionName, jsDocString);
+            this.saveProject();
+            return 'JSDOC upsert correctly!'
+        }
+
+        // Check if it's a property content request
+        matches = queryString.match(propertyRegexPattern);
+        if (matches) {
+            const [, filePath, propertyName] = matches;
+            this.setPropertyJSDoc(filePath, propertyName, jsDocString);
+            this.saveProject();
+            return 'JSDOC upsert correctly!'
+        }
+
+        // Check if it's a file content request
+        matches = queryString.match(fileRegexPattern);
+        if (matches) {
+            const [, filePath] = matches;
+            // Check if any specific type (class/method/function/property) is requested
+            this.setFileJSDoc(filePath, jsDocString);
+            this.saveProject();
+            return 'JSDOC upsert correctly!'
+        }
+
+        return 'String did not match the expected format.';
+    }
+
 }
+

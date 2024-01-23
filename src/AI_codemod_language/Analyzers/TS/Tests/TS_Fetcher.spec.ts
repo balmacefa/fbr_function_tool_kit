@@ -131,14 +131,59 @@ describe('TS_Method_Fetcher', () => {
     });
 
 
-    // describe('fetchMethodContent from string', () => {
-    //     it('should  return the content of the specified method ', () => {
-    //         const queryString = `Query: ${UserClssPath} cls:User.mth:createUser`;
 
-    //         const content = fetcher.getMethodContentFromStringQuery(queryString) as string;
-    //         expect(content.length > 0).toBeTruthy();
-    //     });
-    // });
+
+    describe('Set JSDoc Content', () => {
+
+        it('should set JSDoc for the entire file', () => {
+            const jsDocString = `/**\n * File Level JSDoc\n */`;
+            const result = fetcher.setFileJSDoc(UserClssPath, jsDocString);
+            expect(result).toEqual('JSDOC upsert correctly!');
+            // Additional checks to verify JSDoc was set correctly
+        });
+
+        it('should set JSDoc for a class', () => {
+            const className = 'User';
+            const jsDocString = `/**\n * Class Level JSDoc\n */`;
+            const result = fetcher.setClassJSDoc(UserClssPath, className, jsDocString);
+            expect(result).toEqual('JSDOC upsert correctly!');
+            // Additional checks to verify JSDoc was set correctly
+        });
+
+        it('should set JSDoc for a method', () => {
+            const className = 'User';
+            const methodName = 'createUser';
+            const jsDocString = `/**\n * Method Level JSDoc\n */`;
+            const result = fetcher.setMethodJSDoc(UserClssPath, className, methodName, jsDocString);
+            expect(result).toEqual('JSDOC upsert correctly!');
+            // Additional checks to verify JSDoc was set correctly
+        });
+
+        it('should set JSDoc for a function', () => {
+            const functionName = 'function_foo';
+            const jsDocString = `/**\n * Function Level JSDoc\n */`;
+            const CommonFilePath = NoCommentsPath
+
+            const result = fetcher.setFunctionJSDoc(CommonFilePath, functionName, jsDocString);
+            expect(result).toEqual('JSDOC upsert correctly!');
+            // Additional checks to verify JSDoc was set correctly
+        });
+
+        it('should set JSDoc for a property', () => {
+            const CommonFilePath = NoCommentsPath
+            const propertyName = 'foo';
+            const jsDocString = `/**\n * Property Level JSDoc\n */`;
+            const result = fetcher.setPropertyJSDoc(CommonFilePath, propertyName, jsDocString);
+            expect(result).toEqual('JSDOC upsert correctly!');
+            // Additional checks to verify JSDoc was set correctly
+        });
+
+        // Additional test cases can be added for negative scenarios, e.g., when the file/class/method/function/property does not exist.
+    });
+
+
+
+
 
     // AfterAll or afterEach blocks for cleanup could be added here if needed
 });

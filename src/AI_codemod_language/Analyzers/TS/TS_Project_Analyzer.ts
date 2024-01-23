@@ -195,6 +195,23 @@ export class TS_Project_Analyzer {
 
 
     /**
+     * Upserts a JSDoc comment for a given statement.
+     * @param {JSDocstatement} statement - The statement to add or update the JSDoc for.
+     * @param {string} jsDocString - The JSDoc comment string to set.
+     * @returns {boolean} - true if the JSDoc was successfully set, false otherwise.
+     */
+    public upsertJSDoc(statement: JSDocstatement, jsDocString: string): void {
+        // Check for existing JSDoc and remove it
+        const existingJsDocs = statement.getJsDocs();
+        if (existingJsDocs.length > 0) {
+            existingJsDocs[0].remove(); // Remove the existing JSDoc
+        }
+
+        // Add new JSDoc
+        statement.addJsDoc(jsDocString);
+    }
+
+    /**
  * Generates a file containing all statements without JSDocs.
  * @param sourceFile The source file to analyze.
  * @returns A string representing the file content.

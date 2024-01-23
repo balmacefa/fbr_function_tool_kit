@@ -59,6 +59,49 @@ describe('Query Language for AI', () => {
         // Additional negative test cases can be added to handle scenarios where the file, class, method, function, or property is not found
     });
 
+    describe('Query Content + And Upsert JSDOC', () => {
+
+        it('should upsert JSDOC entire content of a specified file', () => {
+            const queryString = `Query: ${UserClssPath}`;
+            const content = '<insert jsdoc>';
+            const result = fetcher.applyJSDocFromStringQuery(queryString, content);
+            expect(result).toEqual('JSDOC upsert correctly!');
+
+        });
+
+        it('should upsert JSDOC content of a specified class', () => {
+            const queryString = `Query: ${UserClssPath} cls:User`;
+            const content = '<insert jsdoc>';
+            const result = fetcher.applyJSDocFromStringQuery(queryString, content);
+            expect(result).toEqual('JSDOC upsert correctly!');
+
+        });
+
+        it('should upsert JSDOC content of a specified method', () => {
+            const queryString = `Query: ${UserClssPath} cls:User.mth:createUser`;
+            const content = '<insert jsdoc>';
+            const result = fetcher.applyJSDocFromStringQuery(queryString, content);
+            expect(result).toEqual('JSDOC upsert correctly!');
+        });
+
+        it('should upsert JSDOC content of a specified function', () => {
+            const functionName = 'function_foo';
+            const queryString = `Query: ${CommonFilePath} fn:${functionName}`;
+            const content = '<insert jsdoc>';
+            const result = fetcher.applyJSDocFromStringQuery(queryString, content);
+            expect(result).toEqual('JSDOC upsert correctly!');
+        });
+
+        it('should upsert JSDOC content of a specified property', () => {
+            const propertyName = 'foo';
+            const queryString = `Query: ${CommonFilePath} prop:${propertyName}`;
+            const content = '<insert jsdoc>';
+            const result = fetcher.applyJSDocFromStringQuery(queryString, content);
+            expect(result).toEqual('JSDOC upsert correctly!');
+        });
+
+    });
+
 });
 
 
