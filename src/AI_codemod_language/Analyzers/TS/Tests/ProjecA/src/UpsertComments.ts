@@ -1,3 +1,7 @@
+/**
+ * THIS IS A FILE JS DOC COMMENT!
+ */
+
 import { User } from "./User";
 
 const defaultAvatarUrl = "https://example.com/default-avatar.png";
