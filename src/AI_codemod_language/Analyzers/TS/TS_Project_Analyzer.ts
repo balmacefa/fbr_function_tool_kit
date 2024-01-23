@@ -240,27 +240,4 @@ export class TS_Project_Analyzer {
         return fileContent.trim(); // Remove the trailing statement_divider if it's the last element in the content
     }
 
-
-    /**
-     * Generates a file containing all statements with JSDocs.
-     * @param sourceFile The source file to analyze.
-     * @returns A string representing the file content.
-     */
-    public generateFileWithJSDocs(sourceFile: SourceFile): string {
-        let fileContent = '';
-        const nodes = [...sourceFile.getClasses(), ...sourceFile.getFunctions(), ...sourceFile.getInterfaces(), ...sourceFile.getTypeAliases()];
-
-        nodes.forEach(node => {
-            if (this.statement_type_hasJSDoc(node)) {
-                if (this.hasJSDoc(node as JSDocstatement)) {
-                    // TODO create a func to get the JSDOC + the content of the node to the response
-                    fileContent += node.getText() + '\n\n';
-                }
-            }
-        });
-
-        return fileContent;
-    }
-
-
 }

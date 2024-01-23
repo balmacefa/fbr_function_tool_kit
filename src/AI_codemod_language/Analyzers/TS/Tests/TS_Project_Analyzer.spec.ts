@@ -103,7 +103,7 @@ describe('TS_Project_Analyzer', () => {
     });
 
 
-    describe('Generate Files', () => {
+    describe('JS DOCS Utils Files', () => {
         it('should Generates a file containing all statements without JSDocs.', () => {
 
             const pathFile = GetProjectA_path('src/PartialComments.ts').replaceAll('\\', '/');
@@ -112,6 +112,13 @@ describe('TS_Project_Analyzer', () => {
             const response: string = analyzer.generateFileWithoutJSDocs(file);
 
             expect(response.length).toEqual(2015);
+        });
+        it('should return empty string if a file containing all memeber with JSDocs.', () => {
+            const pathFile = GetProjectA_path('src/AllComments.ts').replaceAll('\\', '/');
+            const file = analyzer.getSourceFileFromPath(pathFile) as SourceFile;
+            const response: string = analyzer.generateFileWithoutJSDocs(file);
+            expect(response.length).toEqual(0);
+            expect(response).toEqual('');
         });
     });
 
