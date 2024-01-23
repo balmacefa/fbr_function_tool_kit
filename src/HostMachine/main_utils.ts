@@ -51,6 +51,10 @@ export class MainUtils {
         const fileContent = fs.readFileSync(absolutePath, 'utf8');
         return fileContent;
     }
+    static read_file_from_absolute_path(absolutePath: string): string {
+        const fileContent = fs.readFileSync(absolutePath, 'utf8');
+        return fileContent;
+    }
     static async render_ejs_string(ejs_string: string, data: any): Promise<string> {
         const html = await ejs.render(ejs_string, { ...data }, { async: true });
         return html;
@@ -64,6 +68,9 @@ export class MainUtils {
     static write_file_from_root(append_path: string, fileContent: string): void {
         const filePath = MainUtils.root_directory(append_path);
         fs.writeFileSync(filePath, fileContent);
+    }
+    static write_file_from_absolute_path(absolutePath: string, fileContent: string): void {
+        fs.writeFileSync(absolutePath, fileContent);
     }
 
     static saveContentToFile = MainUtils.write_file_from_root;
