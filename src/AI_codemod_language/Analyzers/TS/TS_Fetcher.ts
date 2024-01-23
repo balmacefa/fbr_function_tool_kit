@@ -17,24 +17,90 @@ const fileRegexPattern = /^Query: (.+)$/;
  */
 export class TS_Method_Fetcher extends TS_Project_Analyzer {
     setPropertyJSDoc(CommonFilePath: string, propertyName: string, jsDocString: string) {
-        throw new Error("Method not implemented.");
-    }
-    setFunctionJSDoc(CommonFilePath: string, functionName: string, jsDocString: string) {
-        throw new Error("Method not implemented.");
-    }
-    setMethodJSDoc(UserClssPath: string, className: string, methodName: string, jsDocString: string) {
-        throw new Error("Method not implemented.");
-    }
-    setClassJSDoc(UserClssPath: string, className: string, jsDocString: string) {
-        throw new Error("Method not implemented.");
-    }
-    setFileJSDoc(UserClssPath: string, jsDocString: string) {
-        throw new Error("Method not implemented.");
+        const sourceFile = this.project.getSourceFile(CommonFilePath);
+        if (!sourceFile) {
+            console.error(`File not found: ${CommonFilePath}`);
+            return;
+        }
+
+        const variableStatement = sourceFile.getVariableStatement(propertyName);
+        if (variableStatement) {
+            variableStatement.addJsDoc(jsDocString);
+        } else {
+            console.error(`Property/Variable ${propertyName} not found in ${CommonFilePath}`);
+        }
     }
 
-    saveProject() {
-        // Save all modified files, 
-        throw new Error("Method not implemented.");
+    setFunctionJSDoc(CommonFilePath: string, functionName: string, jsDocString: string) {
+        const sourceFile = this.project.getSourceFile(CommonFilePath);
+        if (!sourceFile) {
+            console.error(`File not found: ${CommonFilePath}`);
+            return;
+        }
+
+        const functionNode = sourceFile.getFunction(functionName);
+        if (functionNode) {
+            functionNode.addJsDoc(jsDocString);
+        } else {
+            console.error(`Function ${functionName} not found in ${CommonFilePath}`);
+        }
+    }
+
+    setMethodJSDoc(UserClssPath: string, className: string, methodName: string, jsDocString: string) {
+        const sourceFile = this.project.getSourceFile(UserClssPath);
+        if (!sourceFile) {
+            console.error(`File not found: ${UserClssPath}`);
+            return;
+        }
+
+        const classNode = sourceFile.getClass(className);
+        if (!classNode) {
+            console.error(`Class ${className} not found in ${UserClssPath}`);
+            return;
+        }
+
+        const methodNode = classNode.getMethod(methodName);
+        if (methodNode) {
+            methodNode.addJsDoc(jsDocString);
+        } else {
+            console.error(`Method ${methodName} not found in class ${className} at ${UserClssPath}`);
+        }
+    }
+
+    setClassJSDoc(UserClssPath: string, className: string, jsDocString: string) {
+        const sourceFile = this.project.getSourceFile(UserClssPath);
+        if (!sourceFile) {
+            console.error(`File not found: ${UserClssPath}`);
+            return;
+        }
+
+        const classNode = sourceFile.getClass(className);
+        if (classNode) {
+            classNode.addJsDoc(jsDocString);
+        } else {
+            console.error(`Class ${className} not found in ${UserClssPath}`);
+        }
+    }
+
+    setFileJSDoc(UserClssPath: string, jsDocString: string) {
+        const sourceFile = this.project.getSourceFile(UserClssPath);
+        if (!sourceFile) {
+            console.error(`File not found: ${UserClssPath}`);
+            return;
+        }
+
+        // Adds JSDoc at the start of the file
+        sourceFile.insertText(0, `/**\n * ${jsDocString.split('\n').join('\n * ')}\n */\n\n`);
+    }
+    async saveProject() {
+        const sourceFiles = this.project.getSourceFiles();
+        const savePromises = sourceFiles.map(file => file.save());
+        try {
+            await Promise.all(savePromises);
+            console.log('All modified files have been saved.');
+        } catch (err) {
+            console.error('Error saving files:', err);
+        }
     }
 
     /**
@@ -232,7 +298,7 @@ export class TS_Method_Fetcher extends TS_Project_Analyzer {
  * @param {string} jsDocString - The JSDoc comment string to apply.
  * @returns {boolean} - true if the JSDoc was successfully applied, false otherwise.
  */
-    public applyJSDocFromStringQuery(queryString: string, jsDocString: string): string {
+    public async applyJSDocFromStringQuery(queryString: string, jsDocString: string): Promise<string> {
         let matches;
 
         // Check if it's a method content request
@@ -240,7 +306,7 @@ export class TS_Method_Fetcher extends TS_Project_Analyzer {
         if (matches) {
             const [, filePath, className, methodName] = matches;
             this.setMethodJSDoc(filePath, className, methodName, jsDocString);
-            this.saveProject();
+            await this.saveProject();
             return 'JSDOC upsert correctly!'
         }
 
@@ -249,7 +315,7 @@ export class TS_Method_Fetcher extends TS_Project_Analyzer {
         if (matches) {
             const [, filePath, className] = matches;
             this.setClassJSDoc(filePath, className, jsDocString);
-            this.saveProject();
+            await this.saveProject();
             return 'JSDOC upsert correctly!'
         }
 
@@ -258,7 +324,7 @@ export class TS_Method_Fetcher extends TS_Project_Analyzer {
         if (matches) {
             const [, filePath, functionName] = matches;
             this.setFunctionJSDoc(filePath, functionName, jsDocString);
-            this.saveProject();
+            await this.saveProject();
             return 'JSDOC upsert correctly!'
         }
 
@@ -267,7 +333,7 @@ export class TS_Method_Fetcher extends TS_Project_Analyzer {
         if (matches) {
             const [, filePath, propertyName] = matches;
             this.setPropertyJSDoc(filePath, propertyName, jsDocString);
-            this.saveProject();
+            await this.saveProject();
             return 'JSDOC upsert correctly!'
         }
 
@@ -277,7 +343,7 @@ export class TS_Method_Fetcher extends TS_Project_Analyzer {
             const [, filePath] = matches;
             // Check if any specific type (class/method/function/property) is requested
             this.setFileJSDoc(filePath, jsDocString);
-            this.saveProject();
+            await this.saveProject();
             return 'JSDOC upsert correctly!'
         }
 
