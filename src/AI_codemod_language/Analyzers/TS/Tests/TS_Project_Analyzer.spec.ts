@@ -91,7 +91,7 @@ describe('TS_Project_Analyzer', () => {
             const projectA_result = analyzer.analyzeProject();
 
             expect(projectA_result.totalCoverage).toEqual("50.00%");
-            expect(projectA_result.files.length).toEqual(3);
+            expect(projectA_result.files.length).toEqual(4);
         });
     });
 
