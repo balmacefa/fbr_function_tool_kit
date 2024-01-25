@@ -3,21 +3,7 @@ import { GetAnalizersGeneric_path } from "./HerePath";
 
 describe('Generic File Analyzer for AI', () => {
     let fetcher: GenericAnalyzer;
-    const expectedObject = {
-        name: 'Test App',
-        version: '1.0.0',
-        dependencies: {
-            express: '^4.17.1',
-            mongoose: '^5.9.10'
-        }
-    };
-    const yamlString = `
-                name: Test App
-                version: 1.0.0
-                dependencies:
-                  express: ^4.17.1
-                  mongoose: ^5.9.10
-            `;
+
     beforeEach(() => {
         fetcher = new GenericAnalyzer();
     });
@@ -28,22 +14,8 @@ describe('Generic File Analyzer for AI', () => {
         });
     });
 
-    describe('getYamlContent', () => {
-        it('should return YAML content enclosed between FBR_INDEX_START and FBR_INDEX_END tokens', () => {
+    describe('get JSON Content', () => {
 
-            // Act
-            const path = GetAnalizersGeneric_path('/docs/sample1.md');
-            const file_content = fetcher.readFileContent(path);
-            const yamlContent = fetcher.getYamlContent(file_content);
-
-            expect(yamlContent.found).toBeTruthy();
-
-            const parsedObject = fetcher.parseYamlString(yamlContent.content);
-
-            // Assert
-            expect(parsedObject.error).toEqual(false);
-            expect(parsedObject.yaml_object).toEqual(expectedObject);
-        });
         it('should return JSON and content enclosed between FBR_INDEX_START and FBR_INDEX_END tokens', () => {
 
             // Act
@@ -58,16 +30,19 @@ describe('Generic File Analyzer for AI', () => {
                 version: "1.0.0"
             });
         });
-    });
+        it('should return jsonContent for a folder', async () => {
 
-    describe('YAML Parsing', () => {
-        it('should correctly parse a YAML string into a JavaScript object', () => {
-            // Act
-            const parsedObject = fetcher.parseYamlString(yamlString).yaml_object;
+            // 
 
+            const dir_path = GetAnalizersGeneric_path('/docs/');
+            const dir_index = await fetcher.analyzeDirectoryContent(dir_path);
+            expect(dir_index).toEqual([]);
+
+
+            // Loop over the dir_path and extract the correponding jsonContent of all files
             // Assert
-            expect(parsedObject).toEqual(expectedObject);
         });
     });
+
 
 });

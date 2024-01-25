@@ -1,4 +1,4 @@
-import { parse } from 'yaml';
+import readdirp from 'readdirp';
 import { MainUtils } from '../../../HostMachine';
 
 export class GenericAnalyzer {
@@ -45,32 +45,6 @@ export class GenericAnalyzer {
         }
     }
 
-
-    // Extracts YAML content enclosed between specific tokens
-    getYamlContent(fileContent: string): { content: string, found: boolean } {
-        return this.getEnclosedContent(fileContent);
-    }
-
-    // Parses a YAML string into a JavaScript object
-    parseYamlString<T>(yamlString: string): { yaml_object: T | null, error: boolean } {
-        try {
-            return {
-                error: false,
-                yaml_object: parse(yamlString) as T
-            };
-        } catch (error) {
-            // Handle parsing errors
-            console.error('Error parsing YAML string:', error);
-            return {
-                error: true,
-                yaml_object: null
-            };
-        }
-    }
-
-
-    // ... (rest of the class code)
-
     // Main function to analyze file content
     analyzeFileContent(filePath: string): { contentWithoutJson: string, json: any | null, error: boolean } {
         const fileContent = this.readFileContent(filePath);
@@ -97,6 +71,24 @@ export class GenericAnalyzer {
             json: error ? null : jsonObject,
             error
         };
+    }
+
+    async analyzeDirectoryContent(dir_path: string) {
+
+        const entries = await readdirp.promise(dir_path, { type: 'all' });
+        const entries_flat = entries.map((entry) => {
+            const jsonContentFile = this.analyzeFileContent(entry.fullPath);
+            const metadata = {
+                absolute_file_full_path: entry.fullPath,
+                ...jsonContentFile.json
+            }
+            const d = {
+                content: jsonContentFile.contentWithoutJson,
+                metadata
+            }
+            return d;
+        });
+        return entries_flat;
     }
 
 }
