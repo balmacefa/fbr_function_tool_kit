@@ -34,9 +34,9 @@ describe('Generic File Analyzer for AI', () => {
 
             // 
 
-            const dir_path = GetAnalizersGeneric_path('/docs/');
+            const dir_path = GetAnalizersGeneric_path('/index/');
             const dir_index = await fetcher.analyzeDirectoryContent(dir_path);
-            expect(dir_index).toEqual([]);
+            expect(dir_index.length).toEqual(5);
 
 
             // Loop over the dir_path and extract the correponding jsonContent of all files

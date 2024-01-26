@@ -46,6 +46,7 @@
   "dependencies": {
     "@asteasolutions/zod-to-openapi": "^6.3.0",
     "@langchain/community": "^0.0.20",
+    "@langchain/core": "^0.1.17",
     "@langchain/openai": "^0.0.6",
     "@lobehub/chat-plugins-gateway": "^1.8.2",
     "@markdoc/markdoc": "^0.4.0",
@@ -90,6 +91,7 @@
     "zod-to-json-schema": "^3.22.3"
   },
   "devDependencies": {
+    "@babel/preset-typescript": "^7.23.3",
     "@changesets/cli": "^2.27.1",
     "@rollup/plugin-typescript": "^11.1.5",
     "@types/browser-sync": "^2.29.0",
@@ -143,6 +145,9 @@
   "pnpm": {
     "patchedDependencies": {
       "langchain@0.0.209": "patches/langchain@0.0.209.patch"
+    },
+    "overrides": {
+      "@langchain/core": "0.1.5"
     }
   }
 }
