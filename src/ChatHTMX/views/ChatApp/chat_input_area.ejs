@@ -1,13 +1,18 @@
-<!-- Chat Input Form with HTMX and Native Form Mechanisms -->
-<div class="flex-none mt-3 bottom-0 left-0 w-full border-t md:border-t-0 dark:border-white/20 md:border-transparent md:dark:border-transparent md:bg-vert-light-gradient bg-white dark:bg-gray-800 md:!bg-transparent dark:md:bg-vert-dark-gradient pt-2">
-  <form id="chatForm" hx-post="<%- locals.R.chat__post_new_user_message %>" hx-target="#chatlog_container" hx-swap="innerHTML" hx-throttle="2" class="stretch mx-2 flex flex-row gap-3 last:mb-2 md:mx-4 md:last:mb-6 lg:mx-auto lg:max-w-2xl xl:max-w-3xl">
-    <!-- Loading Indicator -->
-    <div id="loadingIndicator" class="htmx-indicator">
-      <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 11 16 0A8 8 0 014 12H2z"></path>
-      </svg>
+<div class="w-full flex-none mt-3 bottom-0 left-0 w-full border-t md:border-t-0 dark:border-white/20 md:border-transparent md:dark:border-transparent md:bg-vert-light-gradient bg-white dark:bg-gray-800 md:!bg-transparent dark:md:bg-vert-dark-gradient pt-2">
+  <form id="chatForm" class="relative stretch flex flex-row gap-3 last:mb-2 md:mx-4 md:last:mb-6 mx-auto h-32 ">
+
+
+    <div id="loadingIndicator" class="hidden absolute z-10 top-0 left-0 right-0 bottom-0  p-4  bg-gray-900 flex justify-center items-center">
+      <div class="flex flex-row items-center space-y-2">
+        <svg fill='none' class="w-8 h-8 animate-spin text-white" viewBox="0 0 32 32" xmlns='http://www.w3.org/2000/svg'>
+          <path clip-rule='evenodd' d='M15.165 8.53a.5.5 0 01-.404.58A7 7 0 1023 16a.5.5 0 011 0 8 8 0 11-9.416-7.874.5.5 0 01.58.404z' fill='currentColor' fill-rule='evenodd' />
+        </svg>
+        <div class="p text-xl text-white">Loading messages...</div>
+      </div>
     </div>
+    <!-- Rest of your form goes here -->
+
+
     <input type="hidden" name="sessionId" value="<%= locals.chat_data_info.sessionId  %>" />
 
     <div class="relative flex flex-col h-full flex-1 items-stretch md:flex-col">
@@ -23,25 +28,79 @@
     </div>
   </form>
   <div class="px-3 pt-2 pb-3 text-center text-xs text-black/50 dark:text-white/50 md:px-4 md:pt-3 md:pb-6">
-    <span>This Tool may produce inaccurate information about people, places, or facts.</span>
+    <span>This Tool may produce inaccurate information about people, places, or
+      facts.</span>
   </div>
 </div>
 
+
 <script>
   $(document).ready(function() {
-    // jQuery script for form submission
-    // $('#chatForm').on('submit', function(event) {
-    //   event.preventDefault();
-    //   this.submit();
-    //   this.reset();
-    // });
+    var text_area = $('#textarea_input_chat');
+
+
+    $('#chatForm').on('submit', function(event) {
+      event.preventDefault();
+      var formData = $(this).serialize();
+
+
+      text_area
+        .prop('disabled', true) // Disable the textarea
+        .addClass('bg-gray-300'); // Add Tailwind class for disabled appearance
+
+      text_area
+        .val('') // Clear the textarea
+
+      var btn_submit = $(this).find('button[type="submit"]');
+      btn_submit.prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
+
+
+      $('#loadingIndicator').show(); // Show loading indicator
+
+      // AJAX request
+      $.ajax({
+        url: '<%- locals.R.chat__post_new_user_message %>', // URL to submit to
+        type: 'POST',
+        data: formData,
+        success: function(response) {
+          // Handle success
+
+          $('#chatlog_container').html(response); // Update chat log
+          $('#loadingIndicator').hide(); // Hide loading indicator
+
+          text_area
+            .prop('disabled', false) // Re-enable the textarea
+            .removeClass('bg-gray-300'); // Remove Tailwind class
+
+          btn_submit.prop('disabled', false).removeClass('opacity-50 cursor-not-allowed');
+        },
+        error: function() {
+          // Handle error
+          alert('Error sending message');
+          $('#loadingIndicator').hide(); // Hide loading indicator
+
+          text_area
+            .prop('disabled', false) // Re-enable the textarea
+            .removeClass('bg-gray-300'); // Remove Tailwind class
+        }
+      });
+    });
+
+    // Rest of your script...
 
     // Auto-resize textarea
-    $('#textarea_input_chat').on('input', function() {
+    text_area.on('input', function() {
       this.style.height = 'auto';
       this.style.height = (this.scrollHeight) + 'px';
-      // Enable or disable the submit button based on textarea content
       $(this.form).find('button[type="submit"]').prop('disabled', !this.value);
     });
+
+    const enter_key = 13;
+    text_area.keydown(function(e) {
+      if (e.ctrlKey && e.keyCode === enter_key) { // Ctrl key and Enter key
+        $('#chatForm').submit();
+      }
+    });
+
   });
 </script>
