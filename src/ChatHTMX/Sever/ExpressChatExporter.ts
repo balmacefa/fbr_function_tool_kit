@@ -32,7 +32,6 @@ export class ExpressChatExporter extends ExpressBaseExporter<RType> {
     routes_definitions(): Record<string, string> {
         throw new Error("Method not implemented.");
     }
-    private app: Express;
     // private sessionManager: OpenAIAssistantSessionManager;
     // private views_drc: string;
     private chat_db_wrapper = new FBR_ChatDBSupport({});
@@ -45,8 +44,8 @@ export class ExpressChatExporter extends ExpressBaseExporter<RType> {
         markdoc_components: Schema[],
         chat_landing_ejs_inject_on_locals__main_content?: string
     }) {
-        super();
-        this.app = args.app;
+        super({ app: args.app });
+
         if (args.markdoc_components.length === 0) {
             throw new Error('markdoc_components is empty');
         }

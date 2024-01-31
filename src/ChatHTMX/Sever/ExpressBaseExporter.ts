@@ -1,4 +1,5 @@
 // import { CreateAssistantOptions } from "../ChatHTMX";
+import express, { Express } from 'express';
 
 
 
@@ -15,6 +16,13 @@ export const replaceColonParamsPattern = (baseStr: string, subs: string): string
 export abstract class ExpressBaseExporter<T> {
     abstract common_data: any;
     abstract R: T;
+    public app: Express;
+
+    constructor(args: {
+        app: Express,
+    }) {
+        this.app = args.app;
+    }
 
     public extractFirstKeyValues(arr: Record<string, string>[]) {
         if (arr.length === 0) {
@@ -49,6 +57,27 @@ export abstract class ExpressBaseExporter<T> {
         const pattern = /:([^/]+)/;
         // Replace the found pattern with the 'subs' string
         return baseStr.replace(pattern, subs);
+    }
+
+    public set_ejs_render_engine(base_path: string) {
+        this.app.set("views", base_path);
+
+        // Set the view engine to EJS
+        this.app.set("view engine", "ejs");
+
+        // Serve static files from the 'public' directory
+        this.app.use(express.static(base_path + '/public'));
+    }
+
+    public cache_css() {
+        const cacheDuration = 45 * 60 * 1000; // 45 minutes in milliseconds
+        this.app.use((req, res, next) => {
+            if (req.path.endsWith('.css')) {
+                res.set('Cache-Control', `public, max-age=${cacheDuration / 1000}`);
+            }
+            next();
+        });
+
     }
 
     // abstract __default_server(): void;
