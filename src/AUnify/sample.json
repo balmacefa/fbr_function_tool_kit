@@ -1,0 +1,88 @@
+{
+    "nodes": [
+        {
+            "name": "getRouteNode",
+            "nodeType": "Route",
+            "config": {
+                "method": "GET",
+                "path": "/resource/:id"
+            },
+            "next": [
+                "dbQueryNode"
+            ]
+        },
+        {
+            "name": "dbQueryNode",
+            "nodeType": "DatabaseQuery",
+            "config": {
+                "query": "SELECT * FROM resources WHERE id = :id"
+            },
+            "next": [
+                "conditionalNode",
+                "redisCacheNode"
+            ]
+        },
+        {
+            "name": "conditionalNode",
+            "nodeType": "Conditional",
+            "config": {
+                "condition": "resourceNotFound"
+            },
+            "next": [
+                "renderNode404"
+            ]
+        },
+        {
+            "name": "redisCacheNode",
+            "nodeType": "RedisCache",
+            "config": {
+                "apiKey": "your_redis_api_key",
+                "expirationTime": 3600
+            },
+            "next": [
+                "externalAPINode"
+            ]
+        },
+        {
+            "name": "externalAPINode",
+            "nodeType": "ExternalAPI",
+            "config": {
+                "url": "https://api.external.com/data"
+            },
+            "next": [
+                "dataAggregationNode"
+            ]
+        },
+        {
+            "name": "dataAggregationNode",
+            "nodeType": "DataAggregator",
+            "next": [
+                "renderNode"
+            ]
+        },
+        {
+            "name": "renderNode404",
+            "nodeType": "Render",
+            "config": {
+                "template": "resourceNotFoundTemplate"
+            },
+            "next": [
+                "outputNode"
+            ]
+        },
+        {
+            "name": "renderNode",
+            "nodeType": "Render",
+            "config": {
+                "template": "resourceTemplate"
+            },
+            "next": [
+                "outputNode"
+            ]
+        },
+        {
+            "name": "outputNode",
+            "nodeType": "Output"
+        }
+    ]
+}

@@ -17,9 +17,9 @@ export const replaceColonParamsPattern = (baseStr: string, subs: string): string
 }
 
 
-export abstract class ExpressBaseExporter<T> {
+export abstract class ExpressBaseExporter<Rr> {
     abstract common_data: any;
-    abstract R: T;
+    abstract R: Rr;
     public app: Express;
     userPassportDB!: UserPassportDB;
 
@@ -109,10 +109,11 @@ export abstract class ExpressBaseExporter<T> {
         this.app.use(passport.session());
 
         this.setupGoogleAuth();
-        this.setupFacebookAuth();
+        // this.setupFacebookAuth();
         this.setupLocalAuth();
 
         this.userPassportDB = new UserPassportDB({});
+        this.setupAuthRoutes();
     }
 
 
@@ -264,10 +265,5 @@ export abstract class ExpressBaseExporter<T> {
             res.redirect('/login');
         });
     }
-
-    // TODO : add middlware to cath un cathch errors
-
-
-
 
 }
