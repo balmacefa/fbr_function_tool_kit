@@ -56,7 +56,7 @@
         myDiagram =
           new go.Diagram("myDiagramDiv", {
             initialContentAlignment: go.Spot.Center, // for v1.*
-            initialScale: 1.4,
+            initialScale: 0.7,
             "undoManager.isEnabled": true,
             "linkingTool.direction": go.LinkingTool.ForwardsOnly,
             "ModelChanged": e => { // just for demonstration purposes,
@@ -115,7 +115,7 @@
               new go.Binding("text", "text2")),
 
             $(go.Panel, "Table",
-              new go.Binding("itemArray", "inPorts"), {
+              new go.Binding("itemArray", "inPortss"), {
                 row: 1,
                 column: 0,
                 defaultSeparatorPadding: new go.Margin(4, 0),
@@ -126,8 +126,8 @@
                     },
                     $(go.Panel, "Horizontal", {},
                       $(go.Shape, {
-                          width: 8,
-                          height: 8,
+                          width: 24,
+                          height: 24,
                           strokeWidth: 0,
                           margin: new go.Margin(6, 6, 6, 6),
                           fromSpot: go.Spot.Right,
@@ -162,8 +162,8 @@
                     $(go.Panel, "Horizontal", {},
                       $(go.TextBlock, "Data Out"), // Label for Data Output
                       $(go.Shape, {
-                          width: 8, // Adjusted size
-                          height: 8, // Adjusted size
+                          width: 24, // Adjusted size
+                          height: 24, // Adjusted size
                           strokeWidth: 0,
                           margin: new go.Margin(6, 6, 6, 6),
                           fromSpot: go.Spot.Right,
@@ -197,16 +197,28 @@
               return "black";
           }
         }
-
         myDiagram.linkTemplate =
           $(go.Link, {
               relinkableFrom: true,
-              relinkableTo: true
+              relinkableTo: true,
+
+              layerName: "Background",
+              reshapable: true,
+              routing: go.Link.AvoidsNodes,
+              corner: 24,
+              curve: go.Link.JumpOver,
             },
-            $(go.Shape, {
-                strokeWidth: 2
+            $(go.Shape, { // Link path shape
+                strokeWidth: 6
               },
-              new go.Binding("stroke", "fromPort", p => p.fill).ofObject())
+              new go.Binding("stroke", "fromPort", p => p.fill).ofObject()),
+            $(go.Shape, { // Arrowhead
+              toArrow: "Standard", // This specifies the shape of the arrowhead
+              stroke: null, // Typically, you don't want a stroke around the arrowhead
+              fill: "black", // Fill color of the arrowhead, change as needed
+              scale: 2 // Adjust this value to change the size of the arrowhead
+
+            })
           );
 
         myDiagram.model = new go.GraphLinksModel({
@@ -218,15 +230,15 @@
               "key": 1,
               "text": "Alpha",
               "text2": "Alpha 2",
-              "location": "-64.64285714285717 -11.07142857142857",
-              "inPorts": ["r", "r", "r", "g", "b"],
+              "location": "-389.04242479220596 -23.81260708255033",
+              "inPortss": ["r", "r", "g"],
               "outPorts": ["r", "g", "g", "b", "b"]
             },
             {
               "key": 3,
               "text": "Gamma",
-              "location": "145.35714285714286 -43.21428571428572",
-              "inPorts": ["r", "r", "g", "g", "b"],
+              "location": "-11.290568694665609 -50.12521416510077",
+              "inPortss": ["r", "r", "g", "g", "b", "r", "g", "g", "b"],
               "outPorts": ["r", "r", "g", "g", "b"]
             }
           ],
