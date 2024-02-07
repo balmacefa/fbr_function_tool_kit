@@ -47,7 +47,7 @@ export class ExpressChatExporter extends ExpressBaseExporter<RType> {
         super({ app: args.app });
 
         if (args.markdoc_components.length === 0) {
-            throw new Error('markdoc_components is empty');
+            // throw new Error('markdoc_components is empty');
         }
         this.markdoc_components = args.markdoc_components;
         // this.sessionManager = OpenAIAssistantSessionManager.getInstance();

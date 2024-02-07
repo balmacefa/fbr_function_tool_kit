@@ -71,16 +71,17 @@
             new go.Binding("location", "location", go.Point.parse).makeTwoWay(go.Point.stringify), {
               selectionObjectName: "BODY",
               linkValidation: (fromnode, fromport, tonode, toport, link) => {
+                console.log('ddddddddddddddddddddddddddddd');
                 if (!fromport || !toport) return false;
                 if (fromnode === tonode) {
                   return false; // Prevent Inner port connections
                   // inside a node must go from an input port to an output port
                   // return fromport.portId[0] === "i" && toport.portId[0] === "o";
                 } else {
-                  // between nodes the port colors must match
-                  if (fromport.fill !== toport.fill) return false;
+                  // between nodes the port types must match
+                  // use the 'name' property to validate
                   // between nodes must go from an output port to an input port
-                  return fromport.portId[0] === "o" && toport.portId[0] === "i";
+                  return fromport.portId[0].startsWith("ouput_type_") && toport.portId[0].startsWith("input_type_");
                 }
                 return true;
               }
@@ -115,7 +116,7 @@
               new go.Binding("text", "text2")),
 
             $(go.Panel, "Table",
-              new go.Binding("itemArray", "inPortss"), {
+              new go.Binding("itemArray", "inPorts"), {
                 row: 1,
                 column: 0,
                 defaultSeparatorPadding: new go.Margin(4, 0),
@@ -138,8 +139,8 @@
                           toLinkableSelfNode: false,
                           cursor: "pointer"
                         },
-                        new go.Binding("portId", "row", r => "i" + r).ofObject(),
-                        new go.Binding("fill", "", convertToColor)),
+                        new go.Binding("portId", "", r => "input_type_" + r.type).ofObject(),
+                        new go.Binding("fill", "", r => r.color)),
 
                       // Data Input Port and its label
 
@@ -174,8 +175,8 @@
                           toLinkableSelfNode: false,
                           cursor: "pointer"
                         },
-                        new go.Binding("portId", "row", r => "o" + r).ofObject(),
-                        new go.Binding("fill", "", convertToColor)),
+                        new go.Binding("portId", "", r => "ouput_type_" + r.type).ofObject(),
+                        new go.Binding("fill", "", r => r.color)),
 
                       // Data Output Port and its label
                     )
@@ -185,18 +186,6 @@
 
           );
 
-        function convertToColor(n) {
-          switch (n) {
-            case "r":
-              return "brown";
-            case "g":
-              return "olivedrab";
-            case "b":
-              return "cornflowerblue";
-            default:
-              return "black";
-          }
-        }
         myDiagram.linkTemplate =
           $(go.Link, {
               relinkableFrom: true,
@@ -231,15 +220,75 @@
               "text": "Alpha",
               "text2": "Alpha 2",
               "location": "-389.04242479220596 -23.81260708255033",
-              "inPortss": ["r", "r", "g"],
-              "outPorts": ["r", "g", "g", "b", "b"]
+              "inPorts": [{
+                  "type": "redType",
+                  "label": "Red Input",
+                  "color": "brown"
+                },
+                {
+                  "type": "greenInput",
+                  "label": "Green Input",
+                  "color": "olivedrab"
+                },
+                {
+                  "type": "blueInput",
+                  "label": "Blue Input",
+                  "color": "cornflowerblue"
+                }
+              ],
+              "outPorts": [{
+                  "type": "redType",
+                  "label": "Red Input",
+                  "color": "brown"
+                },
+                {
+                  "type": "greenInput",
+                  "label": "Green Input",
+                  "color": "olivedrab"
+                },
+                {
+                  "type": "blueInput",
+                  "label": "Blue Input",
+                  "color": "cornflowerblue"
+                }
+              ]
             },
             {
               "key": 3,
               "text": "Gamma",
               "location": "-11.290568694665609 -50.12521416510077",
-              "inPortss": ["r", "r", "g", "g", "b", "r", "g", "g", "b"],
-              "outPorts": ["r", "r", "g", "g", "b"]
+              "inPortss": [{
+                  "type": "redType",
+                  "label": "Red Input",
+                  "color": "brown"
+                },
+                {
+                  "type": "greenInput",
+                  "label": "Green Input",
+                  "color": "olivedrab"
+                },
+                {
+                  "type": "blueInput",
+                  "label": "Blue Input",
+                  "color": "cornflowerblue"
+                }
+              ],
+              "outPorts": [{
+                  "type": "redType",
+                  "label": "Red Input",
+                  "color": "brown"
+                },
+                {
+                  "type": "greenInput",
+                  "label": "Green Input",
+                  "color": "olivedrab"
+                },
+                {
+                  "type": "blueInput",
+                  "label": "Blue Input",
+                  "color": "cornflowerblue"
+                }
+              ]
             }
           ],
           linkDataArray: [{
