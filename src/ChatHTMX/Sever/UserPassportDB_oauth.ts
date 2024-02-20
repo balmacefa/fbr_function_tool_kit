@@ -22,6 +22,7 @@ type DB_Support = {
     given_name?: string;
     locale?: string;
     picture?: string;
+    roles?: string[]; // Agregado aquí
 
 
 };
@@ -51,6 +52,7 @@ class UserPassportDB extends DatabaseSupport<DB_Support> {
             locale: String,
             picture: String,
             // Add any other fields you need for your user schema
+            roles: { type: [String], default: ['default_role'] }, // Define roles como un arreglo de strings
 
         });
 

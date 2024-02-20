@@ -1,6 +1,7 @@
 // import { CreateAssistantOptions } from "../ChatHTMX";
-import { Express } from 'express';
+import { Express, NextFunction, Request, Response } from 'express';
 import session from 'express-session';
+import _ from 'lodash';
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Strategy as LocalStrategy } from 'passport-local';
@@ -74,6 +75,7 @@ export class ExpressOAuth {
 
         this.userPassportDB = new UserPassportDB({});
         this.setupAuthRoutes(get_ui_common_data);
+        this.setupDevRoutes();
     }
 
 
@@ -236,8 +238,10 @@ export class ExpressOAuth {
             res.redirect('/login');
         });
 
-
-        // Dentro de tu configuración de Express, después de haber configurado Passport y tus rutas:
+    }
+    setupDevRoutes(): void {
+        // Google Authentication Routes
+        const EJS_Page_Parser = new EJS_Page();
 
         if (process.env.NODE_ENV === 'development') {
             this.app.get('/dev/user', (req, res) => {
@@ -251,9 +255,46 @@ export class ExpressOAuth {
                     res.status(401).send('Usuario no autenticado');
                 }
             });
+
+            this.app.get('/dev/admin', [ExpressOAuth.EnsureAuthenticated({}), ExpressOAuth.CheckRole({ roles: ['admin'] })], (req: any, res: any) => {
+                res.send('Panel de Administrador');
+            });
+            this.app.get('/dev/default_role', [ExpressOAuth.CheckRole({ roles: ['default_role'] })], (req: any, res: any) => {
+                res.send('Panel de default_role USER');
+            });
+            // EnsureAuthenticated
+
         }
 
 
+    }
+    static CheckRole(args: { roles: string[], html_403?: string, req_property?: string }) {
+        let { req_property, html_403 } = args;
+        req_property = req_property ? req_property : 'user.roles';
+        html_403 = html_403 ? html_403 : 'Role No autorizado'; // TODO change html string
+
+        return function (req: Request, res: Response, next: NextFunction) {
+            const userRoles: string[] = _.get(req, req_property, []);
+            const hasRequiredRole = args.roles.some(role => userRoles.includes(role));
+            if (hasRequiredRole) {
+                return next();
+            }
+            // Si el usuario no tiene el rol necesario, manejar según corresponda (error, redirección, etc.)
+            res.status(403).send(html_403);
+        }
+    }
+    static EnsureAuthenticated(args: { redirect?: string }) {
+        let { redirect } = args;
+        redirect = redirect ? redirect : '/login';
+
+        return function (req: Request, res: Response, next: NextFunction) {
+            if (req.isAuthenticated()) {
+                return next();
+            }
+            // Si no está autenticado, redirigir al login
+            res.redirect(redirect);
+
+        }
     }
 
 }
