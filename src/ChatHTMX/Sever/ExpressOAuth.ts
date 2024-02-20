@@ -2,11 +2,12 @@
 import { Express } from 'express';
 import session from 'express-session';
 import passport from 'passport';
-import { Strategy as FacebookStrategy } from 'passport-facebook';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Strategy as LocalStrategy } from 'passport-local';
+import { EJS_Page } from '../../EjsUtils/page';
 import { MainUtils } from '../../HostMachine';
 import { _ENV } from './Env_config';
+import { login_register_template } from './OAuthTemplate';
 import UserPassportDB from './UserPassportDB_oauth';
 
 
@@ -52,6 +53,21 @@ export class ExpressOAuth {
         this.app.use(passport.initialize());
         this.app.use(passport.session());
 
+        // Passport serialization
+        passport.serializeUser((user: any, done) => {
+            done(null, user.id); // Serialize user ID into the session
+        });
+
+        // Passport deserialization
+        passport.deserializeUser(async (id: string, done) => {
+            try {
+                const user = await this.userPassportDB.fetchById(id);
+                done(null, user); // User object attached to req.user
+            } catch (error) {
+                done(error, null);
+            }
+        });
+
         this.setupGoogleAuth();
         // this.setupFacebookAuth();
         this.setupLocalAuth();
@@ -59,6 +75,8 @@ export class ExpressOAuth {
         this.userPassportDB = new UserPassportDB({});
         this.setupAuthRoutes(get_ui_common_data);
     }
+
+
 
 
     setupGoogleAuth(): void {
@@ -72,12 +90,21 @@ export class ExpressOAuth {
 
                 if (!user) {
                     // If not, create a new user in your database
+                    const profile_raw = JSON.stringify(profile._json);
+
                     user = await this.userPassportDB.createUser({
-                        profile,
+                        profile_raw,
+                        email,
+                        accessToken,
+                        refreshToken,
                         googleId: profile.id,
-                        email,
-                        accessToken,
-                        refreshToken,
+
+                        display_name: profile.displayName,
+                        family_name: profile.name.familyName,
+                        given_name: profile.name.givenName,
+                        provider: profile.provider,
+                        locale: profile._json.locale,
+                        picture: profile._json.picture,
                     });
                 }
 
@@ -89,33 +116,33 @@ export class ExpressOAuth {
         }));
     }
 
-    setupFacebookAuth(): void {
-        passport.use(new FacebookStrategy(_ENV.facebook_strategy, async (accessToken: any, refreshToken: any, profile: any, cb: any) => {
-            // Facebook authentication logic
+    // setupFacebookAuth(): void {
+    //     passport.use(new FacebookStrategy(_ENV.facebook_strategy, async (accessToken: any, refreshToken: any, profile: any, cb: any) => {
+    //         // Facebook authentication logic
 
-            try {
-                const email = profile.emails?.[0].value; // Extract the primary email
+    //         try {
+    //             const email = profile.emails?.[0].value; // Extract the primary email
 
-                // Check if the user already exists in your database
-                let user = await this.userPassportDB.findUserByEmail(email);
+    //             // Check if the user already exists in your database
+    //             let user = await this.userPassportDB.findUserByEmail(email);
 
-                if (!user) {
-                    // If not, create a new user in your database
-                    user = await this.userPassportDB.createUser({
-                        profile,
-                        facebookId: profile.id,
-                        email,
-                        accessToken,
-                        refreshToken,
-                    });
-                }
+    //             if (!user) {
+    //                 // If not, create a new user in your database
+    //                 user = await this.userPassportDB.createUser({
+    //                     profile,
+    //                     facebookId: profile.id,
+    //                     email,
+    //                     accessToken,
+    //                     refreshToken,
+    //                 });
+    //             }
 
-                return cb(null, user);
-            } catch (error) {
-                return cb(error, null);
-            }
-        }));
-    }
+    //             return cb(null, user);
+    //         } catch (error) {
+    //             return cb(error, null);
+    //         }
+    //     }));
+    // }
 
     setupLocalAuth(): void {
         passport.use(new LocalStrategy({
@@ -183,14 +210,14 @@ export class ExpressOAuth {
         });
 
         const oauth_routes_paths = this.oauth_routes_paths();
+        const EJS_Page_Parser = new EJS_Page();
 
-        this.app.get('/login', async (req, res) => {
+        this.app.get('/login', (req, res) => {
 
-            const html = await MainUtils.render_ejs_path_file(oauth_routes_paths.login,
-                {
-                    ...get_ui_common_data(),
-                });
+
+            const html = EJS_Page_Parser.to_ejs(login_register_template);
             res.send(html);
+
         });
 
         this.app.get('/register', async (req, res) => {
@@ -208,6 +235,25 @@ export class ExpressOAuth {
             });
             res.redirect('/login');
         });
+
+
+        // Dentro de tu configuración de Express, después de haber configurado Passport y tus rutas:
+
+        if (process.env.NODE_ENV === 'development') {
+            this.app.get('/dev/user', (req, res) => {
+                if (req.isAuthenticated()) {
+
+                    const userJsonPretty = JSON.stringify(req.user, null, 4); // Convierte el objeto del usuario a JSON con indentación
+
+                    const html = EJS_Page_Parser.to_ejs(`<pre>${userJsonPretty}</pre>`);
+                    res.send(html);
+                } else {
+                    res.status(401).send('Usuario no autenticado');
+                }
+            });
+        }
+
+
     }
 
 }

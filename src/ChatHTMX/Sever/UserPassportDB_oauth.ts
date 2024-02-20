@@ -5,16 +5,23 @@ import { DatabaseSupport } from '../DB/FBR_ChatDBSupport';
 
 // Assuming DB_Support is your generic type for database operations
 type DB_Support = {
+    id?: string;
     // Define the structure here based on your user schema
     email: string;
     password?: string;
     googleId?: string;
     facebookId?: string;
+    provider?: string;
 
     accessToken?: string;
     refreshToken?: string;
-    profile?: string;
-    // ... other relevant user fields
+    profile_raw?: string;
+
+    display_name?: string;
+    family_name?: string;
+    given_name?: string;
+    locale?: string;
+    picture?: string;
 
 
 };
@@ -22,34 +29,54 @@ type DB_Support = {
 class UserPassportDB extends DatabaseSupport<DB_Support> {
 
     get_collection_name(): MaybePromise<string> {
-        return 'users'; // Or your specific users collection name
+        return 'oauth_users'; // Or your specific users collection name
     }
 
     get_collection_schema(): MaybePromise<mongoose.Schema<DB_Support>> {
         // Define and return the user schema
         const userSchema = new mongoose.Schema({
+
+
             email: { type: String, unique: true, required: true },
             password: String,
             googleId: String,
             facebookId: String,
-            // ... other fields
+            provider: String,
+            accessToken: String,
+            refreshToken: String,
+            profile_raw: String,
+            display_name: String,
+            family_name: String,
+            given_name: String,
+            locale: String,
+            picture: String,
+            // Add any other fields you need for your user schema
+
         });
 
         return userSchema;
     }
 
     async createUser(userDetails: DB_Support): Promise<DB_Support> {
+        await this.init();
         const user = new this.dbModel(userDetails);
         if (userDetails.password) {
             const hash = await argon2.hash(userDetails.password);
             user.password = hash;
         }
         await user.save();
-        return user;
+
+        return { ...user.toObject(), id: (user._id as any).toString() };
     }
 
     async findUserByEmail(email: string): Promise<DB_Support | null> {
-        return await this.dbModel.findOne({ email });
+        await this.init();
+
+        const document = await this.dbModel.findOne({ email }).exec();
+        if (document) {
+            return { ...document.toObject({ getters: true, virtuals: true }), id: (document._id as any).toString() };
+        }
+        return document;
     }
 
     async findUserByOAuthId(args: { googleId?: string, facebookId?: string }): Promise<mongoose.Document | null> {

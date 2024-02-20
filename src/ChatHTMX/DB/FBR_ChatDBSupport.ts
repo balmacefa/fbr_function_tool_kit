@@ -41,9 +41,12 @@ export abstract class DatabaseSupport<T> {
     }
 
     public async init() {
-        await mongoose.connect(this.uri);
-        const coll_name = (await this.get_collection_name());
-        this.dbModel = await mongoose.model<T>(coll_name, (await this.get_collection_schema()));
+        if (!this.has_init) {
+            await mongoose.connect(this.uri);
+            const coll_name = (await this.get_collection_name());
+            this.dbModel = await mongoose.model<T>(coll_name, (await this.get_collection_schema()));
+            this.has_init = true;
+        }
         return this;
     }
 
@@ -59,6 +62,7 @@ export abstract class DatabaseSupport<T> {
  * @returns {Promise<T>} - The document 
  */
     public async fetchById(id: string): Promise<T> {
+        await this.init();
         // Validate the ID format
         if (!Types.ObjectId.isValid(id)) {
             throw new Error("Invalid ID format");
@@ -80,6 +84,7 @@ export abstract class DatabaseSupport<T> {
      * @returns {Promise<PaginationData & { docs: T[] }>} - The paginated documents.
      */
     public async getPaginated(page: number, limit: number, query: FilterQuery<T> = {}): Promise<PaginationQuery<T>> {
+        await this.init();
         const totalDocs = await this.dbModel.countDocuments(query);
         const totalPages = Math.ceil(totalDocs / limit);
         const offset = (page - 1) * limit;
@@ -111,6 +116,7 @@ export abstract class DatabaseSupport<T> {
 
 
     public async create_one(data: T) {
+        await this.init();
         const new_record = new this.dbModel(data);
         await new_record.save();
         // TODO: change as any for proppr  types
@@ -125,6 +131,7 @@ export abstract class DatabaseSupport<T> {
      */
     public async update_partial(id: string, updateData: Partial<T>): Promise<T> {
 
+        await this.init();
         const updatedDocument = await this.dbModel.findByIdAndUpdate(
             id,
             { $set: updateData },
