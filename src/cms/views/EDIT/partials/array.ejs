@@ -1,0 +1,99 @@
+<% const arrayField = field.fields; %>
+<% const template = await include(htmx_configs.GetView(`partials/${arrayField.type}`), {field: arrayField}); %>
+<% const template_key='template_' + field.data_path %>
+
+<div class="bg-white shadow rounded-lg p-6">
+  <h2 class="text-xl font-semibold text-gray-900 mb-4">
+    <%- field.label %>
+  </h2>
+
+  <div id="<%= template_key %>_array_container" class="flex flex-col divide-y divide-gray-200">
+    <!-- The template for the array items will be inserted here -->
+  </div>
+
+  <!-- Template for array items -->
+  <div id="<%= template_key %>" class="hidden original_template">
+
+    <!-- What ever is insede of this script tag will be use af template -->
+    <script type="text/template">
+
+
+      <div class="array-item relative p-4">
+      <!-- Static remove button at the corner -->
+      <button class="remove-button absolute top-0 right-0 mt-2 mr-2 text-gray-600 hover:text-gray-800 focus:outline-none">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+      <%- template %>
+    </div>
+  </script>
+  </div>
+
+
+
+  <!-- Add Button to create or add new template -->
+  <button id="<%= template_key %>_addButton" class="mt-4 px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded-lg transition duration-150 ease-in-out">
+    Add New Item
+  </button>
+</div>
+
+
+
+<!-- array_container jquery to add the template, and change all nested arrayField.data_path from field.fields, for index, so in id template_* inputs will have table_header[i].label, as name, but we need to change [i] for the corresponding index, do this also if we remove an item or add a new item. -->
+
+<script>
+  $(document).ready(function() {
+
+    // Function to update indices for all items
+    function updateIndices() {
+      $('#template_table_header_array_container .array-item').each(function(index) {
+        $(this).find('input, select, textarea').each(function() {
+          // Update the 'name' attribute to include the correct index
+          const nameAttr = $(this).attr('name');
+          if (nameAttr) {
+            const updatedName = nameAttr.replace(/\[i\]/, `.i${index}`); // Now correctly targets "[i]"
+            $(this).attr('name', updatedName);
+          }
+
+          // Update the 'id' attribute similarly, if necessary
+          const idAttr = $(this).attr('id');
+          if (idAttr) {
+            const updatedId = idAttr.replace(/\[i\]/, `.i${index}`); // Now correctly targets "[i]"
+            $(this).attr('id', updatedId);
+            $(this).prev('label').attr('for', updatedId);
+          }
+        });
+      });
+    }
+
+
+
+    // Add new item using the template
+    $('#<%= template_key %>_addButton').click(function() {
+      // Clone the template div
+      const templateScript = $('#<%= template_key %> script[type="text/template"]').html();
+
+      // Convert the template script content into HTML elements
+      const templateHtml = $(templateScript);
+
+      // Append the new HTML to your container
+      $('#<%= template_key %>_array_container').append(templateHtml);
+
+      // Update indices to reflect the new item addition
+      updateIndices();
+    });
+
+
+
+
+    // Remove item - attach event listener to a dynamic element
+    $('#<%= template_key %>_array_container').on('click', '.remove-button', function() {
+      $(this).closest('.array-item').remove();
+      updateIndices(); // Update indices to reflect the item removal
+    });
+
+    // Initial call to ensure correct indices on page load
+    updateIndices();
+  });
+</script>

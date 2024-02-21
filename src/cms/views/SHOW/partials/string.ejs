@@ -1,0 +1,21 @@
+<!-- string -->
+<div>
+  <p class="font-bold mb-2"><%= field.label %></p>
+  <p class="">
+    <% 
+    // Check if locals.array_index is a number
+    if (typeof locals.array_index === 'number') {
+      // Replace "[i]" in field.data_path with the number from locals.array_index
+      var modifiedDataPath = field.data_path.replace("[i]", "[" + locals.array_index + "]");
+    } else {
+      // If locals.array_index is not a number, use the original field.data_path
+      var modifiedDataPath = field.data_path;
+    }
+
+    // Use lodash to safely get the value using the possibly modified data path
+    var fieldValue = locals.lodash.get(locals.hit, modifiedDataPath, 'Value not found!');
+    %>
+    <%= fieldValue %>
+  </p>
+</div>
+<!-- string -->

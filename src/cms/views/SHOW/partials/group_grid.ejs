@@ -1,0 +1,7 @@
+<!-- group_grid.ejs -->
+<div class="group_grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
+  <% for (const subField of field.fields) { %>
+  <%- await include(htmx_configs.GetView(`partials/${subField.type}`), {field: subField}); %>
+  <% }; %>
+</div>
+<!-- group_grid.ejs -->

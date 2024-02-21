@@ -23,8 +23,13 @@ const facebook_strategy: f_StrategyOptions = {
     callbackURL: '/auth/facebook/callback'
 }
 
+const session_secret = process.env.SESSION_SECRET as string;
+if (!session_secret) throw new Error("SESSION_SECRET env variable is required");
+
+
 export const _ENV = {
     // host,
     google_strategy,
-    facebook_strategy
+    facebook_strategy,
+    session_secret
 }

@@ -1,0 +1,11 @@
+<!-- ul component -->
+<div>
+  <p class="font-bold mb-2"><%= field.label %></p>
+  <% var dataArray = locals.lodash.get(locals.hit, field.data_path); %>
+  <ul class="list-disc pl-5">
+    <% dataArray.forEach(function(item) { %>
+    <li><%= item %></li>
+    <% }); %>
+  </ul>
+</div>
+<!-- end ul component -->

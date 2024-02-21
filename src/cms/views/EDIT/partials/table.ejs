@@ -1,0 +1,64 @@
+<% console.log(locals); %>
+
+
+<div class="bg-white p-6 rounded-lg shadow mb-4 flex flex-col gap-4">
+  <h2 class="text-2xl font-semibold mb-4">New Global Table Schema - Table of Contents</h2>
+
+  <!-- Dynamic Table Header Inputs Container -->
+  <div id="dynamicTableContainer" class="bg-white shadow rounded-lg p-6">
+    <h2 class="text-xl font-semibold text-gray-900 mb-4">Table Header</h2>
+    <!-- Container where dynamic table will be rendered -->
+  </div>
+
+  <!-- Tailwind Styled Button Example -->
+  <!-- Button to Add a New Row -->
+  <!-- Button to Add a New Row, with type specified -->
+  <div id="addRowButton" type="button" class="mt-4 px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded-lg transition ease-in-out duration-150">
+    Add Row
+  </div>
+
+
+  <!-- https://gridstackjs.com/ -->
+  <!-- https://isocra.com/2008/02/table-drag-and-drop-jquery-plugin/ -->
+  <script>
+    $(document).ready(function() {
+      function createDynamicTable() {
+        const headers = [
+          // Example header, replace or populate dynamically as needed
+          {
+            label: "Name",
+            property: "name"
+          },
+          {
+            label: "Age",
+            property: "age"
+          }
+        ];
+
+        let tableHtml = '<table class="min-w-full divide-y divide-gray-200"><thead class="bg-gray-50"><tr>';
+        headers.forEach(header => {
+          tableHtml += `<th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${header.label}</th>`;
+        });
+        tableHtml += '</tr></thead><tbody class="bg-white divide-y divide-gray-200"></tbody></table>';
+
+        $('#dynamicTableContainer').html(tableHtml);
+      }
+
+      $('#addRowButton').click(function() {
+        // Assuming headers are Name, Age, Actions - adjust according to your dynamic headers
+        const newRowHtml = `
+      <tr>
+        <td class="py-3 px-6">John Doe</td> <!-- Example data, replace as needed -->
+        <td class="py-3 px-6">30</td> <!-- Example data, replace as needed -->
+        <td class="py-3 px-6">
+          <button class="text-red-500 hover:text-red-700">Delete</button> <!-- Example action -->
+        </td>
+      </tr>
+      `;
+        $('#dynamicTable tbody').append(newRowHtml);
+      });
+
+      createDynamicTable(); // Initial call to display the table
+    });
+  </script>
+</div>

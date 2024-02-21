@@ -1,0 +1,34 @@
+<!-- main -->
+<div class="bg-white p-6 rounded shadow mb-4" style="display: flex; flex-direction: column; gap: 2rem;">
+
+  <style>
+    .array {
+      display: grid;
+      grid-gap: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-select {
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 0.25rem;
+      padding: 0.5rem 1rem;
+    }
+  </style>
+
+  <% if(htmx_configs.title){ %>
+  <h2 class="text-xl font-semibold mb-4"> <%= htmx_configs.title %> </h2>
+  <% } %>
+
+
+  <% for (const field of htmx_configs.fields) {  %>
+
+  <%- await include(htmx_configs.GetView(`partials/${field.type}`), {field}); %>
+
+  <% }; %>
+</div>
+<!-- main -->

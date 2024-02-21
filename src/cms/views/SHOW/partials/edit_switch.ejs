@@ -1,0 +1,21 @@
+<div x-data="{ edit_mode: false }">
+  <!-- Assume edit_mode is passed from parent -->
+  <!-- Edit Mode (input field) -->
+  <div x-show="edit_mode">
+    <label class="block text-gray-700 text-sm font-bold mb-2" for="<%= field.data_path %>">
+      <%= field.label %>
+    </label>
+    <input type="text" name="<%= field.data_path %>" placeholder="<%= field.label %>" id="<%= field.data_path %>" class="form-input w-full border border-gray-300 rounded" required />
+  </div>
+
+  <!-- Display Mode (static text) -->
+  <div x-show="!edit_mode" class="block text-gray-700 text-sm font-bold mb-2">
+    <label for="<%= field.data_path %>">
+      <%= field.label %>:
+    </label>
+    <span id="<%= field.data_path %>" class="ml-2 text-gray-600">
+      <%= /* The value to be displayed */ %>
+    </span>
+  </div>
+</div>
+

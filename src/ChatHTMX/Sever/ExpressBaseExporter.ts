@@ -1,6 +1,6 @@
 // import { CreateAssistantOptions } from "../ChatHTMX";
 import express, { Express } from 'express';
-import { ExpressOAuth } from './ExpressOAuth';
+import { ExpressOAuth } from '../../OAuth/ExpressOAuth';
 import UserPassportDB from './UserPassportDB_oauth';
 
 export const replaceColonParamsPattern = (baseStr: string, subs: string): string => {

@@ -1,0 +1,9 @@
+<div id="expediente_electronico__ai_warnings" class="container mx-auto p-6">
+  <button id="generarReporteBtn" class="btn btn-primary bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" hx-post="<%= locals.field.data.post %>" hx-trigger="click" hx-target="#G05_pre_calificacion_report" hx-swap="outerHTML" hx-vals='{"id": "<%= locals.hit.id %>"}'>
+    Generar Sugerencias de pre-calificafión - AI Tool
+  </button>
+  <div id="G05_pre_calificacion_report">
+    <!-- Placeholder for the response or result of the POST request -->
+    <!-- This is the target where the response should appear -->
+  </div>
+</div>

@@ -1,0 +1,10 @@
+<!-- text_area_view -->
+<div>
+  <p class="block text-gray-700 text-sm font-bold mb-2">
+    <%= field.label %>
+  </p>
+  <div class="view-textarea w-full border border-gray-300 rounded p-2">
+    <%= locals.lodash.get(locals.hit, field.data_path) %>
+  </div>
+</div>
+<!-- text_area_view -->

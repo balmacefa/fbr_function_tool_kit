@@ -5,39 +5,96 @@ import _ from 'lodash';
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Strategy as LocalStrategy } from 'passport-local';
-import { EJS_Page } from '../../EjsUtils/page';
-import { MainUtils } from '../../HostMachine';
-import { _ENV } from './Env_config';
-import { login_register_template } from './OAuthTemplate';
+import { _ENV } from '../ChatHTMX/Sever/Env_config';
+import { login_register_template } from '../ChatHTMX/Sever/OAuthTemplate';
+import { EJS_Page } from '../EjsUtils/page';
 import UserPassportDB from './UserPassportDB_oauth';
 
+const default_ExpressOAuthProps = {
+    usernameField: 'email',
+    passwordField: 'password',
+    auth_google: '/auth/google',
+    auth_google_callback: '/auth/google/callback',
+    auth_facebook: '/auth/facebook',
+    auth_facebook_callback: '/auth/facebook/callback',
 
+    redirect_success: '/',
+    redirect_failure: '/login',
+    login: '/login',
+    register: '/register',
+    logout: '/logout'
+}
+
+
+
+type ExpressOAuthProps = typeof default_ExpressOAuthProps;
 type no_args_func = () => any;
 export class ExpressOAuth {
 
     public app: Express;
+    public props: ExpressOAuthProps;
     userPassportDB!: UserPassportDB;
 
+    // REQUIRED
     constructor(args: {
         app: Express,
+        props: Partial<ExpressOAuthProps>
     }) {
+
+        this.props = {
+            ...default_ExpressOAuthProps,
+            ...args.props
+        };
+
+
         this.app = args.app;
     }
 
 
-    public usernameField = 'email';
-    public passwordField = 'password'
 
-    oauth_routes_paths(): {
-        login: string;
-        register: string;
-    } {
-        return {
-            login: `login`,
-            register: `register`
+
+
+    //  this.app.get('/dev/admin', [ExpressOAuth.EnsureAuthenticated({}), ExpressOAuth.CheckRole({ roles: ['admin'] })], (req: any, res: any) => {
+    //      res.send('Panel de Administrador');
+    //  });
+    // this.app.get('/dev/default_role', [ExpressOAuth.CheckRole({ roles: ['default_role'] })], (req: any, res: any) => {
+    //     res.send('Panel de default_role USER');
+    // });
+
+
+
+    static CheckRole(args: { roles: string[], html_403?: string, req_property?: string }) {
+        let { req_property, html_403 } = args;
+        req_property = req_property ? req_property : 'user.roles';
+        html_403 = html_403 ? html_403 : 'Role No autorizado'; // TODO change html string
+
+        return function (req: Request, res: Response, next: NextFunction) {
+            const userRoles: string[] = _.get(req, req_property, []);
+            const hasRequiredRole = args.roles.some(role => userRoles.includes(role));
+            if (hasRequiredRole) {
+                return next();
+            }
+            // Si el usuario no tiene el rol necesario, manejar según corresponda (error, redirección, etc.)
+            res.status(403).send(html_403);
+        }
+    }
+    static EnsureAuthenticated(args: { redirect?: string }) {
+        let { redirect } = args;
+        redirect = redirect ? redirect : '/login';
+
+        return function (req: Request, res: Response, next: NextFunction) {
+            if (req.isAuthenticated()) {
+                return next();
+            }
+            // Si no está autenticado, redirigir al login
+            res.redirect(redirect);
+
         }
     }
 
+
+
+    // ENTRY POINT FUNC CLASS
     setupPassport(get_ui_common_data: no_args_func) {
         // Initialize Passport and restore authentication state, if any, from the session.
 
@@ -45,7 +102,7 @@ export class ExpressOAuth {
 
         // Session configuration
         this.app.use(session({
-            secret: 'your secret key', // This secret will be used to sign the session ID cookie. Use a real, secure string in production.
+            secret: _ENV.session_secret, // This secret will be used to sign the session ID cookie. Use a real, secure string in production.
             resave: false, // Forces the session to be saved back to the session store, even if the session was never modified during the request.
             saveUninitialized: false, // Forces a session that is "uninitialized" to be saved to the store. A session is uninitialized when it is new but not modified.
             // You can add more options here, like cookie settings and store settings.
@@ -148,8 +205,8 @@ export class ExpressOAuth {
 
     setupLocalAuth(): void {
         passport.use(new LocalStrategy({
-            usernameField: this.usernameField, // or 'username', depending on your form fields
-            passwordField: this.passwordField
+            usernameField: this.props.usernameField, // or 'username', depending on your form fields
+            passwordField: this.props.passwordField
         }, async (email, password, done) => {
             // Local authentication logic
 
@@ -175,10 +232,10 @@ export class ExpressOAuth {
 
     setupAuthRoutes(get_ui_common_data: no_args_func): void {
         // Google Authentication Routes
-        this.app.get('/auth/google',
+        this.app.get(this.props.auth_google,
             passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-        this.app.get('/auth/google/callback',
+        this.app.get(this.props.auth_google_callback,
             passport.authenticate('google', { failureRedirect: '/login' }),
             (req, res) => {
                 // Successful authentication, redirect home or to another page.
@@ -186,35 +243,35 @@ export class ExpressOAuth {
             });
 
         // Facebook Authentication Routes
-        this.app.get('/auth/facebook',
+        this.app.get(this.props.auth_facebook,
             passport.authenticate('facebook'));
 
-        this.app.get('/auth/facebook/callback',
-            passport.authenticate('facebook', { failureRedirect: '/login' }),
+        this.app.get(this.props.auth_facebook_callback,
+            passport.authenticate('facebook', { failureRedirect: this.props.redirect_failure }),
             (req, res) => {
                 // Successful authentication, redirect home or to another page.
-                res.redirect('/');
+                res.redirect(this.props.redirect_success);
             });
 
         // Local Authentication Routes
         // Login route
-        this.app.post('/login',
+        this.app.post(this.props.login,
             passport.authenticate('local', {
-                successRedirect: '/',
-                failureRedirect: '/login',
+                successRedirect: this.props.redirect_success,
+                failureRedirect: this.props.redirect_failure,
                 failureFlash: true // Enable flash messages for login errors
+                // TODO review flash messsage with ejs
             }));
 
         // Registration route
         // Note: You'll need to implement the logic for registering a user
-        this.app.post('/register', (req, res) => {
+        this.app.post(this.props.register, (req, res) => {
             // Registration logic here (e.g., hash password, save user to database)
         });
 
-        const oauth_routes_paths = this.oauth_routes_paths();
         const EJS_Page_Parser = new EJS_Page();
 
-        this.app.get('/login', (req, res) => {
+        this.app.get(this.props.login, (req, res) => {
 
 
             const html = EJS_Page_Parser.to_ejs(login_register_template);
@@ -222,20 +279,22 @@ export class ExpressOAuth {
 
         });
 
-        this.app.get('/register', async (req, res) => {
-            const html = await MainUtils.render_ejs_path_file(oauth_routes_paths.register,
-                {
-                    ...get_ui_common_data(),
-                });
-            res.send(html);
-        });
+
+        // // TODO??
+        // this.app.get(this.props.register, async (req, res) => {
+        //     const html = await MainUtils.render_ejs_path_file(oauth_routes_paths.register,
+        //         {
+        //             ...get_ui_common_data(),
+        //         });
+        //     res.send(html);
+        // });
 
         // Logout route
-        this.app.get('/logout', (req, res) => {
+        this.app.get(this.props.logout, (req, res) => {
             req.logout((err: any) => {
                 return;
             });
-            res.redirect('/login');
+            res.redirect(this.props.login);
         });
 
     }
@@ -268,33 +327,8 @@ export class ExpressOAuth {
 
 
     }
-    static CheckRole(args: { roles: string[], html_403?: string, req_property?: string }) {
-        let { req_property, html_403 } = args;
-        req_property = req_property ? req_property : 'user.roles';
-        html_403 = html_403 ? html_403 : 'Role No autorizado'; // TODO change html string
 
-        return function (req: Request, res: Response, next: NextFunction) {
-            const userRoles: string[] = _.get(req, req_property, []);
-            const hasRequiredRole = args.roles.some(role => userRoles.includes(role));
-            if (hasRequiredRole) {
-                return next();
-            }
-            // Si el usuario no tiene el rol necesario, manejar según corresponda (error, redirección, etc.)
-            res.status(403).send(html_403);
-        }
-    }
-    static EnsureAuthenticated(args: { redirect?: string }) {
-        let { redirect } = args;
-        redirect = redirect ? redirect : '/login';
 
-        return function (req: Request, res: Response, next: NextFunction) {
-            if (req.isAuthenticated()) {
-                return next();
-            }
-            // Si no está autenticado, redirigir al login
-            res.redirect(redirect);
 
-        }
-    }
 
 }

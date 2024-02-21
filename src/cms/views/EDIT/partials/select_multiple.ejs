@@ -1,0 +1,16 @@
+<!-- select_multiple.ejs -->
+<div class="form-group">
+  <div class="mb-6 bg-white p-4 rounded-lg shadow-sm">
+    <h3 class="text-lg font-semibold text-gray-800 mb-3"><%= field.label %></h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      <% if (field.options) { %> <% field.options.forEach(function(option) { %>
+      <label class="flex items-center space-x-2">
+        <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-300 hover:bg-gray-200" name="<%= field.data_path %>[]" value="<%= option.value %>" />
+        <span class="text-gray-700 hover:text-blue-600 cursor-pointer"><%= option.label %></span>
+      </label>
+      <% }); %>
+      <% } %>
+    </div>
+  </div>
+</div>
+<!-- select_multiple.ejs -->

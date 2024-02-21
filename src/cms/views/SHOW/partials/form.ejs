@@ -1,0 +1,17 @@
+<!-- form.ejs -->
+
+<form class="stretch mx-2 flex flex-col gap-3 last:mb-2 md:mx-4 md:last:mb-6 lg:mx-auto lg:max-w-2xl xl:max-w-3xl" <%- field.attributes %> hx-indicator="#loadingIndicator">
+
+  <% for (const subField of field.fields) { %>
+  <%- await include(htmx_configs.GetView(`partials/${subField.type}`), {field: subField}); %>
+  <% }; %>
+
+  <div id="loadingIndicator" class="hidden">
+    <!-- Loading indicator for submit -->
+    <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 11 16 0A8 8 0 014 12H2z"></path>
+    </svg>
+  </div>
+</form>
+<!-- form.ejs -->

@@ -1,0 +1,25 @@
+<!-- We need to loop hit -->
+
+<% const arrayField = field.fields; %>
+
+<!-- LOOP OVER locals.hit using field.data_path as key to the array. Get the Index, and change all nested, fields.field.data_path with that has [i] for [ + index +] -->
+
+
+<div id="array_container" class="flex flex-col divide-y divide-gray-200">
+  <!-- The template for the array items will be inserted here -->
+
+  <%
+// Use lodash to safely get the array and fall back to an empty array if not found
+const itemsArray = locals.lodash.get(hit, field.data_path, []);
+const itemsLength = itemsArray.length; // Get the length of the array
+
+for(let index = 0; index < itemsLength; index++) { %>
+  <div class="array-item relative p-4" data-index="<%= index %>">
+    <%# Assuming you need to process and display something from `_item` %>
+    <%# Example of dynamic replacement in the item's context %>
+    <%- await include(htmx_configs.GetView(`partials/${arrayField.type}`), {field: arrayField, array_index: index});%>
+
+  </div>
+  <% } %>
+
+</div>
