@@ -1,14 +1,33 @@
 import { Express } from "express";
 import { FilterQuery } from "mongoose";
 import { ZodType } from "zod";
-import { CMSCollectionConfig } from '../../../siaj/src/cms/CollectionConfig';
 import { DatabaseSupport } from "../ChatHTMX/DB/FBR_ChatDBSupport";
-import { IBaseCMSResource } from "./BaseResource";
+import { MaybePromise } from '../types';
+import { CMSCollectionConfig } from "./CollectionConfig";
 import { WrappedWithPaginationAndList } from "./render_utils";
+export interface IBaseCMSResource {
+    // Método para retornar el HTML del menú lateral
+    getSidebarHtml(): MaybePromise<string>;
 
-type tUI_Resource_CMS = {
-    title: string;
+    // Método para retornar el HTML del botón de landing
+    getLandingButtonHtml(): MaybePromise<string>;
+
+    // Método para retornar el contenido del index de landing
+    // Podría retornar un objeto con título, descripción y la tabla de recursos
+    getLandingHtml(): MaybePromise<string>;
+
+    // Método para mostrar el formulario de creación de un nuevo recurso
+    // Se separan los métodos para GET y POST
+    getNewResourceFormHtml(): MaybePromise<string>;
+
+    // Método para mostrar y procesar el formulario de edición de un recurso
+    // Se separan los métodos para GET y POST
+    getEditResourceFormHTML(hit: any): MaybePromise<string>;
+
+    // Métodos para mostrar un recurso en HTML y JSON
+    getShowResourceHTML(hit: any): void;
 }
+
 
 const get_url_paths = {
     index: `/col/landing`,

@@ -77,3 +77,6 @@ export class CollectionConfig<T> {
 
     // Additional methods can be added here
 }
+
+
+export type CMSCollectionConfig<T = any> = CollectionConfig<T>;
