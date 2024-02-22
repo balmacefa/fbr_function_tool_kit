@@ -106,7 +106,7 @@ export class EJS_Page {
         }
     }
 
-    public to_ejs(content: string) {
+    public to_ejs(content: string, aside?: string) {
 
         const template = /*template*/ `
 ${this.top_html}
@@ -120,6 +120,7 @@ ${this.top_html}
         </header>
         <main class="flex flex-row h-full w-full">
             <aside>
+                ${aside}
             </aside>
             <article class="container mx-auto p-4">
                 ${content}

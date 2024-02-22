@@ -34,6 +34,8 @@ export interface SelectField<T> extends BaseField<T> {
 
 export interface CheckboxField<T> extends BaseField<T> {
     type: 'checkbox';
+    data_path: T;
+    label: string;
 }
 
 export interface TextareaField<T> extends BaseField<T> {

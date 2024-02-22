@@ -1,20 +1,20 @@
 import _ from 'lodash';
 import { MainUtils } from '../../../fbr_function_tool_kit/src/HostMachine/main_utils';
-import { ComposedField, FlatPaths } from "./types";
+import { ComposedField } from "./types";
 import { GetShowView } from './views/ViewsPath';
 
 
-interface CollectionConfigBaseType<T> {
-    fields: ComposedField<FlatPaths<T>>[],
+interface CollectionConfigBaseType {
+    fields: ComposedField<unknown>[],
 }
 
 
-type CollectionConfigType<T> = CollectionConfigBaseType<T>;
+type CollectionConfigType = CollectionConfigBaseType;
 
-export class CMSCollectionConfig<T> {
-    fields: ComposedField<FlatPaths<T>>[];
+export class CMSCollectionConfig {
+    fields: ComposedField<unknown>[];
 
-    constructor(args: CollectionConfigType<T>) {
+    constructor(args: CollectionConfigType) {
         const { fields } = args;
         this.fields = fields;
     }

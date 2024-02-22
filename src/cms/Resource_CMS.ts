@@ -28,20 +28,19 @@ export interface IBaseCMSResource {
 }
 
 
-const get_url_paths = {
-    index: `/col/landing`,
-    show: `/col/show`,
-    edit: `/col/edit`,
-    create: `/col/create`
-}
-const post_url_paths = {
-    edit: `/col/edit`,
-    create: `/col/create`,
-    paginate: `/col/paginate`
-}
 
-type t_get_url_paths = typeof get_url_paths;
-type t_post_url_paths = typeof post_url_paths;
+type t_get_url_paths = {
+    index: string,
+    show: string,
+    edit: string,
+    create: string,
+};
+
+type t_post_url_paths = {
+    edit: string,
+    create: string,
+    paginate: string,
+};
 
 export class Resource_CMS implements IBaseCMSResource {
 
@@ -49,13 +48,15 @@ export class Resource_CMS implements IBaseCMSResource {
     validate_create_zod?: ZodType<any, any, any>;
     validate_edit_zod?: ZodType<any, any, any>;
 
-    UI_Title: string;
+    slug: string;
 
     create_form_CMSCollectionConfig?: CMSCollectionConfig;
     edit_form_CMSCollectionConfig?: CMSCollectionConfig;
     show_item_CMSCollectionConfig?: CMSCollectionConfig;
     list_item_CMSCollectionConfig?: CMSCollectionConfig;
     prefix_url_path: string;
+    get_url_paths: t_get_url_paths;
+    post_url_paths: t_post_url_paths;
 
     constructor(args: {
         validate_create_zod?: ZodType<any, any, any>,
@@ -65,7 +66,7 @@ export class Resource_CMS implements IBaseCMSResource {
         edit_form_CMSCollectionConfig?: CMSCollectionConfig,
         list_item_CMSCollectionConfig?: CMSCollectionConfig,
         show_item_CMSCollectionConfig?: CMSCollectionConfig,
-        UI_Title: string,
+        slug: string,
         prefix_url_path: string
     }) {
         this.DBSupport = args.DBSupport;
@@ -75,13 +76,29 @@ export class Resource_CMS implements IBaseCMSResource {
         this.edit_form_CMSCollectionConfig = args.edit_form_CMSCollectionConfig;
         this.list_item_CMSCollectionConfig = args.list_item_CMSCollectionConfig;
         this.show_item_CMSCollectionConfig = args.show_item_CMSCollectionConfig;
-        this.UI_Title = args.UI_Title;
+        this.slug = args.slug;
         this.prefix_url_path = args.prefix_url_path;
+
+
+        this.get_url_paths = {
+            index: `/cms/${this.slug}/coll/landing`,
+            show: `/cms/${this.slug}/coll/show`,
+            edit: `/cms/${this.slug}/coll/edit`,
+            create: `/cms/${this.slug}/coll/create`
+        }
+
+        this.post_url_paths = {
+            edit: `/cms/${this.slug}/coll/edit`,
+            create: `/cms/${this.slug}/coll/create`,
+            paginate: `/cms/${this.slug}/coll/paginate`
+        }
+
+
     }
     getSidebarHtml(): string {
 
         const url_path = this.get_url_paths.index;
-        const title = this.UI_Title;
+        const title = this.slug;
         const icon = "fas fa-search fa-2x text-gray-500"
 
         const t = /*template*/`
@@ -103,7 +120,7 @@ export class Resource_CMS implements IBaseCMSResource {
         // Define the URL to which the button will redirect
         const url_path = this.get_url_paths.index;
         // Button text can be the name of the resource or any other relevant text
-        const title = this.UI_Title;
+        const title = this.slug;
         // Icon class from FontAwesome or any other icon library you're using
         const buttonIcon = "fas fa-tools"; // Example FontAwesome icon for admin tools
 
@@ -149,7 +166,7 @@ export class Resource_CMS implements IBaseCMSResource {
 
         const paginatedResource = await this.paginatedResource(1, 3);
 
-        const title = this.UI_Title;
+        const title = this.slug;
 
         const template = /*template*/ `
 <article class="bg-gray-100 p-8">
@@ -228,6 +245,7 @@ export class Resource_CMS implements IBaseCMSResource {
     }
 
 }
+
 
 
 
