@@ -1,4 +1,3 @@
-import { Express } from "express";
 import { FilterQuery } from "mongoose";
 import { ZodType } from "zod";
 import { DatabaseSupport } from "../ChatHTMX/DB/FBR_ChatDBSupport";
@@ -44,46 +43,40 @@ const post_url_paths = {
 type t_get_url_paths = typeof get_url_paths;
 type t_post_url_paths = typeof post_url_paths;
 
-export abstract class Resource_CMS implements IBaseCMSResource {
+export class Resource_CMS implements IBaseCMSResource {
 
     DBSupport: DatabaseSupport<any>;
-    validate_create_zod: ZodType<any, any, any>;
-    validate_edit_zod: ZodType<any, any, any>;
-    app: Express;
+    validate_create_zod?: ZodType<any, any, any>;
+    validate_edit_zod?: ZodType<any, any, any>;
 
     UI_Title: string;
 
-    create_form_CMSCollectionConfig: CMSCollectionConfig;
-    edit_form_CMSCollectionConfig: CMSCollectionConfig;
-    show_item_CMSCollectionConfig: CMSCollectionConfig;
-    list_item_CMSCollectionConfig: CMSCollectionConfig;
-    get_url_paths: t_get_url_paths;
-    post_url_paths: t_post_url_paths;
+    create_form_CMSCollectionConfig?: CMSCollectionConfig;
+    edit_form_CMSCollectionConfig?: CMSCollectionConfig;
+    show_item_CMSCollectionConfig?: CMSCollectionConfig;
+    list_item_CMSCollectionConfig?: CMSCollectionConfig;
+    prefix_url_path: string;
 
     constructor(args: {
-        app: Express,
-        validate_create_zod: ZodType<any, any, any>,
-        validate_edit_zod: ZodType<any, any, any>,
+        validate_create_zod?: ZodType<any, any, any>,
+        validate_edit_zod?: ZodType<any, any, any>,
         DBSupport: DatabaseSupport<any>,
-        create_form_CMSCollectionConfig: CMSCollectionConfig,
-        edit_form_CMSCollectionConfig: CMSCollectionConfig,
-        list_item_CMSCollectionConfig: CMSCollectionConfig,
-        show_item_CMSCollectionConfig: CMSCollectionConfig,
+        create_form_CMSCollectionConfig?: CMSCollectionConfig,
+        edit_form_CMSCollectionConfig?: CMSCollectionConfig,
+        list_item_CMSCollectionConfig?: CMSCollectionConfig,
+        show_item_CMSCollectionConfig?: CMSCollectionConfig,
         UI_Title: string,
-        get_url_paths: t_get_url_paths
-        post_url_paths: t_post_url_paths,
+        prefix_url_path: string
     }) {
         this.DBSupport = args.DBSupport;
         this.validate_create_zod = args.validate_create_zod;
         this.validate_edit_zod = args.validate_edit_zod;
-        this.app = args.app;
         this.create_form_CMSCollectionConfig = args.create_form_CMSCollectionConfig;
         this.edit_form_CMSCollectionConfig = args.edit_form_CMSCollectionConfig;
         this.list_item_CMSCollectionConfig = args.list_item_CMSCollectionConfig;
         this.show_item_CMSCollectionConfig = args.show_item_CMSCollectionConfig;
         this.UI_Title = args.UI_Title;
-        this.get_url_paths = args.get_url_paths;
-        this.post_url_paths = args.post_url_paths;
+        this.prefix_url_path = args.prefix_url_path;
     }
     getSidebarHtml(): string {
 
@@ -183,7 +176,7 @@ export abstract class Resource_CMS implements IBaseCMSResource {
 
         // Use Promise.all to wait for all promises to resolve
         const combinedHtml: string = (await Promise.all(paginated_data.docs.map((doc) => {
-            return this.list_item_CMSCollectionConfig.render({ hit: doc });
+            return this.list_item_CMSCollectionConfig?.render({ hit: doc }) || '';
         }))).join('\n');
 
 
@@ -209,19 +202,19 @@ export abstract class Resource_CMS implements IBaseCMSResource {
 
     async getNewResourceFormHtml(): Promise<string> {
 
-        const html = await this.create_form_CMSCollectionConfig.render({ hit: {} });
+        const html = await this.create_form_CMSCollectionConfig?.render({ hit: {} });
 
-        return html;
+        return html || '';
     }
     async getEditResourceFormHTML(hit: any): Promise<string> {
-        const html = await this.edit_form_CMSCollectionConfig.render({ hit });
+        const html = await this.edit_form_CMSCollectionConfig?.render({ hit });
 
-        return html;
+        return html || '';
     }
     async getShowResourceHTML(hit: any): Promise<string> {
-        const html = await this.edit_form_CMSCollectionConfig.render({ hit });
+        const html = await this.show_item_CMSCollectionConfig?.render({ hit });
 
-        return html;
+        return html || '';
     }
 
 

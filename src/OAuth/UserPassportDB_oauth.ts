@@ -25,7 +25,7 @@ export type UserOAuthDB_Support = {
     roles?: string[];
 };
 
-class UserPassportDB extends DatabaseSupport<UserOAuthDB_Support> {
+export class UserPassportDB extends DatabaseSupport<UserOAuthDB_Support> {
 
     get_collection_name(): MaybePromise<string> {
         return 'oauth_users'; // Or your specific users collection name
