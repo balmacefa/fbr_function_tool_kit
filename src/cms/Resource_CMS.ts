@@ -1,7 +1,7 @@
 import { FilterQuery } from "mongoose";
 import { ZodType } from "zod";
 import { DatabaseSupport } from "../ChatHTMX/DB/FBR_ChatDBSupport";
-import { MaybePromise } from '../types';
+import { HTML_OR_ERROR, MaybePromise } from '../types';
 import { CMSCollectionConfig } from "./CollectionConfig";
 import { WrappedWithPaginationAndList } from "./render_utils";
 export interface IBaseCMSResource {
@@ -21,10 +21,16 @@ export interface IBaseCMSResource {
 
     // Método para mostrar y procesar el formulario de edición de un recurso
     // Se separan los métodos para GET y POST
-    getEditResourceFormHTML(hit: any): MaybePromise<string>;
+    get_EditResourceFormHTML(id_param: string): MaybePromise<string>;
 
     // Métodos para mostrar un recurso en HTML y JSON
     getShowResourceHTML(hit: any): void;
+
+
+    cms_ops_createResource<T = any>(data: T, return_type: 'id' | 'content'): MaybePromise<HTML_OR_ERROR>;
+    cms_ops_updateResource<T = any>(id: string, upsert_data: T): MaybePromise<HTML_OR_ERROR>;
+
+    on_operation_error(ops: string, content: string): string;
 }
 
 
@@ -95,6 +101,64 @@ export class Resource_CMS implements IBaseCMSResource {
 
 
     }
+    on_operation_error(ops: string, content: string): string {
+        return /*template*/`
+<div class="max-w-lg mx-auto mt-10 p-6 bg-red-100 border-l-4 border-red-500 text-red-700">
+    <h2 class="text-lg font-semibold">Error in ${ops}</h2>
+    <p class="mt-2">${content}</p>
+</div>
+    `;
+    }
+    async cms_ops_createResource<T = any>(data: T): Promise<HTML_OR_ERROR> {
+        try {
+            // Si validate_create_zod está definido, valida los datos primero
+            let validatedData = data;
+            if (this.validate_create_zod) {
+                const result = this.validate_create_zod.safeParse(data);
+                if (!result.success) {
+                    // Si la validación falla, retorna el error de validación
+                    const htmlError = this.on_operation_error("cms_ops_createResource", "Validation failed");
+                    return { error: htmlError };
+                }
+                validatedData = result.data;
+            }
+
+            // Intenta crear el recurso con los datos validados o originales
+            const new_data = await this.DBSupport.create_one(validatedData);
+            return { success: new_data.id };
+        } catch (error) {
+            console.error(error);
+            const htmlError = this.on_operation_error("cms_ops_createResource", JSON.stringify(error));
+            return { error: htmlError };
+        }
+    }
+
+
+    async cms_ops_updateResource<T = any>(id: string, upsert_data: T): Promise<HTML_OR_ERROR> {
+        try {
+            // Si validate_edit_zod está definido, valida los datos primero
+            let validatedData = upsert_data;
+            if (this.validate_edit_zod) {
+                const result = this.validate_edit_zod.safeParse(upsert_data);
+                if (!result.success) {
+                    // Si la validación falla, retorna el error de validación
+                    const htmlError = this.on_operation_error("cms_ops_updateResource", "Validation failed");
+                    return { error: htmlError };
+                }
+                validatedData = result.data;
+            }
+
+            // Intenta actualizar el recurso con los datos validados o originales
+            const updated_data = await this.DBSupport.update_one(id, validatedData);
+            return { success: updated_data.id };
+        } catch (error) {
+            console.error(error);
+            const htmlError = this.on_operation_error("cms_ops_updateResource", JSON.stringify(error));
+            return { error: htmlError };
+        }
+    }
+
+
     getSidebarHtml(): string {
 
         const url_path = this.get_url_paths.index;
@@ -223,18 +287,29 @@ export class Resource_CMS implements IBaseCMSResource {
 
         return html || '';
     }
-    async getEditResourceFormHTML(hit: any): Promise<string> {
-        const html = await this.edit_form_CMSCollectionConfig?.render({ hit });
-
-        return html || '';
+    async get_EditResourceFormHTML(id_param: string): Promise<string> {
+        try {
+            const hit = await this.DBSupport.fetchById(id_param);
+            const html = await this.edit_form_CMSCollectionConfig?.render({ hit });
+            return html || '';
+        } catch (error) {
+            console.error(error);
+            // Genera y retorna el HTML de error
+            return this.on_operation_error("get_EditResourceFormHTML", JSON.stringify(error));
+        }
     }
-    async getShowResourceHTML(hit: any): Promise<string> {
-        const html = await this.show_item_CMSCollectionConfig?.render({ hit });
 
-        return html || '';
+    async getShowResourceHTML(id_param: string): Promise<string> {
+        try {
+            const hit = await this.DBSupport.fetchById(id_param);
+            const html = await this.show_item_CMSCollectionConfig?.render({ hit });
+            return html || '';
+        } catch (error) {
+            console.error(error);
+            // Genera y retorna el HTML de error
+            return this.on_operation_error("getShowResourceHTML", JSON.stringify(error));
+        }
     }
-
-
 
     base_path(str: string): string {
         return `/admin/Resource_CMS/${str}`;

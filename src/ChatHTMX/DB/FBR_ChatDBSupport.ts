@@ -61,6 +61,9 @@ export abstract class DatabaseSupport<T> {
  * @param {string} id - The unique identifier of the document.
  * @returns {Promise<T>} - The document 
  */
+    public async get_one(id: string) {
+        return await this.fetchById(id);
+    }
     public async fetchById(id: string): Promise<T> {
         await this.init();
         // Validate the ID format
@@ -123,14 +126,11 @@ export abstract class DatabaseSupport<T> {
         return { ...new_record.toObject(), id: (new_record._id as any).toString() };
     }
 
-    /**
-     * Partially updates a document.
-     * @param id The ID of the document to update.
-     * @param updateData The partial data to update.
-     * @returns The updated document.
-     */
-    public async update_partial(id: string, updateData: Partial<T>): Promise<T> {
+    async update_one(id: string, updateData: any) {
+        return await this.update_partial(id, updateData);
+    }
 
+    public async update_partial(id: string, updateData: Partial<T>): Promise<T> {
         await this.init();
         const updatedDocument = await this.dbModel.findByIdAndUpdate(
             id,
@@ -144,6 +144,7 @@ export abstract class DatabaseSupport<T> {
 
         return updatedDocument.toObject() as T;
     }
+
 }
 
 

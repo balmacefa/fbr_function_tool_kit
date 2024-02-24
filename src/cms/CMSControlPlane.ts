@@ -35,6 +35,71 @@ export class CMSControlPlane {
             }
         });
 
+        // Setup route for displaying the form to create a new resource
+        this.app.get(`/cms/${identifier}/new`, async (req, res) => {
+            try {
+                const formHtml = await resource.getNewResourceFormHtml();
+                res.send(formHtml);
+            } catch (error) {
+                res.status(500).send("An error occurred while fetching the new resource form.");
+            }
+        });
+        // Setup route for submitting the form to create a new resource
+        this.app.post(`/cms/${identifier}/new_redirect`, async (req, res) => {
+            try {
+                // Assuming `createResource` method exists
+                await resource.cms_ops_createResource(req.body);
+                res.redirect(`/cms/${identifier}`);
+            } catch (error) {
+                res.status(500).send("An error occurred while creating a new resource.");
+            }
+        });
+        // Setup route for submitting the form to create a new resource
+        this.app.post(`/cms/${identifier}/new_html`, async (req, res) => {
+            try {
+                // Assuming `createResource` method exists
+                await resource.cms_ops_createResource(req.body);
+                res.redirect(`/cms/${identifier}`);
+            } catch (error) {
+                res.status(500).send("An error occurred while creating a new resource.");
+            }
+        });
+
+        // Setup route for displaying the form to edit a resource
+        this.app.get(`/cms/${identifier}/edit/:id`, async (req, res) => {
+            try {
+                const id_param = req.params.id;
+                const formHtml = await resource.get_EditResourceFormHTML(id_param);
+                res.send(formHtml);
+            } catch (error) {
+                res.status(500).send("An error occurred while fetching the edit form.");
+            }
+        });
+
+        // Setup route for submitting the form to update a resource
+        this.app.post(`/cms/${identifier}/edit/:id`, async (req, res) => {
+            try {
+                const id_param = req.params.id;
+
+                const rid = await resource.cms_ops_updateResource(id_param, req.body);
+                res.redirect(`/cms/${identifier}/show/${rid}`);
+            } catch (error) {
+                res.status(500).send("An error occurred while updating the resource.");
+            }
+        });
+
+
+        // HTML representation
+        this.app.get(`/cms/${identifier}/show/:id`, async (req, res) => {
+            try {
+                const id_param = req.params.id;
+
+                const html = await resource.getShowResourceHTML(id_param);
+                res.send(html);
+            } catch (error) {
+                res.status(500).send("An error occurred while displaying the resource.");
+            }
+        });
         // Additional route setups can go here, possibly abstracting and iterating over a predefined list of routes in Resource_CMS
     }
 
@@ -65,7 +130,7 @@ export class CMSControlPlane {
     }
 
 
-    public render_landing_cms(locals: any) {
+    public render_landing_cms() {
         this.app.get(`/cms/`, async (req, res) => {
             try {
 
