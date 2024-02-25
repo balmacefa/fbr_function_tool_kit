@@ -1,5 +1,6 @@
 import { FilterQuery } from "mongoose";
 import { ZodType } from "zod";
+import { replaceColonParamsPattern } from "../ChatHTMX";
 import { DatabaseSupport } from "../ChatHTMX/DB/FBR_ChatDBSupport";
 import { HTML_OR_ERROR, MaybePromise } from '../types';
 import { CMSCollectionConfig } from "./CollectionConfig";
@@ -247,25 +248,23 @@ export class Resource_CMS implements IBaseCMSResource {
             // Wrapping each item with a 'top bar' that includes common CMS actions
             const itemHtml = await this.list_item_CMSCollectionConfig?.render({ hit: doc }) || '';
             return /*template*/`
-        <div class="cms-item-container">
-            <div class="cms-item-top-bar flex justify-between items-center bg-gray-100 p-2">
-                <!-- Placeholder for common CMS actions -->
-                <button class="edit-action">Edit</button>
-                <button class="delete-action">Delete</button>
-                <button class="view-action">View</button>
+        <div class="cms-item-container border-b border-gray-200">
+            <div class="cms-item-top-bar flex justify-end space-x-2 my-2 ">
+                <!-- Buttons with href and Tailwind CSS classes for styling -->
+                <a href="${replaceColonParamsPattern(this.get_url_paths.edit, doc.id)}" class="text-sm text-blue-600 hover:text-blue-800 px-4 py-1">Edit</a>
+                <a href="${replaceColonParamsPattern(this.get_url_paths.edit, doc.id)}" class="text-sm text-blue-600 hover:text-blue-800 px-4 py-1">--Delete</a>
+                <a href="${replaceColonParamsPattern(this.get_url_paths.show, doc.id)}" class="text-sm text-blue-600 hover:text-blue-800 px-4 py-1">View</a>
             </div>
             ${itemHtml}
         </div>
         `;
         }))).join('\n');
 
-        // Assuming there's a 'create' path for new resources
         const post_url = this.post_url_paths.paginate;
 
         const template = WrappedWithPaginationAndList(paginated_data,
       /*template*/`
-      <div id="table_array_container" class="flex flex-col divide-y divide-gray-200">
-        <!-- The template for the array items will be inserted here -->
+      <div id="table_array_container" class="flex flex-col">
         ${combinedHtml}
       </div>
       `,
@@ -275,6 +274,7 @@ export class Resource_CMS implements IBaseCMSResource {
 
         return template;
     }
+
 
 
     async getNewResourceFormHtml(): Promise<string> {
