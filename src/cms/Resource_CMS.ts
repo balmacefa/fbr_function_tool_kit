@@ -193,7 +193,7 @@ export class Resource_CMS implements IBaseCMSResource {
 
     getNewResourceButtonHtml(): string {
         // Define the URL to which the button will redirect for creating a new resource
-        const url_path = this.post_url_paths.create; // Assuming there's a 'create' path for new resources
+        const url_path = this.get_url_paths.create; // Assuming there's a 'create' path for new resources
         // Button text for the "New Resource" button
         const title = "New Resource"; // Specific text for the new resource button
         // Icon class for the button, assuming 'fas fa-plus' for adding a new resource
@@ -202,7 +202,7 @@ export class Resource_CMS implements IBaseCMSResource {
         // Constructing the button HTML using a template literal
         const buttonHtml = /*template*/`
 <!-- Square button with hover effect for creating a new resource -->
-<a href="${url_path}" style="width: 100px; height: 100px; display: flex; justify-content: center; align-items: center;" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+<a href="${url_path}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
     <!-- Icon, visually centered -->
     <i class="${buttonIcon} fa-lg"></i>
     <!-- Text for screen readers -->

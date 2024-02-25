@@ -1,6 +1,7 @@
 import { Express } from "express";
 import { replaceColonParamsPattern } from "../ChatHTMX";
 import { EJS_Page } from "../EjsUtils/page";
+import { EJS_PageWithBreadcrumb, breadcrumb_type } from "./Page/PageBuilder";
 import { Resource_CMS } from "./Resource_CMS"; // Assuming Resource_CMS is in the same directory
 import { set_cms_control_plane_urls, set_resource_urls } from "./url_string_generator";
 
@@ -11,6 +12,7 @@ export class CMSControlPlane {
     public logo_html: string;
 
     public url_prefix = `admin`;
+    title: string;
 
     private controlPlaneUrls: ReturnType<typeof set_cms_control_plane_urls>;
 
@@ -19,13 +21,17 @@ export class CMSControlPlane {
         app: Express,
         logo_html: string,
         url_prefix?: string
+        title: string;
     }) {
+        this.controlPlaneUrls = set_cms_control_plane_urls(this.url_prefix);
+        this.title = args.title;
         this.url_prefix = args.url_prefix || `admin`;
         this.app = args.app;
         this.logo_html = args.logo_html;
 
-        this.controlPlaneUrls = set_cms_control_plane_urls(this.url_prefix);
+        this.init_setupRoutesForCMS();
 
+        console.log(this.controlPlaneUrls);
     }
 
 
@@ -42,7 +48,7 @@ export class CMSControlPlane {
         resource.init_set_resource_urls(this.url_prefix);
 
         // Setup routes for the new resource
-        this.init_setupRoutesForResource(resource);
+        this.setupRoutesForResource(resource);
     }
 
     /**
@@ -50,18 +56,28 @@ export class CMSControlPlane {
      * @param identifier A unique identifier for the resource.
      * @param resource The Resource_CMS instance.
      */
-    public init_setupRoutesForResource(resource: Resource_CMS) {
+    public setupRoutesForResource(resource: Resource_CMS) {
 
         const router = set_resource_urls(resource.slug, this.url_prefix);
+        const pageBuilder = new EJS_PageWithBreadcrumb();
+
+        const Breadcrumb: breadcrumb_type[] = [
+            {
+                label: 'Dashboard',
+                value: this.controlPlaneUrls.dashboard
+            }
+        ];
 
         // Example: Setup a route for the resource's landing page
         this.app.get(router.get_url_paths.index, async (req, res) => {
             try {
                 const resourcelandingHtml = await resource.getLandingHtml();
 
-                const pageBuilder = new EJS_Page();
-
-                const html = pageBuilder.to_ejs(resourcelandingHtml, this.generate_lateral_menu());
+                const Breadcrumb_page_collection: breadcrumb_type[] = [...Breadcrumb, {
+                    label: resource.slug,
+                    value: router.get_url_paths.index,
+                }]
+                const html = pageBuilder.to_ejs(resourcelandingHtml, this.generate_lateral_menu(), Breadcrumb_page_collection);
                 res.send(html);
 
             } catch (error) {
@@ -73,7 +89,21 @@ export class CMSControlPlane {
         this.app.get(router.get_url_paths.create, async (req, res) => {
             try {
                 const formHtml = await resource.getNewResourceFormHtml();
-                res.send(formHtml);
+
+                const Breadcrumb_page_collection: breadcrumb_type[] = [...Breadcrumb,
+                {
+                    label: resource.slug,
+                    value: router.get_url_paths.index,
+                },
+                {
+                    label: `Create new Resource`,
+                    value: router.get_url_paths.create,
+                },
+
+                ];
+
+                const html = pageBuilder.to_ejs(formHtml, this.generate_lateral_menu(), Breadcrumb_page_collection);
+                res.send(html);
             } catch (error) {
                 res.status(500).send("An error occurred while fetching the new resource form.");
             }
@@ -102,7 +132,23 @@ export class CMSControlPlane {
             try {
                 const id_param = req.params.id;
                 const formHtml = await resource.get_EditResourceFormHTML(id_param);
-                res.send(formHtml);
+
+
+
+                const Breadcrumb_page_collection: breadcrumb_type[] = [...Breadcrumb,
+                {
+                    label: resource.slug,
+                    value: router.get_url_paths.index,
+                },
+                {
+                    label: `Edit Resource - ${id_param}`,
+                    value: replaceColonParamsPattern(router.get_url_paths.edit, id_param),
+                },
+
+                ];
+
+                const html = pageBuilder.to_ejs(formHtml, this.generate_lateral_menu(), Breadcrumb_page_collection);
+                res.send(html);
             } catch (error) {
                 res.status(500).send("An error occurred while fetching the edit form.");
             }
@@ -132,8 +178,25 @@ export class CMSControlPlane {
             try {
                 const id_param = req.params.id;
 
-                const html = await resource.getShowResourceHTML(id_param);
+                const show_html = await resource.getShowResourceHTML(id_param);
+
+
+
+                const Breadcrumb_page_collection: breadcrumb_type[] = [...Breadcrumb,
+                {
+                    label: resource.slug,
+                    value: router.get_url_paths.index,
+                },
+                {
+                    label: `Show Resource - ${id_param}`,
+                    value: replaceColonParamsPattern(router.get_url_paths.show, id_param),
+                },
+
+                ];
+
+                const html = pageBuilder.to_ejs(show_html, this.generate_lateral_menu(), Breadcrumb_page_collection);
                 res.send(html);
+
             } catch (error) {
                 res.status(500).send("An error occurred while displaying the resource.");
             }
@@ -142,7 +205,7 @@ export class CMSControlPlane {
     }
 
 
-    public render_landing_cms() {
+    public init_setupRoutesForCMS() {
         this.app.get(this.controlPlaneUrls.dashboard, async (req, res) => {
             try {
 
