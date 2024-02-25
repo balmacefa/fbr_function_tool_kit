@@ -21,7 +21,7 @@ export interface BaseField<T> {
 }
 
 export interface StringField<T> extends BaseField<T> {
-    type: 'string' | 'text_area' | 'ul';
+    type: 'string' | 'text_area' | 'ul' | 'truncate';
     // Add other specific properties for text fields if necessary
     data_path: T;
     label: string;

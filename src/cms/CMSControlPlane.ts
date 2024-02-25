@@ -4,9 +4,6 @@ import { EJS_Page } from "../EjsUtils/page";
 import { Resource_CMS } from "./Resource_CMS"; // Assuming Resource_CMS is in the same directory
 import { set_cms_control_plane_urls, set_resource_urls } from "./url_string_generator";
 
-
-// todo create a method to add a new reoutce and call the init_set_resource_urls with url_prefix
-
 export class CMSControlPlane {
     public resources: Resource_CMS[] = [];
     public app: Express;
@@ -32,14 +29,30 @@ export class CMSControlPlane {
     }
 
 
+
+    /**
+     * Adds a new CMS resource and sets up its routes.
+     * @param slug A unique slug for the resource's routes.
+     * @param resource An instance of Resource_CMS representing the new resource.
+     */
+    public addResourceAndSetupRoutes(resource: Resource_CMS) {
+        // Add the resource to the resources array
+        this.resources.push(resource);
+
+        resource.init_set_resource_urls(this.url_prefix);
+
+        // Setup routes for the new resource
+        this.init_setupRoutesForResource(resource);
+    }
+
     /**
      * Dynamically sets up Express routes for a given CMS resource.
      * @param identifier A unique identifier for the resource.
      * @param resource The Resource_CMS instance.
      */
-    public init_setupRoutesForResource(slug: string, resource: Resource_CMS) {
+    public init_setupRoutesForResource(resource: Resource_CMS) {
 
-        const router = set_resource_urls(slug, this.url_prefix);
+        const router = set_resource_urls(resource.slug, this.url_prefix);
 
         // Example: Setup a route for the resource's landing page
         this.app.get(router.get_url_paths.index, async (req, res) => {

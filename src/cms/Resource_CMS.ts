@@ -61,30 +61,25 @@ export class Resource_CMS implements IBaseCMSResource {
     edit_form_CMSCollectionConfig?: CMSCollectionConfig;
     show_item_CMSCollectionConfig?: CMSCollectionConfig;
     list_item_CMSCollectionConfig?: CMSCollectionConfig;
-    prefix_url_path: string;
     get_url_paths!: t_get_url_paths;
     post_url_paths!: t_post_url_paths;
 
     constructor(args: {
-        validate_create_zod?: ZodType<any, any, any>,
-        validate_edit_zod?: ZodType<any, any, any>,
         DBSupport: DatabaseSupport<any>,
         create_form_CMSCollectionConfig?: CMSCollectionConfig,
         edit_form_CMSCollectionConfig?: CMSCollectionConfig,
         list_item_CMSCollectionConfig?: CMSCollectionConfig,
         show_item_CMSCollectionConfig?: CMSCollectionConfig,
         slug: string,
-        prefix_url_path: string
     }) {
         this.DBSupport = args.DBSupport;
-        this.validate_create_zod = args.validate_create_zod;
-        this.validate_edit_zod = args.validate_edit_zod;
+        this.validate_create_zod = args.DBSupport.validate_create_zod;
+        this.validate_edit_zod = args.DBSupport.validate_edit_zod;
         this.create_form_CMSCollectionConfig = args.create_form_CMSCollectionConfig;
         this.edit_form_CMSCollectionConfig = args.edit_form_CMSCollectionConfig;
         this.list_item_CMSCollectionConfig = args.list_item_CMSCollectionConfig;
         this.show_item_CMSCollectionConfig = args.show_item_CMSCollectionConfig;
         this.slug = args.slug;
-        this.prefix_url_path = args.prefix_url_path;
     }
 
 
@@ -314,3 +309,5 @@ export class Resource_CMS implements IBaseCMSResource {
     }
 
 }
+
+

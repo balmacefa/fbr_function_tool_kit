@@ -1,5 +1,6 @@
 import type { FilterQuery, InferSchemaType } from 'mongoose';
 import mongoose, { Types } from 'mongoose';
+import { ZodType } from 'zod';
 import { PaginationData } from '../../../../../../../ios_cms_iiresodh/node_payload_app/src/components/shared_types';
 import { MaybePromise } from '../../types';
 
@@ -32,6 +33,9 @@ export abstract class DatabaseSupport<T> {
     uri: string;
     dbModel!: mongoose.Model<T>;
     private has_init = false;
+
+    validate_create_zod?: ZodType<any, any, any>;
+    validate_edit_zod?: ZodType<any, any, any>;
 
     constructor(args: { uri?: string }) {
         if (!args.uri) {
