@@ -240,28 +240,35 @@ export class Resource_CMS implements IBaseCMSResource {
 
 
     public async paginatedResource(page: number, limit: number, query: FilterQuery<any> = {}) {
-
-
         const paginated_data = await this.DBSupport.getPaginated(page, limit, query);
 
         // Use Promise.all to wait for all promises to resolve
-        const combinedHtml: string = (await Promise.all(paginated_data.docs.map((doc) => {
-            return this.list_item_CMSCollectionConfig?.render({ hit: doc }) || '';
+        const combinedHtml: string = (await Promise.all(paginated_data.docs.map(async (doc) => {
+            // Wrapping each item with a 'top bar' that includes common CMS actions
+            const itemHtml = await this.list_item_CMSCollectionConfig?.render({ hit: doc }) || '';
+            return /*template*/`
+        <div class="cms-item-container">
+            <div class="cms-item-top-bar flex justify-between items-center bg-gray-100 p-2">
+                <!-- Placeholder for common CMS actions -->
+                <button class="edit-action">Edit</button>
+                <button class="delete-action">Delete</button>
+                <button class="view-action">View</button>
+            </div>
+            ${itemHtml}
+        </div>
+        `;
         }))).join('\n');
 
-
-        // them create a a 
-        const post_url = this.post_url_paths.paginate; // Assuming there's a 'create' path for new resources
+        // Assuming there's a 'create' path for new resources
+        const post_url = this.post_url_paths.paginate;
 
         const template = WrappedWithPaginationAndList(paginated_data,
-      /*template*/ `
-      
-      <div id="table_array_container" class="flex flex-col divide-y divide-gray-200 ">
-    <!-- The template for the array items will be inserted here -->
-          ${combinedHtml}
-    </div>
-
-    `,
+      /*template*/`
+      <div id="table_array_container" class="flex flex-col divide-y divide-gray-200">
+        <!-- The template for the array items will be inserted here -->
+        ${combinedHtml}
+      </div>
+      `,
             post_url,
             limit
         );
