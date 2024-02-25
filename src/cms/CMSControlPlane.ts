@@ -1,6 +1,11 @@
 import { Express } from "express";
+import { replaceColonParamsPattern } from "../ChatHTMX";
 import { EJS_Page } from "../EjsUtils/page";
 import { Resource_CMS } from "./Resource_CMS"; // Assuming Resource_CMS is in the same directory
+import { set_cms_control_plane_urls, set_resource_urls } from "./url_string_generator";
+
+
+// todo create a method to add a new reoutce and call the init_set_resource_urls with url_prefix
 
 export class CMSControlPlane {
     public resources: Resource_CMS[] = [];
@@ -8,9 +13,22 @@ export class CMSControlPlane {
 
     public logo_html: string;
 
-    constructor(args: { app: Express, logo_html: string }) {
+    public url_prefix = `admin`;
+
+    private controlPlaneUrls: ReturnType<typeof set_cms_control_plane_urls>;
+
+
+    constructor(args: {
+        app: Express,
+        logo_html: string,
+        url_prefix?: string
+    }) {
+        this.url_prefix = args.url_prefix || `admin`;
         this.app = args.app;
         this.logo_html = args.logo_html;
+
+        this.controlPlaneUrls = set_cms_control_plane_urls(this.url_prefix);
+
     }
 
 
@@ -19,9 +37,12 @@ export class CMSControlPlane {
      * @param identifier A unique identifier for the resource.
      * @param resource The Resource_CMS instance.
      */
-    public setupRoutesForResource(identifier: string, resource: Resource_CMS) {
+    public init_setupRoutesForResource(slug: string, resource: Resource_CMS) {
+
+        const router = set_resource_urls(slug, this.url_prefix);
+
         // Example: Setup a route for the resource's landing page
-        this.app.get(`/cms/${identifier}`, async (req, res) => {
+        this.app.get(router.get_url_paths.index, async (req, res) => {
             try {
                 const resourcelandingHtml = await resource.getLandingHtml();
 
@@ -36,7 +57,7 @@ export class CMSControlPlane {
         });
 
         // Setup route for displaying the form to create a new resource
-        this.app.get(`/cms/${identifier}/new`, async (req, res) => {
+        this.app.get(router.get_url_paths.create, async (req, res) => {
             try {
                 const formHtml = await resource.getNewResourceFormHtml();
                 res.send(formHtml);
@@ -45,28 +66,26 @@ export class CMSControlPlane {
             }
         });
         // Setup route for submitting the form to create a new resource
-        this.app.post(`/cms/${identifier}/new_redirect`, async (req, res) => {
+        this.app.post(router.post_url_paths.create, async (req, res) => {
             try {
                 // Assuming `createResource` method exists
-                await resource.cms_ops_createResource(req.body);
-                res.redirect(`/cms/${identifier}`);
-            } catch (error) {
-                res.status(500).send("An error occurred while creating a new resource.");
-            }
-        });
-        // Setup route for submitting the form to create a new resource
-        this.app.post(`/cms/${identifier}/new_html`, async (req, res) => {
-            try {
-                // Assuming `createResource` method exists
-                await resource.cms_ops_createResource(req.body);
-                res.redirect(`/cms/${identifier}`);
+                const rid = await resource.cms_ops_createResource(req.body);
+
+                if (rid.error) {
+                    return res.send(rid.error);
+                }
+
+                const url = replaceColonParamsPattern(router.get_url_paths.show, rid.success as string);
+                res.redirect(url);
+
+                res.redirect(router.get_url_paths.index);
             } catch (error) {
                 res.status(500).send("An error occurred while creating a new resource.");
             }
         });
 
         // Setup route for displaying the form to edit a resource
-        this.app.get(`/cms/${identifier}/edit/:id`, async (req, res) => {
+        this.app.get(router.get_url_paths.edit, async (req, res) => {
             try {
                 const id_param = req.params.id;
                 const formHtml = await resource.get_EditResourceFormHTML(id_param);
@@ -77,12 +96,18 @@ export class CMSControlPlane {
         });
 
         // Setup route for submitting the form to update a resource
-        this.app.post(`/cms/${identifier}/edit/:id`, async (req, res) => {
+        this.app.post(router.post_url_paths.edit, async (req, res) => {
             try {
                 const id_param = req.params.id;
 
                 const rid = await resource.cms_ops_updateResource(id_param, req.body);
-                res.redirect(`/cms/${identifier}/show/${rid}`);
+
+                if (rid.error) {
+                    return res.send(rid.error);
+                }
+
+                const url = replaceColonParamsPattern(router.get_url_paths.show, rid.success as string);
+                res.redirect(url);
             } catch (error) {
                 res.status(500).send("An error occurred while updating the resource.");
             }
@@ -90,7 +115,7 @@ export class CMSControlPlane {
 
 
         // HTML representation
-        this.app.get(`/cms/${identifier}/show/:id`, async (req, res) => {
+        this.app.get(router.get_url_paths.show, async (req, res) => {
             try {
                 const id_param = req.params.id;
 
@@ -104,34 +129,8 @@ export class CMSControlPlane {
     }
 
 
-    public generate_lateral_menu(): string {
-        let lateral_menu_items = /*template*/`
-
-        <div class="MainNav w-24 h-full rounded bg-white flex-col justify-start items-center inline-flex font-['Montserrat']">
-  <div class="Frame2055 h-48 px-3.5 pt-12 pb-16 flex-col justify-start items-center flex">
-    <a href="/">
-      ${this.logo_html}
-    </a>
-
-  </div>
-  <div class="List self-stretch h-96 flex-col justify-start items-start flex">
-
-        `;
-        this.resources.forEach((r, index, array) => {
-            lateral_menu_items += `\n` + r.getSidebarHtml() + `\n`;
-        });
-
-        lateral_menu_items += /*template*/`
-  </div>
-</div>
-        `;
-        return lateral_menu_items;
-
-    }
-
-
     public render_landing_cms() {
-        this.app.get(`/cms/`, async (req, res) => {
+        this.app.get(this.controlPlaneUrls.dashboard, async (req, res) => {
             try {
 
                 let landing_btns = /*template*/``;
@@ -180,6 +179,32 @@ export class CMSControlPlane {
                 res.status(500).send("An error occurred while fetching the landing page.");
             }
         });
+    }
+
+
+    public generate_lateral_menu(): string {
+        let lateral_menu_items = /*template*/`
+
+        <div class="MainNav w-24 h-full rounded bg-white flex-col justify-start items-center inline-flex font-['Montserrat']">
+  <div class="Frame2055 h-48 px-3.5 pt-12 pb-16 flex-col justify-start items-center flex">
+    <a href="/">
+      ${this.logo_html}
+    </a>
+
+  </div>
+  <div class="List self-stretch h-96 flex-col justify-start items-start flex">
+
+        `;
+        this.resources.forEach((r, index, array) => {
+            lateral_menu_items += `\n` + r.getSidebarHtml() + `\n`;
+        });
+
+        lateral_menu_items += /*template*/`
+  </div>
+</div>
+        `;
+        return lateral_menu_items;
+
     }
 
 }

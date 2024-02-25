@@ -4,6 +4,7 @@ import { DatabaseSupport } from "../ChatHTMX/DB/FBR_ChatDBSupport";
 import { HTML_OR_ERROR, MaybePromise } from '../types';
 import { CMSCollectionConfig } from "./CollectionConfig";
 import { WrappedWithPaginationAndList } from "./render_utils";
+import { set_resource_urls } from "./url_string_generator";
 export interface IBaseCMSResource {
     // Método para retornar el HTML del menú lateral
     getSidebarHtml(): MaybePromise<string>;
@@ -61,8 +62,8 @@ export class Resource_CMS implements IBaseCMSResource {
     show_item_CMSCollectionConfig?: CMSCollectionConfig;
     list_item_CMSCollectionConfig?: CMSCollectionConfig;
     prefix_url_path: string;
-    get_url_paths: t_get_url_paths;
-    post_url_paths: t_post_url_paths;
+    get_url_paths!: t_get_url_paths;
+    post_url_paths!: t_post_url_paths;
 
     constructor(args: {
         validate_create_zod?: ZodType<any, any, any>,
@@ -84,23 +85,16 @@ export class Resource_CMS implements IBaseCMSResource {
         this.show_item_CMSCollectionConfig = args.show_item_CMSCollectionConfig;
         this.slug = args.slug;
         this.prefix_url_path = args.prefix_url_path;
-
-
-        this.get_url_paths = {
-            index: `/cms/${this.slug}/coll/landing`,
-            show: `/cms/${this.slug}/coll/show`,
-            edit: `/cms/${this.slug}/coll/edit`,
-            create: `/cms/${this.slug}/coll/create`
-        }
-
-        this.post_url_paths = {
-            edit: `/cms/${this.slug}/coll/edit`,
-            create: `/cms/${this.slug}/coll/create`,
-            paginate: `/cms/${this.slug}/coll/paginate`
-        }
-
-
     }
+
+
+    init_set_resource_urls(url_prefix = '') {
+        const router = set_resource_urls(this.slug, url_prefix);
+        this.get_url_paths = router.get_url_paths;
+        this.post_url_paths = router.post_url_paths;
+    }
+
+
     on_operation_error(ops: string, content: string): string {
         return /*template*/`
 <div class="max-w-lg mx-auto mt-10 p-6 bg-red-100 border-l-4 border-red-500 text-red-700">
@@ -320,37 +314,3 @@ export class Resource_CMS implements IBaseCMSResource {
     }
 
 }
-
-
-
-
-//     public register_handler_request(app: Express) {
-//     // eslint-disable-next-line require-await
-//     app.post(this.upsert_url(), async (req: Request, res: Response) => {
-//         const id = req.body.id;
-
-//         const form = convert_form_ToNestedObject_lodash_style(req.body);
-
-//         const validate = this.validate_create_zod.safeParse(form);
-
-//         if (validate.success) {
-//             const valida_data = validate.data;
-
-//             try {
-//                 const hit = await this.DBSupport.create_one(valida_data);
-
-//                 const html = await this.create_form_CMSCollectionConfig.render({ hit });
-
-//                 return res.send(html);
-//             } catch (error) {
-//                 // Todo add error html code here
-//             }
-//             res.send(id);
-//         }
-//     });
-
-
-
-
-//     // TODO add the list pagination URL and handler
-// }
