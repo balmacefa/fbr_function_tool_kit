@@ -1,3 +1,4 @@
+import { Express } from 'express';
 import { FilterQuery } from "mongoose";
 import { ZodType } from "zod";
 import { replaceColonParamsPattern } from "../ChatHTMX";
@@ -33,6 +34,14 @@ export interface IBaseCMSResource {
     cms_ops_updateResource<T = any>(id: string, upsert_data: T): MaybePromise<HTML_OR_ERROR>;
 
     on_operation_error(ops: string, content: string): string;
+}
+
+
+
+
+export abstract class Controller {
+    abstract setupRoutes(app: Express): void;
+    abstract getRouter(): Record<string, string>;
 }
 
 
