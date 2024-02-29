@@ -68,7 +68,7 @@ export abstract class DatabaseSupport<T> {
     public async get_one(id: string) {
         return await this.fetchById(id);
     }
-    public async fetchById(id: string): Promise<T> {
+    public async fetchById(id: string): Promise<T & { id: string }> {
         await this.init();
         // Validate the ID format
         if (!Types.ObjectId.isValid(id)) {
@@ -122,9 +122,9 @@ export abstract class DatabaseSupport<T> {
     }
 
 
-    public async create_one(data: T) {
+    public async create_one(data: T): Promise<T & { id: string }> {
         await this.init();
-        const new_record = new this.dbModel(data);
+        const new_record = new this.dbModel<T>(data);
         await new_record.save();
         // TODO: change as any for proppr  types
         return { ...new_record.toObject(), id: (new_record._id as any).toString() };
@@ -134,7 +134,7 @@ export abstract class DatabaseSupport<T> {
         return await this.update_partial(id, updateData);
     }
 
-    public async update_partial(id: string, updateData: Partial<T>): Promise<T> {
+    public async update_partial(id: string, updateData: Partial<T>): Promise<T & { id: string }> {
         await this.init();
         const updatedDocument = await this.dbModel.findByIdAndUpdate(
             id,
@@ -146,7 +146,7 @@ export abstract class DatabaseSupport<T> {
             throw new Error("Document not found or update failed");
         }
 
-        return updatedDocument.toObject() as T;
+        return { ...updatedDocument.toObject(), id: (updatedDocument._id as any).toString() };
     }
 
 }
