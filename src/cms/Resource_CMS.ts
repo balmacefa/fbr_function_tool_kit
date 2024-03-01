@@ -250,10 +250,10 @@ export class Resource_CMS implements IBaseCMSResource {
 
 
     public async paginatedResource(page: number, limit: number, query: FilterQuery<any> = {}) {
-        const paginated_data = await this.DBSupport.getPaginated(page, limit, query);
+        const paginatedData = await this.DBSupport.getPaginated(page, limit, query);
 
         // Use Promise.all to wait for all promises to resolve
-        const combinedHtml: string = (await Promise.all(paginated_data.docs.map(async (doc) => {
+        const combinedHtml: string = (await Promise.all(paginatedData.docs.map(async (doc) => {
             // Wrapping each item with a 'top bar' that includes common CMS actions
             const itemHtml = await this.list_item_CMSCollectionConfig?.render({ hit: doc }) || '';
             return /*template*/`
@@ -271,15 +271,17 @@ export class Resource_CMS implements IBaseCMSResource {
 
         const post_url = this.post_url_paths.paginate;
 
-        const template = WrappedWithPaginationAndList(paginated_data,
+        const template = WrappedWithPaginationAndList({
+            paginatedData,
+            content:
       /*template*/`
       <div id="table_array_container" class="flex flex-col">
         ${combinedHtml}
       </div>
       `,
             post_url,
-            limit
-        );
+            defaultLimit: limit
+        });
 
         return template;
     }

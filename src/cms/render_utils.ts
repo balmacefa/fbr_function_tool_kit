@@ -1,7 +1,8 @@
 import { PaginationQuery } from "../ChatHTMX/DB/FBR_ChatDBSupport";
 
-export function WrappedWithPaginationAndList(paginatedData: PaginationQuery<any>, content: string, post_url: string, defaultLimit: number) {
+export function WrappedWithPaginationAndList(args: { paginatedData: PaginationQuery<any>, content: string, post_url: string, defaultLimit: number }) {
 
+    const { paginatedData, content, post_url, defaultLimit } = args;
     function generateId() {
         const randomPart = Math.random().toString(36).substring(2, 15);
         const timePart = new Date().getTime().toString(36);
