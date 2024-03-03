@@ -77,7 +77,7 @@ export class CMSControlPlane {
                     label: resource.slug,
                     value: router.get_url_paths.index,
                 }]
-                const html = pageBuilder.to_ejs(resourcelandingHtml, this.generate_lateral_menu(), Breadcrumb_page_collection);
+                const html = pageBuilder.to_ejs(resourcelandingHtml, this.createSidebarMenu(), Breadcrumb_page_collection);
                 res.send(html);
 
             } catch (error) {
@@ -102,7 +102,7 @@ export class CMSControlPlane {
 
                 ];
 
-                const html = pageBuilder.to_ejs(formHtml, this.generate_lateral_menu(), Breadcrumb_page_collection);
+                const html = pageBuilder.to_ejs(formHtml, this.createSidebarMenu(), Breadcrumb_page_collection);
                 res.send(html);
             } catch (error) {
                 res.status(500).send("An error occurred while fetching the new resource form.");
@@ -147,7 +147,7 @@ export class CMSControlPlane {
 
                 ];
 
-                const html = pageBuilder.to_ejs(formHtml, this.generate_lateral_menu(), Breadcrumb_page_collection);
+                const html = pageBuilder.to_ejs(formHtml, this.createSidebarMenu(), Breadcrumb_page_collection);
                 res.send(html);
             } catch (error) {
                 res.status(500).send("An error occurred while fetching the edit form.");
@@ -194,7 +194,7 @@ export class CMSControlPlane {
 
                 ];
 
-                const html = pageBuilder.to_ejs(show_html, this.generate_lateral_menu(), Breadcrumb_page_collection);
+                const html = pageBuilder.to_ejs(show_html, this.createSidebarMenu(), Breadcrumb_page_collection);
                 res.send(html);
 
             } catch (error) {
@@ -211,7 +211,7 @@ export class CMSControlPlane {
 
                 let landing_btns = /*template*/``;
                 this.resources.forEach((r, index, array) => {
-                    landing_btns += `\n` + r.getSidebarHtml() + `\n`;
+                    landing_btns += `\n` + r.get_side_menu_item_html() + `\n`;
                 });
 
                 const main_content = /*template*/`
@@ -249,7 +249,7 @@ export class CMSControlPlane {
                 `;
                 const pageBuilder = new EJS_Page();
 
-                const landingHtml = pageBuilder.to_ejs(main_content, this.generate_lateral_menu());
+                const landingHtml = pageBuilder.to_ejs(main_content, this.createSidebarMenu());
                 res.send(landingHtml);
             } catch (error) {
                 res.status(500).send("An error occurred while fetching the landing page.");
@@ -258,7 +258,7 @@ export class CMSControlPlane {
     }
 
 
-    public generate_lateral_menu(): string {
+    public createSidebarMenu(): string {
         let lateral_menu_items = /*template*/`
 
         <div class="MainNav w-24 h-full rounded bg-white flex-col justify-start items-center inline-flex font-['Montserrat']">
@@ -272,7 +272,7 @@ export class CMSControlPlane {
 
         `;
         this.resources.forEach((r, index, array) => {
-            lateral_menu_items += `\n` + r.getSidebarHtml() + `\n`;
+            lateral_menu_items += `\n` + r.get_side_menu_item_html() + `\n`;
         });
 
         lateral_menu_items += /*template*/`

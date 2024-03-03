@@ -9,7 +9,7 @@ import { WrappedWithPaginationAndList } from "./render_utils";
 import { set_resource_urls } from "./url_string_generator";
 export interface IBaseCMSResource {
     // Método para retornar el HTML del menú lateral
-    getSidebarHtml(): MaybePromise<string>;
+    get_side_menu_item_html(): MaybePromise<string>;
 
     // Método para retornar el HTML del botón de landing
     getLandingButtonHtml(): MaybePromise<string>;
@@ -158,7 +158,7 @@ export class Resource_CMS implements IBaseCMSResource {
     }
 
 
-    getSidebarHtml(): string {
+    get_side_menu_item_html(): string {
 
         const url_path = this.get_url_paths.index;
         const title = this.slug;
