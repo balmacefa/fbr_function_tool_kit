@@ -149,6 +149,16 @@ export abstract class DatabaseSupport<T> {
         return { ...updatedDocument.toObject(), id: (updatedDocument._id as any).toString() };
     }
 
+
+    public async check_record_exist(query: FilterQuery<T>): Promise<boolean> {
+        await this.init();
+        const count = await this.dbModel.countDocuments(query);
+        return count > 0;
+    }
+
+
+    // 
+
 }
 
 

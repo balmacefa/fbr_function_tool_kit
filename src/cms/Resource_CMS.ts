@@ -39,9 +39,18 @@ export interface IBaseCMSResource {
 
 
 
-export abstract class Controller {
+export abstract class ControllerInterfaceClass {
     abstract setupRoutes(app: Express): void;
     abstract getRouter(): Record<string, string>;
+}
+
+export class Controller implements ControllerInterfaceClass {
+    setupRoutes(app: Express): void {
+        throw new Error("Method not implemented.");
+    }
+    getRouter(): Record<string, string> {
+        throw new Error("Method not implemented.");
+    }
 }
 
 
