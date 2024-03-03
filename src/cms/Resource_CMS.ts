@@ -47,8 +47,11 @@ export abstract class ControllerInterfaceClass {
 }
 
 export class Controller implements ControllerInterfaceClass {
+
+    DBSupport!: DatabaseSupport<any>;
+
     get_db_support(): DatabaseSupport<any> {
-        throw new Error('Method not implemented.');
+        return this.DBSupport;
     }
     setupRoutes(app: Express): void {
         throw new Error("Method not implemented.");
