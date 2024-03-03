@@ -42,9 +42,14 @@ export interface IBaseCMSResource {
 export abstract class ControllerInterfaceClass {
     abstract setupRoutes(app: Express): void;
     abstract getRouter(): Record<string, string>;
+
+    abstract get_db_support(): DatabaseSupport<any>;
 }
 
 export class Controller implements ControllerInterfaceClass {
+    get_db_support(): DatabaseSupport<any> {
+        throw new Error('Method not implemented.');
+    }
     setupRoutes(app: Express): void {
         throw new Error("Method not implemented.");
     }
