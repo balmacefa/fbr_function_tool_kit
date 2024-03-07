@@ -157,7 +157,12 @@ export abstract class DatabaseSupport<T> {
     }
 
 
-    // 
+    // This func allows to get one record by a query
+    public async get_one_by_query(query: FilterQuery<T>): Promise<T | null> {
+        await this.init();
+        const r = await this.dbModel.findOne(query).exec();
+        return r;
+    }
 
 }
 
