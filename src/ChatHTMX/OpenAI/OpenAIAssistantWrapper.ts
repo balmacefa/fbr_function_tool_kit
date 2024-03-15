@@ -68,7 +68,7 @@ class OpenAIAssistantWrapper {
         console.info("dev: run .get_or_create_assistant to start when ready! ")
     }
 
-    public async get_or_create_assistant(assistant_id?: string | undefined | null): Promise<void> {
+    public async get_or_create_assistant(assistant_id?: string | undefined | null, fileIds?: string[]): Promise<void> {
         // Method to create a new assistant
         if (assistant_id || isString(this.assistantId)) {
             assistant_id = assistant_id ? assistant_id : (this.assistantId as string);
@@ -76,18 +76,19 @@ class OpenAIAssistantWrapper {
                 // TODO, create a class que herede de OpenAIAssistantRunnable y agregue un metodo para 
                 this.assistant = new OpenAIAssistantRunnable({
                     assistantId: assistant_id,
-                    asAgent: true
+                    asAgent: true,
+
                 });
                 this.assistantId = (await this.assistant.getAssistant()).id;
 
             } catch (error) {
                 console.error(error);
                 console.error('Createing a new assistant instead');
-                this.assistant = await this._create_assistant();
+                this.assistant = await this._create_assistant(fileIds);
                 this.assistantId = (await this.assistant.getAssistant()).id;
             }
         } else {
-            this.assistant = await this._create_assistant();
+            this.assistant = await this._create_assistant(fileIds);
             this.assistantId = (await this.assistant.getAssistant()).id;
             // todo: add manifest asistance auto save feature
         }
@@ -95,7 +96,7 @@ class OpenAIAssistantWrapper {
         console.info("dev: run .invoke(prompt_content) to start or continue a thread")
     }
 
-    private async _create_assistant() {
+    private async _create_assistant(fileIds?: string[]) {
         // Method to create a new assistant
         const assistant = await OpenAIAssistantRunnable.createAssistant({
             model: this.model || "gpt-4-1106-preview",
@@ -103,6 +104,7 @@ class OpenAIAssistantWrapper {
             asAgent: true,
             name: this.name,
             instructions: this.instructions,
+            fileIds: [],
         });
         const assistant_run = new OpenAIAssistantRunnable({
             assistantId: assistant.assistantId,
