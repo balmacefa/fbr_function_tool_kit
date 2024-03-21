@@ -19,14 +19,7 @@ export class TextOrSpeech {
         this.openai = openai || new OpenAI();
     }
 
-    public async SpeechToText(base64Audio: string): Promise<string> {
-        // Decode the base64 string to a Uint8Array
-        const audioBuffer = Uint8Array.from(atob(base64Audio), c => c.charCodeAt(0));
-        // Create a blob from the buffer, specifying the MIME type
-        const audioBlob = new Blob([audioBuffer], { type: 'audio/ogg; codecs=opus' });
-        // Create a File object from the Blob
-        const audioFile = new File([audioBlob], "audio.ogg", { type: 'audio/ogg; codecs=opus', lastModified: new Date().getTime() });
-
+    public async SpeechToText(audioFile: File): Promise<string> {
         try {
             const transcription = await this.openai.audio.transcriptions.create({
                 file: audioFile,
@@ -62,36 +55,32 @@ export class TextOrSpeech {
         };
     }
 
-    convertBase64_ogg_AudioToMP3(base64Audio: string, outputFilePath: string): Promise<void> {
-        // Decode Base64 to original binary data
+    convertBase64_ogg_AudioToMP3(base64Audio: string): Promise<File> {
         const audioBuffer = Buffer.from(base64Audio, 'base64');
-
-        // Create a temporary file for the OGG audio
         const tempOggFile = tmp.fileSync({ postfix: '.ogg' });
-
-        // Write the OGG audio to the temporary file
         fs.writeFileSync(tempOggFile.name, audioBuffer);
 
-
-        // Return File object for the temporary mp3 file
-        // Convert OGG to MP3 using ffmpeg
         return new Promise((resolve, reject) => {
+            const tempMp3File = tmp.tmpNameSync({ postfix: '.mp3' });
             ffmpeg(tempOggFile.name)
                 .setFfmpegPath(ffmpegStatic as string)
                 .toFormat('mp3')
-                .on('error', (err: Error) => {
+                .on('error', (err) => {
                     console.error('An error occurred: ' + err.message);
-                    // Ensure temporary file is cleaned up on error
                     tempOggFile.removeCallback();
                     reject(err);
                 })
                 .on('end', () => {
                     console.log('Conversion finished!');
-                    // Clean up the temporary OGG file automatically
+                    const mp3Buffer = fs.readFileSync(tempMp3File);
                     tempOggFile.removeCallback();
-                    resolve();
+                    fs.unlinkSync(tempMp3File); // Cleanup MP3 temporary file
+
+                    const mp3File = new File([mp3Buffer], "audio.mp3", { type: 'audio/mpeg', lastModified: new Date().getTime() });
+
+                    resolve(mp3File);
                 })
-                .save(outputFilePath);
+                .save(tempMp3File);
         });
     }
 }
