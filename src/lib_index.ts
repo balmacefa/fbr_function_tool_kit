@@ -29,3 +29,8 @@ export {
 } from './ToolFunction';
 // export { RedisManager };
 // export * from ;
+
+export {
+    SpeechToText,
+    TextToSpeech
+} from './TextOrSpeech/TextOrSpeech';
