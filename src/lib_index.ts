@@ -31,6 +31,6 @@ export {
 // export * from ;
 
 export {
-    SpeechToText,
-    TextToSpeech
+    TextOrSpeech
 } from './TextOrSpeech/TextOrSpeech';
+
