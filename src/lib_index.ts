@@ -35,4 +35,5 @@ export {
     TextOrSpeech
 } from './TextOrSpeech/TextOrSpeech';
 
-export { initializeJSON_API } from './ServerClientAPI/ServerClientAPI';
+export * from './ServerClientAPI/ServerClientAPI';
+
