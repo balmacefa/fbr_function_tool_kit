@@ -135,19 +135,19 @@ export class AutoAxiosService {
 
 
 // f main fle is executed here
-if (require.main === module) {
-    const app = express();
-    const service = new ExpedienteColombiaServiceImplementation();
+// if (require.main === module) {
+//     const app = express();
+//     const service = new ExpedienteColombiaServiceImplementation();
 
-    const apiInitializer = new APIInitializer(app, [service]);
-    apiInitializer.initializeJSON_API();
+//     const apiInitializer = new APIInitializer(app, [service]);
+//     apiInitializer.initializeJSON_API();
 
-    app.listen(3000, () => {
-        console.log('Server is running on port 3000');
-    });
+//     app.listen(3000, () => {
+//         console.log('Server is running on port 3000');
+//     });
 
-    const autoAxiosService = new AutoAxiosService('http://example.com');
-    const expedienteService = autoAxiosService.createService(ExpedienteColombiaServiceImplementation);
-    // Now you can call methods, and they will automatically make Axios requests
-    const service_result = await expedienteService.get_cache_docs_page_01_colombia();
-}
+//     const autoAxiosService = new AutoAxiosService('http://example.com');
+//     const expedienteService = autoAxiosService.createService(ExpedienteColombiaServiceImplementation);
+//     // Now you can call methods, and they will automatically make Axios requests
+//     const service_result = await expedienteService.get_cache_docs_page_01_colombia();
+// }
