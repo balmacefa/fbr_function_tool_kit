@@ -1,5 +1,6 @@
 // import { RedisManager } from './CacheRedis/RedisManager';
 
+
 export {
     BaseProjectError,
     FBR_ErrorManager,
@@ -34,3 +35,4 @@ export {
     TextOrSpeech
 } from './TextOrSpeech/TextOrSpeech';
 
+export { initializeJSON_API } from './ServerClientAPI/ServerClientAPI';
