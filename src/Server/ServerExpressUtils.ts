@@ -2,8 +2,39 @@ import express, { Express, NextFunction, Request, Response } from "express";
 import * as http from 'http';
 import { createHttpTerminator } from "http-terminator";
 import IORedis from 'ioredis';
+import { invoke } from "lodash";
 import morgan from 'morgan';
-import { AddShutdown, ContainerReady, setReady } from '../../../siaj_dashboard/src/server';
+import { addCleanupListener, exitAfterCleanup } from "./asyncCleanup";
+
+const sleep = (delay: number) => new Promise((resolve) => setTimeout(resolve, delay))
+export type ShutdownType = () => Promise<void>;
+
+export let ContainerReady = false;
+
+
+export const AddShutdown = (name: string, fn: ShutdownType) => {
+    console.log('/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-');
+    console.log(`Adding shutdown function ${name}...`);
+    addCleanupListener(fn);
+    console.log('/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-');
+}
+
+
+export const setReady = async () => {
+
+    // Wait for 6 seconds
+    await sleep(6000);
+
+    ContainerReady = true;
+    invoke(process, 'send', 'ready');
+};
+
+export const exitWithError = async (err: Error) => {
+    // log error and exit with code 1
+    console.error(err);
+    await exitAfterCleanup(1);
+};
+
 
 
 export const InitExpress = async (redis_main_connection?: IORedis): Promise<Express> => {
