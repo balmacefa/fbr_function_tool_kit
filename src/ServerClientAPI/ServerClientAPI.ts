@@ -31,6 +31,8 @@ export class IService {
 }
 
 export class APIInitializer {
+    private routeInfo: string[] = []; // Add a property to keep track of route info
+
     constructor(private app: Express, private services: IService[], private api_json_rpc_prefix?: string) { }
 
     initializeJSON_API() {
@@ -48,11 +50,10 @@ export class APIInitializer {
         const serviceName = service.constructor.name.toLowerCase();
         Object.keys(service).forEach((methodName) => {
             const routePath = `/${serviceName}/${methodName}`;
-
-            // if methodName starts with "get" then use GET method, otherwise use POST method
             const methodType = methodName.startsWith("get") ? 'get' : 'post';
 
-            console.log(`Creating route ${methodType} ${routePath}`);
+            // Instead of printing directly, add the route info to the routeInfo array
+            this.routeInfo.push(`Creating route ${methodType} ${routePath}`);
 
             router[methodType](routePath, async (req: Request, res: Response) => {
                 try {
@@ -63,10 +64,15 @@ export class APIInitializer {
                     res.status(500).send("Internal Server Error");
                 }
             });
-
         });
     }
+
+    public printRoutes() {
+        console.log("All created routes:");
+        this.routeInfo.forEach((info) => console.log(info)); // Print each route information
+    }
 }
+
 
 
 export abstract class ExpedienteColombiaService extends IService {

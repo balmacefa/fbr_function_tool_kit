@@ -35,5 +35,5 @@ export {
     TextOrSpeech
 } from './TextOrSpeech/TextOrSpeech';
 
-export * from './ServerClientAPI/ServerClientAPI';
+export { APIInitializer } from './ServerClientAPI/ServerClientAPI';
 
