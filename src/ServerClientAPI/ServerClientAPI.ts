@@ -67,24 +67,33 @@ export class APIInitializer {
 
     private createRoutesForService(service: IService, router: express.Router) {
         const serviceName = service.constructor.name.toLowerCase();
-        Object.keys(service).forEach((methodName) => {
-            const routePath = `/${serviceName}/${methodName}`;
-            const methodType = methodName.startsWith("get") ? 'get' : 'post';
+        const servicePrototype = Object.getPrototypeOf(service);
 
-            // Instead of printing directly, add the route info to the routeInfo array
-            this.routeInfo.push(`Creating route ${methodType} ${routePath}`);
+        // Combine both own keys and prototype keys, filter out non-function properties and constructor
+        const allKeys = new Set([
+            ...Object.getOwnPropertyNames(servicePrototype) // prototype keys
+        ]);
 
-            router[methodType](routePath, async (req: Request, res: Response) => {
-                try {
-                    const result = await service[methodName]();
-                    res.json(result);
-                } catch (error) {
-                    console.error(error);
-                    res.status(500).send("Internal Server Error");
-                }
-            });
+        allKeys.forEach((methodName) => {
+            if (typeof service[methodName] === 'function' && methodName !== 'constructor') {
+                const routePath = `/${serviceName}/${methodName}`;
+                const methodType = methodName.startsWith("get") ? 'get' : 'post';
+
+                this.routeInfo.push(`Creating route ${methodType} ${routePath}`);
+
+                router[methodType](routePath, async (req: Request, res: Response) => {
+                    try {
+                        const result = await service[methodName]();
+                        res.json(result);
+                    } catch (error) {
+                        console.error(error);
+                        res.status(500).send("Internal Server Error");
+                    }
+                });
+            }
         });
     }
+
 
     public printRoutes() {
         console.log("All created routes:");
