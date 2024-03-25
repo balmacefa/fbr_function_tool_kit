@@ -35,5 +35,6 @@ export {
     TextOrSpeech
 } from './TextOrSpeech/TextOrSpeech';
 
+export * from './Server/asyncCleanup';
 export { APIInitializer } from './ServerClientAPI/ServerClientAPI';
 
