@@ -66,9 +66,6 @@ export const RedisConnection = async (): Promise<IORedis> => /* istanbul ignore 
 
 export const SetRedisCacheManager = async (redis_main_connection: IORedis) => {
     RCache = await caching(ioRedisStore({
-        // redisInstance: redisCon.main,
-        // ts-ignore
-        // @ts-ignore
         redisInstance: redis_main_connection,
         ttl: 3600 * 24 * 1000,
         //     ttl: 3600 * 24 * 1000 /*miliseconds*/,

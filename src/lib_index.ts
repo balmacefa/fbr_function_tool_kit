@@ -36,5 +36,7 @@ export {
 } from './TextOrSpeech/TextOrSpeech';
 
 export * from './Server/asyncCleanup';
+export * from './Server/redis/RedisNotify';
+export * from './Server/ServerExpressUtils';
 export { APIInitializer } from './ServerClientAPI/ServerClientAPI';
 
