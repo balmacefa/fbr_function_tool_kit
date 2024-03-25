@@ -30,6 +30,25 @@ export class IService {
     [key: string]: any; // This is an index signature
 }
 
+export type MaybePromise<TType> = Promise<TType> | TType;
+
+export type HTML_OR_ERROR =
+    | { success: string; error?: never }
+    | { success?: never; error: string };
+
+
+export type MaybePromise_OR_ERROR<T> =
+    | { success: MaybePromise<T>; error?: never }
+    | { success?: never; error: string };
+
+// Promse or Error
+export type Promise_OR_ERROR<T> =
+    | { success: Promise<T>; error?: never }
+    | { success?: never; error: string };
+export type Data_OR_ERROR<T = any> =
+    | { success: Promise<T>; error?: never }
+    | { success?: never; error: string };
+
 export class APIInitializer {
     private routeInfo: string[] = []; // Add a property to keep track of route info
 
@@ -91,10 +110,15 @@ export class AutoAxiosService {
                             const url = `${this.baseUrl}/${urlPath}`;
                             try {
                                 const response = await axios.get(url, { params: args[0] });
-                                return response.data;
+                                return {
+                                    success: response.data,
+                                };
                             } catch (error) {
                                 console.error(`Axios request failed for ${url}: ${error}`);
-                                throw error;
+
+                                return {
+                                    error: `Axios request failed for ${url}: ${error}`,
+                                };
                             }
                         };
                     }
@@ -102,7 +126,7 @@ export class AutoAxiosService {
                 // For symbols or non-matching properties, fallback to the default behavior
                 return Reflect.get(target, propKey, receiver);
             },
-        }) as T;
+        });
     }
 }
 
