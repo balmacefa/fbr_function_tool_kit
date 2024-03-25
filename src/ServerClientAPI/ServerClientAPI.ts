@@ -74,36 +74,6 @@ export class APIInitializer {
 }
 
 
-
-export abstract class ExpedienteColombiaService extends IService {
-    abstract get_cache_docs_page_01_colombia(): Promise<any>;
-    abstract get_cache_docs_page_02_colombia(): Promise<any>;
-}
-
-
-
-export class ExpedienteColombiaServiceImplementation extends ExpedienteColombiaService {
-    async get_cache_docs_page_01_colombia() {
-        return 11;
-    }
-
-    async get_cache_docs_page_02_colombia() {
-        return `get_docs_page_by_dev_code_ref('page_02_colombia');`
-    }
-
-}
-
-
-
-
-// Utility function to convert method names to URLs
-const methodNameToURL = (methodName: string): string => {
-    // Implement conversion logic here. This is a placeholder.
-    // For example: get_cache_docs_page_01_colombia -> /docs/page/01/colombia
-    return `/api/${methodName.replace(/_/g, '/')}`;
-};
-
-
 export class AutoAxiosService {
     constructor(private baseUrl: string) { }
 
