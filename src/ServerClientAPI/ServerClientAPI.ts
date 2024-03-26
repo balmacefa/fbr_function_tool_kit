@@ -122,7 +122,7 @@ export class AutoAxiosService {
                             const serviceName = instance.constructor.name.toLowerCase(); // Declare the 'serviceName' variable
                             const methodType = propKey.startsWith("get") ? 'get' : 'post';
 
-                            const url = `${this.baseUrl}/${serviceName}/${propKey}`;
+                            const url = `${this.baseUrl}/${serviceName}Implementation/${propKey}`;
                             console.log(`Making Axios request to ${url}`);
                             try {
                                 const response = await axios[methodType](url, { params: args[0] });
