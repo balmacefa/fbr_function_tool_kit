@@ -46,8 +46,8 @@ export type Promise_OR_ERROR<T> =
     | { success: Promise<T>; error?: never }
     | { success?: never; error: string };
 export type Data_OR_ERROR<T = any> =
-    | Promise<{ success: MaybePromise<T>; error?: never }>
-    | Promise<{ success?: never; error: string }>;
+    | { success: MaybePromise<T>; error?: never }
+    | { success?: never; error: string };
 
 export class APIInitializer {
     private routeInfo: string[] = []; // Add a property to keep track of route info
