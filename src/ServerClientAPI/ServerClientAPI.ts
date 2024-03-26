@@ -103,7 +103,7 @@ export class APIInitializer {
 
 
 export class AutoAxiosService {
-    constructor(private baseUrl: string, private api_json_rpc_prefix: string) { }
+    constructor(private baseUrl: string) { }
 
     createService<T extends IService>(ServiceClass: new (...args: any[]) => T) {
         const instance = new ServiceClass();
@@ -121,7 +121,7 @@ export class AutoAxiosService {
                             const serviceName = instance.constructor.name.toLowerCase(); // Declare the 'serviceName' variable
                             const methodType = propKey.startsWith("get") ? 'get' : 'post';
 
-                            const url = `${this.baseUrl}${this.api_json_rpc_prefix}/${serviceName}/${propKey}`;
+                            const url = `${this.baseUrl}/${serviceName}/${propKey}`;
                             console.log(`Making Axios request to ${url}`);
                             try {
                                 const response = await axios[methodType](url, { params: args[0] });
@@ -147,22 +147,3 @@ export class AutoAxiosService {
 
 
 
-
-
-// f main fle is executed here
-// if (require.main === module) {
-//     const app = express();
-//     const service = new ExpedienteColombiaServiceImplementation();
-
-//     const apiInitializer = new APIInitializer(app, [service]);
-//     apiInitializer.initializeJSON_API();
-
-//     app.listen(3000, () => {
-//         console.log('Server is running on port 3000');
-//     });
-
-//     const autoAxiosService = new AutoAxiosService('http://example.com');
-//     const expedienteService = autoAxiosService.createService(ExpedienteColombiaServiceImplementation);
-//     // Now you can call methods, and they will automatically make Axios requests
-//     const service_result = await expedienteService.get_cache_docs_page_01_colombia();
-// }
