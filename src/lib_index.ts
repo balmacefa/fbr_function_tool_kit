@@ -1,3 +1,5 @@
+export { ExpressToolExporter } from './ToolFunction/ExpressToolExporter';
+
 // import { RedisManager } from './CacheRedis/RedisManager';
 export { HTML_OR_ERROR, MaybePromise, MaybePromise_OR_ERROR } from './types';
 
