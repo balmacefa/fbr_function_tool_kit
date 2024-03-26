@@ -1,7 +1,6 @@
 import type { FilterQuery, InferSchemaType } from 'mongoose';
 import mongoose, { Types } from 'mongoose';
 import { ZodType } from 'zod';
-import { PaginationData } from '../../../../../../../ios_cms_iiresodh/node_payload_app/src/components/shared_types';
 import { MaybePromise } from '../../types';
 
 const fbrChatDBSupportCollSchema = new mongoose.Schema({

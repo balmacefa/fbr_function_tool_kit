@@ -17,7 +17,6 @@ export const Tool_chat_session2 = (): ToolFunction => {
     });
 
     type IOInput = z.infer<typeof input_schema>;
-    type IOResponse = Promise<z.infer<typeof response_schema>>;
 
     // Chat model initialization with OpenAI
     const model = new ChatOpenAI({}); // Initialize OpenAI's chat model
@@ -37,7 +36,7 @@ export const Tool_chat_session2 = (): ToolFunction => {
     });
 
     // Define the tool function
-    const tool_fn = async (input: IOInput): IOResponse => {
+    const tool_fn = async (input: IOInput): Promise<z.infer<typeof response_schema>> => {
         try {
             // Load the conversation history from memory
             const memoryVariables = await memory.loadMemoryVariables({});
@@ -70,7 +69,7 @@ export const Tool_chat_session2 = (): ToolFunction => {
     };
 
     // Create and return the new ToolFunction
-    return new ToolFunction<IOInput, IOResponse>(
+    return new ToolFunction<IOInput, Promise<z.infer<typeof response_schema>>>(
         'Tool_chat_session',
         'Interactive chat session tool',
         tool_fn,
@@ -89,7 +88,6 @@ export const Tool_chat_session = (): ToolFunction => {
     });
 
     type IOInput = z.infer<typeof input_schema>;
-    type IOResponse = Promise<z.infer<typeof response_schema>>;
 
     // Chat model initialization with OpenAI
     const model = new ChatOpenAI({}); // Initialize OpenAI's chat model
@@ -109,7 +107,7 @@ export const Tool_chat_session = (): ToolFunction => {
     });
 
     // Define the tool function
-    const tool_fn = async (input: IOInput): IOResponse => {
+    const tool_fn = async (input: IOInput): Promise<z.infer<typeof response_schema>> => {
         try {
             // Load the conversation history from memory
             const memoryVariables = await memory.loadMemoryVariables({});
@@ -142,7 +140,7 @@ export const Tool_chat_session = (): ToolFunction => {
     };
 
     // Create and return the new ToolFunction
-    return new ToolFunction<IOInput, IOResponse>(
+    return new ToolFunction<IOInput, Promise<z.infer<typeof response_schema>>>(
         'Tool_chat_session',
         'Interactive chat session tool',
         tool_fn,
@@ -161,9 +159,8 @@ export const Tool_tell_me_a_short_joke_about_topic = (): ToolFunction => {
     });
 
     type IOInput = z.infer<typeof input_schema>;
-    type IOResponse = Promise<z.infer<typeof response_schema>>;
 
-    const tool_fn = async (input: IOInput): IOResponse => {
+    const tool_fn = async (input: IOInput): Promise<z.infer<typeof response_schema>> => {
         try {
 
             const prompt = ChatPromptTemplate.fromMessages([
@@ -186,7 +183,7 @@ export const Tool_tell_me_a_short_joke_about_topic = (): ToolFunction => {
         }
     };
 
-    const tfn = new ToolFunction<IOInput, IOResponse>(
+    const tfn = new ToolFunction<IOInput, Promise<z.infer<typeof response_schema>>>(
         'Tool_tell_me_a_short_joke_about_topic',
         'Tell me a short joke about {topic}',
         tool_fn,

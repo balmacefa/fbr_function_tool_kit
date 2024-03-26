@@ -13,9 +13,8 @@ export const ToolExecuteGitCommand = (): ToolFunction => {
     });
 
     type IOInput = z.infer<typeof input_schema>;
-    type IOResponse = Promise<z.infer<typeof response_schema>>;
 
-    const tool_fn = async (input: IOInput): IOResponse => {
+    const tool_fn = async (input: IOInput): Promise<z.infer<typeof response_schema>> => {
         try {
             const { gitCommand } = input;
             const fullGitCommand = `git ${gitCommand}`; // Add "git" prefix
@@ -32,7 +31,7 @@ export const ToolExecuteGitCommand = (): ToolFunction => {
         }
     };
 
-    const tfn = new ToolFunction<IOInput, IOResponse>(
+    const tfn = new ToolFunction<IOInput, Promise<z.infer<typeof response_schema>>>(
         'GIT_CLI_Tools',
         'Execute a Git command on the root path',
         tool_fn,

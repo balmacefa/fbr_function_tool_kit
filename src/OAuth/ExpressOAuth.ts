@@ -38,7 +38,7 @@ export class ExpressOAuth {
     // REQUIRED
     constructor(args: {
         app: Express,
-        props: Partial<ExpressOAuthProps>
+        props?: Partial<ExpressOAuthProps>
     }) {
 
         this.props = {

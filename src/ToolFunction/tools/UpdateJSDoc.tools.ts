@@ -14,9 +14,8 @@ const response_schema = z.object({
 });
 
 type IOInput = z.infer<typeof input_schema>;
-type IOResponse = Promise<z.infer<typeof response_schema>>;
 
-const updateJSDocComment = async (input: IOInput): IOResponse => {
+const updateJSDocComment = async (input: IOInput): Promise<z.infer<typeof response_schema>> => {
     try {
         const project = new Project();
         const filePath = MainUtils.root_directory(input.relativeFilePath);
@@ -41,7 +40,7 @@ const updateJSDocComment = async (input: IOInput): IOResponse => {
 };
 
 export const JSDocUpdater = (): ToolFunction => {
-    return new ToolFunction<IOInput, IOResponse>(
+    return new ToolFunction<IOInput, Promise<z.infer<typeof response_schema>>>(
         'JSDocUpdater',
         'Update JSDoc comments in TypeScript files',
         updateJSDocComment,

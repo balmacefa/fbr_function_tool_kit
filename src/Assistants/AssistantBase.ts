@@ -3,12 +3,10 @@ import { AssistantManifest } from "../ChatHTMX/OpenAI/OpenAIAssistantWrapper";
 import { MainUtils } from "../HostMachine";
 import { BaseToolPlugin } from "../ToolFunction/BaseToolPlugin";
 
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
 
 // This is currrent folder
 
-const CurrentPath = dirname(fileURLToPath(import.meta.url));
+const CurrentPath = __dirname;
 
 
 /**

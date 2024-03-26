@@ -14,9 +14,8 @@ export const MultiFileContentViewer = (): ToolFunction => {
     });
 
     type IOInput = z.infer<typeof input_schema>;
-    type IOResponse = Promise<z.infer<typeof response_schema>>;
 
-    const tool_fn = async (input: IOInput): IOResponse => {
+    const tool_fn = async (input: IOInput): Promise<z.infer<typeof response_schema>> => {
         const { filePaths } = input;
         const fileContents = await Promise.all(filePaths.map(async (filePath) => {
             try {
@@ -31,7 +30,7 @@ export const MultiFileContentViewer = (): ToolFunction => {
         return { contents: fileContents };
     };
 
-    const tfn = new ToolFunction<IOInput, IOResponse>(
+    const tfn = new ToolFunction<IOInput, Promise<z.infer<typeof response_schema>>>(
         'MultiFileContentViewer',
         'View content of multiple files',
         tool_fn,

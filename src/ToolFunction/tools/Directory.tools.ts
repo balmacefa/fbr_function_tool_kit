@@ -4,7 +4,6 @@ import { MainUtils } from '../../HostMachine';
 import { ToolFunction } from '../ToolFunction';
 
 import { extendZodWithOpenApi } from "@asteasolutions/zod-to-openapi";
-import { MaybePromise } from '../../types';
 import { MultiFileContentViewer } from './MultiFileContentViewer.tools';
 
 
@@ -37,11 +36,10 @@ export const DirectoryStructureViewer = (): ToolFunction => {
     });
 
     type IOInput = z.infer<typeof input_schema>;
-    type IOResponse = Promise<z.infer<typeof response_schema>>;
 
 
     // <typeof input_schema, typeof response_schema >
-    const tool_fn = async (input: IOInput): IOResponse => {
+    const tool_fn = async (input: IOInput): Promise<z.infer<typeof response_schema>> => {
         // validate input
         const input_validated = input_schema.safeParse(input);
         if (!input_validated.success) {
@@ -76,7 +74,7 @@ export const DirectoryStructureViewer = (): ToolFunction => {
     };
 
 
-    const tfn = new ToolFunction<IOInput, IOResponse>(
+    const tfn = new ToolFunction<IOInput, Promise<z.infer<typeof response_schema>>>(
         'Generate_Directory_Structure_Tree',
         'This tool create a directory tree of the current workspace or root path',
         tool_fn,
@@ -97,14 +95,13 @@ export const Absolute_File_String_Reader_Tool = (): ToolFunction => {
     });
 
     type IOInput = z.infer<typeof input_schema>;
-    type IOResponse = MaybePromise<z.infer<typeof response_schema>>;
 
-    const tool_fn = (input: IOInput): IOResponse => {
+    const tool_fn = (input: IOInput): Promise<z.infer<typeof response_schema>> => {
         const content: string = MainUtils.read_file_from_path(input.absolutePath);
-        return { content: content };
+        return Promise.resolve({ content: content });
     };
 
-    const tfn = new ToolFunction<IOInput, IOResponse>(
+    const tfn = new ToolFunction<IOInput, Promise<z.infer<typeof response_schema>>>(
         'Absolute_File_String_Reader_Tool',
         'Read file content',
         tool_fn,
@@ -121,14 +118,13 @@ export const Local_File_String_Reader_Tool = (): ToolFunction => {
     const response_schema = z.string().describe('Return the string file full content');
 
     type IOInput = z.infer<typeof input_schema>;
-    type IOResponse = MaybePromise<z.infer<typeof response_schema>>;
 
-    const tool_fn = (input: IOInput): IOResponse => {
+    const tool_fn = (input: IOInput): Promise<z.infer<typeof response_schema>> => {
         const content: string = MainUtils.read_file_from_root(input.absolutePath).fileContent;
-        return content;
+        return Promise.resolve(content);
     };
 
-    const tfn = new ToolFunction<IOInput, IOResponse>(
+    const tfn = new ToolFunction<IOInput, Promise<z.infer<typeof response_schema>>>(
         'Local_File_String_Reader_Tool',
         'Read file content relative to the current project location',
         tool_fn,
@@ -149,9 +145,8 @@ export const ToolSaveFileContent = (): ToolFunction => {
     });
 
     type IOInput = z.infer<typeof input_schema>;
-    type IOResponse = Promise<z.infer<typeof response_schema>>;
 
-    const tool_fn = async (input: IOInput): IOResponse => {
+    const tool_fn = async (input: IOInput): Promise<z.infer<typeof response_schema>> => {
         try {
             await MainUtils.saveContentToFile(input.filePath, input.content);
             return { success: true };
@@ -160,7 +155,7 @@ export const ToolSaveFileContent = (): ToolFunction => {
         }
     };
 
-    const tfn = new ToolFunction<IOInput, IOResponse>(
+    const tfn = new ToolFunction<IOInput, Promise<z.infer<typeof response_schema>>>(
         'ToolSaveFileContent',
         'Save file content',
         tool_fn,
@@ -180,9 +175,8 @@ export const ToolCreateDirectory = (): ToolFunction => {
     });
 
     type IOInput = z.infer<typeof input_schema>;
-    type IOResponse = Promise<z.infer<typeof response_schema>>;
 
-    const tool_fn = async (input: IOInput): IOResponse => {
+    const tool_fn = async (input: IOInput): Promise<z.infer<typeof response_schema>> => {
         try {
             await MainUtils.createDirectory(input.directoryPath);
             return { success: true };
@@ -191,7 +185,7 @@ export const ToolCreateDirectory = (): ToolFunction => {
         }
     };
 
-    const tfn = new ToolFunction<IOInput, IOResponse>(
+    const tfn = new ToolFunction<IOInput, Promise<z.infer<typeof response_schema>>>(
         'ToolCreateDirectory',
         'Create a directory if it does not exist',
         tool_fn,
@@ -210,18 +204,17 @@ export const ToolChangeRootDirectory = (): ToolFunction => {
     });
 
     type IOInput = z.infer<typeof input_schema>;
-    type IOResponse = MaybePromise<z.infer<typeof response_schema>>;
 
-    const tool_fn = (input: IOInput): IOResponse => {
+    const tool_fn = (input: IOInput): Promise<z.infer<typeof response_schema>> => {
         try {
             MainUtils.set_root_path(input.newRootPath);
-            return { success: true };
+            return Promise.resolve({ success: true });
         } catch (error) {
             throw new Error(`Error: ${error}`);
         }
     };
 
-    const tfn = new ToolFunction<IOInput, IOResponse>(
+    const tfn = new ToolFunction<IOInput, Promise<z.infer<typeof response_schema>>>(
         'ToolChangeRootDirectory',
         'Change the root directory',
         tool_fn,
@@ -237,18 +230,17 @@ export const ToolGetRootDirectory = (): ToolFunction => {
     });
     const inputSchema = z.object({}).strict();
 
-    type IOResponse = MaybePromise<z.infer<typeof response_schema>>;
 
-    const tool_fn = (): IOResponse => {
+    const tool_fn = (): Promise<z.infer<typeof response_schema>> => {
         try {
             const rootPath = MainUtils.get_root_path();
-            return { rootPath };
+            return Promise.resolve({ rootPath });
         } catch (error) {
             throw new Error(`Error: ${error}`);
         }
     };
 
-    const tfn = new ToolFunction<void, IOResponse>(
+    const tfn = new ToolFunction<void, Promise<z.infer<typeof response_schema>>>(
         'ToolGetRootDirectory',
         'Get the current root directory',
         tool_fn,

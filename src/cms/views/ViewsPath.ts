@@ -1,7 +1,6 @@
-import path, { dirname } from "path";
-import { fileURLToPath } from "url";
+import path from "path";
 
-const ViewsAppPath = dirname(fileURLToPath(import.meta.url));
+const ViewsAppPath = __dirname;
 
 export const GetEditView = (str: string) => path.join(ViewsAppPath, '/EDIT/' + str + '.ejs');
 export const GetShowView = (str: string) => path.join(ViewsAppPath, '/SHOW/' + str + '.ejs');

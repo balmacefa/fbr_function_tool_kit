@@ -1,6 +1,5 @@
 import { AgentAction } from "langchain/dist/schema";
 import { DynamicStructuredTool } from "langchain/tools";
-import { AssistantCreateParams } from "openai/resources/beta/assistants/assistants";
 import { z } from "zod";
 import { OpenAPISchemaGenerator } from "../OpenAPISchemaGenerator";
 import { ToolFunction } from "./ToolFunction";
@@ -72,11 +71,11 @@ export class BaseToolPlugin {
     }
 
     // This methos bellow this line should be on children class <- TODO
-    public generate_func_asistant_list(): AssistantCreateParams.AssistantToolsFunction[] {
-        const func_map: AssistantCreateParams.AssistantToolsFunction[] = [];
+    public generate_func_asistant_list() {
+        const func_map: { type: string; function: { name: string; description: string; parameters: any; }; }[] = [];
         this.functions.forEach(func => {
 
-            const assis_func_declaration: AssistantCreateParams.AssistantToolsFunction =
+            const assis_func_declaration =
             {
                 type: "function",
                 function: {

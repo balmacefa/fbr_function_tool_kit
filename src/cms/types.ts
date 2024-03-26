@@ -1,4 +1,5 @@
-import type { EmptyObject, IsAny, IsNever, NonRecursiveType, StaticPartOfArray, ToString, UnknownArray, VariablePartOfArray } from 'type-fest';
+import type { EmptyObject, IsAny, IsNever, UnknownArray } from 'type-fest';
+import { NonRecursiveType, StaticPartOfArray, ToString, VariablePartOfArray } from 'type-fest/source/internal';
 
 
 // import type { NonRecursiveType, StaticPartOfArray, ToString, VariablePartOfArray } from './internal';
