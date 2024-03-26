@@ -114,11 +114,16 @@ export class AutoAxiosService {
                 if (typeof propKey === 'string') {
                     const originalMethod = target[propKey];
                     if (typeof originalMethod === 'function' && propKey.startsWith('get')) {
+
                         return async (...args: any[]): Promise<Data_OR_ERROR<T>> => {
-                            const urlPath = propKey.replace(/_/g, '/').toLowerCase();
+
+                            const serviceName = ServiceClass.constructor.name.toLowerCase(); // Declare the 'serviceName' variable
+                            const urlPath = `/${serviceName}/${propKey}`;
+                            const methodType = propKey.startsWith("get") ? 'get' : 'post';
+
                             const url = `${this.baseUrl}/${urlPath}`;
                             try {
-                                const response = await axios.get(url, { params: args[0] });
+                                const response = await axios[methodType](url, { params: args[0] });
                                 return {
                                     success: response.data,
                                 };
