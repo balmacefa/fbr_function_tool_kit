@@ -66,7 +66,8 @@ export class APIInitializer {
     }
 
     private createRoutesForService(service: IService, router: express.Router) {
-        const serviceName = service.constructor.name.toLowerCase();
+        // const serviceName = service.constructor.name.toLowerCase();
+        const parentClassName = Object.getPrototypeOf(service).constructor.name;
         const servicePrototype = Object.getPrototypeOf(service);
 
         // Combine both own keys and prototype keys, filter out non-function properties and constructor
@@ -76,7 +77,7 @@ export class APIInitializer {
 
         allKeys.forEach((methodName) => {
             if (typeof service[methodName] === 'function' && methodName !== 'constructor') {
-                const routePath = `/${serviceName}/${methodName}`;
+                const routePath = `/${parentClassName}/${methodName}`;
                 const methodType = methodName.startsWith("get") ? 'get' : 'post';
 
                 this.routeInfo.push(`Creating route ${methodType} ${routePath}`);
@@ -144,6 +145,3 @@ export class AutoAxiosService {
         });
     }
 }
-
-
-
