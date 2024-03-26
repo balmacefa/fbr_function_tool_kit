@@ -103,7 +103,7 @@ export class APIInitializer {
 
 
 export class AutoAxiosService {
-    constructor(private baseUrl: string) { }
+    constructor(private baseUrl: string, private api_json_rpc_prefix: string) { }
 
     createService<T extends IService>(ServiceClass: new (...args: any[]) => T) {
         const instance = new ServiceClass();
@@ -121,7 +121,7 @@ export class AutoAxiosService {
                             const serviceName = instance.constructor.name.toLowerCase(); // Declare the 'serviceName' variable
                             const methodType = propKey.startsWith("get") ? 'get' : 'post';
 
-                            const url = `${this.baseUrl}/${serviceName}/${propKey}`;
+                            const url = `${this.baseUrl}${this.api_json_rpc_prefix}/${serviceName}/${propKey}`;
                             console.log(`Making Axios request to ${url}`);
                             try {
                                 const response = await axios[methodType](url, { params: args[0] });
