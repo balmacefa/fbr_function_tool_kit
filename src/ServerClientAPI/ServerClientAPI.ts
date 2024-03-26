@@ -117,11 +117,12 @@ export class AutoAxiosService {
 
                         return async (...args: any[]): Promise<Data_OR_ERROR<T>> => {
 
-                            const serviceName = ServiceClass.constructor.name.toLowerCase(); // Declare the 'serviceName' variable
-                            const urlPath = `/${serviceName}/${propKey}`;
+
+                            const serviceName = instance.constructor.name.toLowerCase(); // Declare the 'serviceName' variable
                             const methodType = propKey.startsWith("get") ? 'get' : 'post';
 
-                            const url = `${this.baseUrl}/${urlPath}`;
+                            const url = `${this.baseUrl}/${serviceName}/${propKey}`;
+                            console.log(`Making Axios request to ${url}`);
                             try {
                                 const response = await axios[methodType](url, { params: args[0] });
                                 return {
