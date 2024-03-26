@@ -46,8 +46,8 @@ export type Promise_OR_ERROR<T> =
     | { success: Promise<T>; error?: never }
     | { success?: never; error: string };
 export type Data_OR_ERROR<T = any> =
-    | { success: Promise<T>; error?: never }
-    | { success?: never; error: string };
+    | Promise<{ success: MaybePromise<T>; error?: never }>
+    | Promise<{ success?: never; error: string }>;
 
 export class APIInitializer {
     private routeInfo: string[] = []; // Add a property to keep track of route info
@@ -105,7 +105,7 @@ export class APIInitializer {
 export class AutoAxiosService {
     constructor(private baseUrl: string) { }
 
-    createService<T extends IService>(ServiceClass: new (...args: any[]) => T): T {
+    createService<T extends IService>(ServiceClass: new (...args: any[]) => T) {
         const instance = new ServiceClass();
 
         return new Proxy(instance, {
@@ -114,7 +114,7 @@ export class AutoAxiosService {
                 if (typeof propKey === 'string') {
                     const originalMethod = target[propKey];
                     if (typeof originalMethod === 'function' && propKey.startsWith('get')) {
-                        return async (...args: any[]) => {
+                        return async (...args: any[]): Promise<Data_OR_ERROR<T>> => {
                             const urlPath = propKey.replace(/_/g, '/').toLowerCase();
                             const url = `${this.baseUrl}/${urlPath}`;
                             try {
