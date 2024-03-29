@@ -17,6 +17,7 @@ export interface AssistantOptions {
 
 export interface AssistantManifest extends AssistantOptions {
     show_case: boolean;
+    ia_files_openai_ids?: string[]
 }
 
 interface ExcutorOutput {
