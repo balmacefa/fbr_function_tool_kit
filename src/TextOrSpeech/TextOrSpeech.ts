@@ -1,17 +1,12 @@
-import OpenAI from "openai";
-import { SpeechCreateParams } from "openai/resources/audio/speech";
-
 import ffmpegStatic from 'ffmpeg-static';
 import ffmpeg from 'fluent-ffmpeg';
 import * as fs from 'fs';
+import OpenAI from "openai";
+import { SpeechCreateParams } from "openai/resources/audio/speech";
 import * as tmp from 'tmp';
 
 // Ensure you have the types for fluent-ffmpeg. If not, you might need to use any as a fallback for its types.
-
 // Function to convert Base64 audio to MP3, with automatic cleanup
-
-
-
 export class TextOrSpeech {
     private openai: OpenAI;
 
@@ -19,10 +14,10 @@ export class TextOrSpeech {
         this.openai = openai || new OpenAI();
     }
 
-    public async SpeechToText(audioFile: File): Promise<string> {
+    public async SpeechToText(mp3_voice_file_path: string): Promise<string> {
         try {
             const transcription = await this.openai.audio.transcriptions.create({
-                file: audioFile,
+                file: fs.createReadStream(mp3_voice_file_path),
                 model: "whisper-1",
                 response_format: "text",
             });
@@ -33,7 +28,6 @@ export class TextOrSpeech {
             throw new Error("Failed to transcribe audio.");
         }
     }
-
 
     public async TextToSpeech(args: { input_text: string, voice_type?: SpeechCreateParams['voice'], hd_audio?: boolean }): Promise<{
         base64: string;
@@ -55,7 +49,7 @@ export class TextOrSpeech {
         };
     }
 
-    convertBase64_ogg_AudioToMP3(base64Audio: string): Promise<File> {
+    convertBase64_ogg_AudioToMP3(base64Audio: string): Promise<{ mp3_file_path: string }> {
         const audioBuffer = Buffer.from(base64Audio, 'base64');
         const tempOggFile = tmp.fileSync({ postfix: '.ogg' });
         fs.writeFileSync(tempOggFile.name, audioBuffer);
@@ -70,18 +64,24 @@ export class TextOrSpeech {
                     tempOggFile.removeCallback();
                     reject(err);
                 })
-                .on('end', () => {
+                .on('end', async () => {
                     console.log('Conversion finished!');
-                    const mp3Buffer = fs.readFileSync(tempMp3File);
+                    // const mp3Buffer = fs.readFileSync(tempMp3File);
                     tempOggFile.removeCallback();
-                    fs.unlinkSync(tempMp3File); // Cleanup MP3 temporary file
+                    // fs.unlinkSync(tempMp3File); // Cleanup MP3 temporary file
 
-                    const mp3File = new File([mp3Buffer], "audio.mp3", { type: 'audio/mpeg', lastModified: new Date().getTime() });
+                    // // const mp3File = new File([mp3Buffer], "audio.mp3", { type: 'audio/mpeg', lastModified: new Date().getTime() });
 
-                    resolve(mp3File);
+                    // const mp3File = await toFile(mp3Buffer, 'audio.mp3');
+
+                    resolve({ mp3_file_path: tempMp3File });
                 })
                 .save(tempMp3File);
         });
+    }
+
+    deleteFile(file_path: string) {
+        fs.unlinkSync(file_path);
     }
 }
 
