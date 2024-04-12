@@ -1,4 +1,4 @@
-<div class="w-full flex-none mt-3 bottom-0 left-0 w-full border-t md:border-t-0 border-white/20 md:border-transparent md:border-transparent md:bg-vert-light-gradient bg-white bg-gray-800 md:!bg-transparent md:bg-vert-dark-gradient pt-2">
+<div class="w-full flex-none mt-3 bottom-0 left-0 w-full border-t md:border-t-0 border-white/20 md:border-transparent md:border-transparent md:bg-vert-light-gradient bg-gray-800 md:!bg-transparent md:bg-vert-dark-gradient pt-2">
   <form id="chatForm" class="relative stretch flex flex-row gap-3 last:mb-2 md:mx-4 md:last:mb-6 mx-auto h-32 ">
 
 
@@ -16,7 +16,7 @@
     <input type="hidden" name="sessionId" value="<%= locals.chat_data_info.sessionId  %>" />
 
     <div class="relative flex flex-col h-full flex-1 items-stretch md:flex-col">
-      <div class="flex flex-col w-full py-2 flex-grow md:py-3 md:pl-4 relative border border-black/10 bg-white border-gray-900/50 text-white bg-gray-700 rounded-md shadow-[0_0_10px_rgba(0,0,0,0.10)] shadow-[0_0_15px_rgba(0,0,0,0.10)]">
+      <div class="flex flex-col w-full py-2 flex-grow md:py-3 md:pl-4 relative border border-black/10 border-gray-900/50 text-white bg-gray-700 rounded-md shadow-[0_0_10px_rgba(0,0,0,0.10)] shadow-[0_0_15px_rgba(0,0,0,0.10)]">
         <textarea id="textarea_input_chat" name="content" tabindex="0" data-id="root" placeholder="Send a message..." class="m-0 w-full resize-none border-0 bg-transparent p-0 pr-7 focus:ring-0 focus-visible:ring-0 bg-transparent pl-2 md:pl-0 overflow-hidden" oninput="this.style.height = 'auto'; this.style.height = (this.scrollHeight) + 'px'; this.form.querySelector('button').disabled = !this.value;"></textarea>
         <button type="submit" class="absolute p-1 rounded-md bottom-1.5 md:bottom-2.5 bg-transparent right-1 md:right-2">
           <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 mr-1 text-white" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
