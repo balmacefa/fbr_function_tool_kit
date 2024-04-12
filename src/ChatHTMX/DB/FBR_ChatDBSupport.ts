@@ -1,4 +1,4 @@
-import type { FilterQuery, InferSchemaType } from 'mongoose';
+import type { FilterQuery, InferSchemaType, UpdateQuery } from 'mongoose';
 import mongoose, { Types } from 'mongoose';
 import { ZodType } from 'zod';
 import { MaybePromise } from '../../types';
@@ -131,6 +131,22 @@ export abstract class DatabaseSupport<T> {
 
     async update_one(id: string, updateData: any) {
         return await this.update_partial(id, updateData);
+    }
+
+    async add_to_array(id: string, arrayName: string, data: any): Promise<T & { id: string }> {
+        await this.init();
+        const updatedDocument = await this.dbModel.findByIdAndUpdate(
+            id,
+            { $push: { [arrayName]: data } } as UpdateQuery<T>,
+            { new: true, runValidators: true }
+        ).exec();
+
+
+        if (!updatedDocument) {
+            throw new Error("Document not found or update failed");
+        }
+
+        return { ...updatedDocument.toObject(), id: (updatedDocument._id as any).toString() };
     }
 
     public async update_partial(id: string, updateData: Partial<T>): Promise<T & { id: string }> {
