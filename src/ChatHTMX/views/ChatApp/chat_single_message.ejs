@@ -1,7 +1,7 @@
-<li class="message <%= message.role === 'user' ? 'dark:bg-gray-700' : 'dark:bg-gray-600' %> rounded-lg shadow dark:shadow-md mb-4 last:mb-0" style="word-wrap: break-word;" x-data="{ activeTab: 'showMarkdown' }">
+<li class="message <%= message.role === 'user' ? 'bg-gray-700' : 'bg-gray-600' %> rounded-lg shadow shadow-md mb-4 last:mb-0" style="word-wrap: break-word;" x-data="{ activeTab: 'showMarkdown' }">
 
   <div class="message-metadata my-4 flex items-center text-gray-400">
-    <span class="timestamp text-xs dark:text-gray-400 mr-2">
+    <span class="timestamp text-xs text-gray-400 mr-2">
       <span class="timestamp">
         <%= new Date(message.created_at * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) %>
       </span>
@@ -32,7 +32,7 @@
 
 
 
-  <div class="message-content p-4 dark:text-gray-200">
+  <div class="message-content p-4 text-gray-200">
 
     <div x-show="activeTab === 'showMarkdown'" id="results" class="tab-content">
 
