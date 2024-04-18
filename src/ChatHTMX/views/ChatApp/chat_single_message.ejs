@@ -11,15 +11,6 @@
     </span>
 
     <div class="flex justify-end space-x-2">
-      <!-- Botón Ver Markdown -->
-      <button x-on:click.prevent="activeTab = 'showMarkdown'" class="px-4 py-2  text-white text-xs font-semibold rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
-        Ver Markdown
-      </button>
-
-      <!-- Botón Ver Raw -->
-      <button x-on:click.prevent="activeTab = 'showRaw'" class="px-4 py-2  text-white text-xs font-semibold rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
-        Ver Raw
-      </button>
 
       <!-- Botón Copiar -->
       <button x-on:click="navigator.clipboard.writeText($refs.textoParaCopiar.innerText)" class="px-4 py-2 ring-2 text-white text-xs font-semibold rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50">
