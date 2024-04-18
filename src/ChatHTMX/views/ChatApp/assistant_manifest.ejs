@@ -27,12 +27,12 @@
           </div>
           <div class="p-4">
             <% if (manifest.description !== ''){ %>
-            <p class="text-gray-700">Description:</p>
+            <p class="text-gray-500 mb-2 text-xs">Description:</p>
             <p class="text-gray-700"><%- manifest.description %></p>
             <% } %>
 
             <button hx-post="<%- locals.R.chat__post_create_session %>" hx-trigger="click" hx-vals='{"userId": "649c9e6009a907a8543f46e4",
-                "asistant_id": "<%- manifest.name %>","title": "New Chat"}' class="mt-4 bg-blue-200 text-blue-900 font-bold py-2 px-4 rounded-md hover:bg-blue-400 focus:outline-none focus:shadow-outline">
+                "asistant_id": "<%- manifest.name %>","title": "New Chat"}' class="mt-8 bg-blue-200 text-blue-900 font-bold py-2 px-4 rounded-md hover:bg-blue-400 focus:outline-none focus:shadow-outline">
               Iniciar Chat
             </button>
           </div>
