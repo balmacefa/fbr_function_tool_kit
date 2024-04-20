@@ -165,7 +165,12 @@ class OpenAIAssistantWrapper {
 
     private getThreadIdFromExcutorReq(response: ExcutorOutput) {
 
-        return response.threadId = response.finishStep.threadId;
+        const has_thread_id = response.intermediateSteps.length > 0;
+        if (has_thread_id) {
+            return response.threadId = response.finishStep.threadId;
+        } else {
+            return '';
+        }
     }
 
     public isAgentFinish(response: any): response is AgentFinish {

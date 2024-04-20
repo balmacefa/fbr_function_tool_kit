@@ -64,7 +64,7 @@ export class TextOrSpeech {
                     tempOggFile.removeCallback();
                     reject(err);
                 })
-                .on('end', async () => {
+                .on('end', () => {
                     console.log('Conversion finished!');
                     // const mp3Buffer = fs.readFileSync(tempMp3File);
                     tempOggFile.removeCallback();
