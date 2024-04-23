@@ -4,7 +4,6 @@ import { z } from "zod";
 import { OpenAPISchemaGenerator } from "../OpenAPISchemaGenerator";
 import { ToolFunction } from "./ToolFunction";
 import { DirectoryToolFunctionList, MinimalDirectoryToolFunctionList } from "./tools/Directory.tools";
-import { ToolExecuteGitCommand } from "./tools/Git.tools";
 import { JSDocUpdater } from "./tools/UpdateJSDoc.tools";
 
 type plugin_names = 'fbr_BaseToolPlugin_tools_directory_and_git' | 'fbr_tools_minimal_directory__git__ts_tools';
@@ -143,7 +142,7 @@ export class BaseToolPlugin {
             version: '1.0.0',
             functions: [
                 ...DirectoryToolFunctionList,
-                ToolExecuteGitCommand(),
+                // ToolExecuteGitCommand(),
             ],
             host: 'http://localhost:3000'
         });
@@ -155,7 +154,7 @@ export class BaseToolPlugin {
             version: '1.0.0',
             functions: [
                 ...MinimalDirectoryToolFunctionList,
-                ToolExecuteGitCommand(),
+                // ToolExecuteGitCommand(),
                 JSDocUpdater()
             ],
             host: 'http://localhost:3000'
