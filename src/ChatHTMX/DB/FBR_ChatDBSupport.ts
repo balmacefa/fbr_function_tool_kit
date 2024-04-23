@@ -64,7 +64,7 @@ export abstract class DatabaseSupport<T> {
  * @param {string} id - The unique identifier of the document.
  * @returns {Promise<T>} - The document 
  */
-    public async get_one(id: string) {
+    public async get_one(id: string): Promise<T & { id: string }> {
         return await this.fetchById(id);
     }
     public async fetchById(id: string): Promise<T & { id: string }> {
