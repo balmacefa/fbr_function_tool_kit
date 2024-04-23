@@ -165,7 +165,7 @@ class OpenAIAssistantWrapper {
 
     private getThreadIdFromExcutorReq(response: ExcutorOutput) {
 
-        const has_thread_id = response.intermediateSteps.length > 0;
+        const has_thread_id = response.finishStep.threadId?.length > 0;
         if (has_thread_id) {
             return response.threadId = response.finishStep.threadId;
         } else {
