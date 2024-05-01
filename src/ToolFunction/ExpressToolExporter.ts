@@ -27,8 +27,14 @@ export class ExpressToolExporter {
         this.base_tool_plugin = args.base_tool_plugin;
         this.open_api_url = args.open_api_url;
         this.route_post_prefix = args.route_post_prefix || '/tools_export';
+        console.log('ExpressToolExporter Swagger docs this.route_post_prefix', this.route_post_prefix);
     }
 
+    public initializeExpressToolExport() {
+        this.export_tools_routes();
+
+        this.setupOpenAPISwaggerDocs();
+    }
     public export_tools_routes() {
         this.base_tool_plugin.functions.forEach(fnt => {
             this.app.post(fnt.get_path(), async (req, res) => {
@@ -86,11 +92,6 @@ export class ExpressToolExporter {
         });
     }
 
-    public initializeExpressToolExport() {
-        this.export_tools_routes();
-
-        this.setupOpenAPISwaggerDocs();
-    }
 
     public static default_server(base_tool_plugin: BaseToolPlugin) {
         import('express')
