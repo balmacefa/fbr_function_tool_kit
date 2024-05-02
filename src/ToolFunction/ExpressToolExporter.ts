@@ -63,6 +63,7 @@ export class ExpressToolExporter {
 
                         // If everything is OK, send the successful response
                     } catch (executionError) {
+                        console.error(executionError);
                         // Handle errors that might occur during function execution
                         return res.status(500).json({ error: 'Error during function execution', details: executionError });
                     }
