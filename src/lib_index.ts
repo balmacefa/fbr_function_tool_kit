@@ -1,3 +1,4 @@
+
 export { ExpressToolExporter } from './ToolFunction/ExpressToolExporter';
 
 // import { RedisManager } from './CacheRedis/RedisManager';
@@ -42,4 +43,6 @@ export * from './Server/asyncCleanup';
 export * from './Server/redis/RedisNotify';
 export * from './Server/ServerExpressUtils';
 export { APIInitializer } from './ServerClientAPI/ServerClientAPI';
+
+export * from './cms/Resource_CMS';
 
