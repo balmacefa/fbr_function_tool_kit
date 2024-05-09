@@ -1,9 +1,7 @@
 
 export { ExpressToolExporter } from './ToolFunction/ExpressToolExporter';
 
-// import { RedisManager } from './CacheRedis/RedisManager';
 export { HTML_OR_ERROR, MaybePromise, MaybePromise_OR_ERROR } from './types';
-
 
 export {
     BaseProjectError,
@@ -48,3 +46,8 @@ export * from './cms/Resource_CMS';
 
 export * from './ChatHTMX/OpenAI/OpenAIAssistantWrapper';
 export * from './cms/render_utils';
+
+export * from './ChatHTMX/DB/FBR_ChatDBSupport';
+export * from './cms/render_utils';
+export * from './types';
+
