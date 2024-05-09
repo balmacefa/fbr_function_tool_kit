@@ -10,19 +10,19 @@ locals.
 <div id="chat_app_container">
   <main class="overflow-hidden w-full h-screen relative flex" x-data="{ open_asistant_manifest: <%- locals.chat_data_info ? false : true %> }">
     <!-- A -->
-    <%- await include('assistant_manifest'); %>
+    <%- await include(locals.GetChatView('assistant_manifest')); %>
     <!-- B -->
-    <%- await include('sidebar'); %>
+    <%- await include(locals.GetChatView('sidebar')); %>
     <!-- C -->
     <% if (locals.chat_data_info) { %>
     <!-- D -->
-    <%- await include('main_content_chat'); %>
+    <%- await include(locals.GetChatView('main_content_chat')); %>
     <!-- when main_content_chat is render them open_asistant_manifest should be false-->
     <!-- E -->
     <% } else { %>
     <!-- F -->
     <!-- when main_content_chat is render them main_content_no_chat should be true-->
-    <%- await include('main_content_no_chat'); %>
+    <%- await include(locals.GetChatView('main_content_no_chat')); %>
     <!-- G -->
     <% } %>
   </main>

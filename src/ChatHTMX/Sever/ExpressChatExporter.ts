@@ -149,31 +149,41 @@ export class ExpressChatExporter extends ExpressBaseExporter<RType> {
 
             // Adding /chat_app route
             // Render a view for the /chat_app route
-            const chat_app_html: string = await MainUtils.render_ejs_path_file(GetChatView('main_content'),
-                {
-                    ...this.get_ui_common_data(),
-                });
 
-            // add sent full from threnreder
+            try {
+                const chat_app_html: string = await MainUtils.render_ejs_path_file(GetChatView('main_content'),
+                    {
+                        ...this.get_ui_common_data(),
+                        GetChatView,
+                    });
+
+                // add sent full from threnreder
 
 
-            const breadcrumb = [
-                {
-                    label: 'Inicio',
-                    value: '/'
-                },
-                {
-                    label: 'Chat App',
-                    value: '/chat_app'
-                }
-            ];
-            const guided_tour = `<script src="/guided_tour/ventana_uno_GET_ver_expediente_electronico.js"></script>`;
-            const html = this.tr.full_page_with({
-                content: chat_app_html + guided_tour,
-                breadcrumb: breadcrumb
-            })
+                const breadcrumb = [
+                    {
+                        label: 'Inicio',
+                        value: '/'
+                    },
+                    {
+                        label: 'Chat App',
+                        value: '/chat_app'
+                    }
+                ];
+                const guided_tour = `<script src="/guided_tour/ventana_uno_GET_ver_expediente_electronico.js"></script>`;
+                const html = this.tr.full_page_with({
+                    content: chat_app_html + guided_tour,
+                    breadcrumb: breadcrumb
+                })
 
-            res.send(html);
+                res.send(html);
+
+
+            } catch (error) {
+                console.error(error);
+                res.status(500).send("Server error occurred");
+            }
+
         });
 
         // This are chat related functons - debe ser heredadas, se puede hacer o
