@@ -21,9 +21,15 @@ type RType = {
     parse_markdoc: (str: string) => Promise<string>;
 };
 
+interface ThemeRenderType {
+    full_page_with: (data: { content: string, breadcrumb: { label: string, value: string }[] }) => string;
+}
+
 export class ExpressChatExporter extends ExpressBaseExporter<RType> {
     chat_landing_ejs_inject_on_locals__main_content: string;
     R: RType;
+
+    tr: ThemeRenderType;
 
     // private absolute_index_path: string;
     common_data: any;
@@ -43,6 +49,7 @@ export class ExpressChatExporter extends ExpressBaseExporter<RType> {
         context_common_data: Record<string, string>,
         markdoc_components: Schema[],
         chat_landing_ejs_inject_on_locals__main_content?: string
+        themeRender: ThemeRenderType;
     }) {
         super({ app: args.app });
 
@@ -51,6 +58,9 @@ export class ExpressChatExporter extends ExpressBaseExporter<RType> {
         }
         this.markdoc_components = args.markdoc_components;
         // this.sessionManager = OpenAIAssistantSessionManager.getInstance();
+
+
+        this.tr = args.themeRender;
 
         // TODO: add dev mode check
         // Set the directory for the views
@@ -127,6 +137,7 @@ export class ExpressChatExporter extends ExpressBaseExporter<RType> {
         this.setupChatRoutes(this.R);
     }
     private setupChatRoutes(R: RType) {
+
         this.app.get(R.chat, async (req: Request, res: Response) => {
             // const { userId, title, options } = req.body;
             // const sessionData = this.sessionManager.createSession(
@@ -138,10 +149,30 @@ export class ExpressChatExporter extends ExpressBaseExporter<RType> {
 
             // Adding /chat_app route
             // Render a view for the /chat_app route
-            const html = await MainUtils.render_ejs_path_file(GetChatView('index_page'),
+            const chat_app_html: string = await MainUtils.render_ejs_path_file(GetChatView('main_content'),
                 {
                     ...this.get_ui_common_data(),
                 });
+
+            // add sent full from threnreder
+
+
+            const breadcrumb = [
+                {
+                    label: 'Inicio',
+                    value: '/'
+                },
+                {
+                    label: 'Chat App',
+                    value: '/chat_app'
+                }
+            ];
+            const guided_tour = `<script src="/guided_tour/ventana_uno_GET_ver_expediente_electronico.js"></script>`;
+            const html = this.tr.full_page_with({
+                content: chat_app_html + guided_tour,
+                breadcrumb: breadcrumb
+            })
+
             res.send(html);
         });
 
@@ -395,7 +426,12 @@ export class ExpressChatExporter extends ExpressBaseExporter<RType> {
                 context_common_data: {},
                 sub_path_main: '/chat_app',
                 manifests: list_of_agents,
-                markdoc_components: []
+                markdoc_components: [],
+                themeRender: {
+                    full_page_with: ({ content, breadcrumb }) => {
+                        return content;
+                    }
+                }
             });
             await express_exporter.setupRoutes();
             // Start the server

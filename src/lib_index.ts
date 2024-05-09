@@ -46,3 +46,5 @@ export { APIInitializer } from './ServerClientAPI/ServerClientAPI';
 
 export * from './cms/Resource_CMS';
 
+export * from './ChatHTMX/OpenAI/OpenAIAssistantWrapper';
+export * from './cms/render_utils';
