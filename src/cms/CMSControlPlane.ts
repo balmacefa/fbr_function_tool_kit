@@ -262,12 +262,7 @@ export class CMSControlPlane {
         let lateral_menu_items = /*template*/`
 
         <div class="MainNav w-24 h-full rounded bg-white flex-col justify-start items-center inline-flex font-['Montserrat']">
-  <div class="Frame2055 h-48 px-3.5 pt-12 pb-16 flex-col justify-start items-center flex">
-    <a href="/">
-      ${this.logo_html}
-    </a>
-
-  </div>
+  
   <div class="List self-stretch h-96 flex-col justify-start items-start flex">
 
         `;
