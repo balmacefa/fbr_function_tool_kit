@@ -46,6 +46,8 @@ export type Promise_OR_ERROR<T> =
     | { success: Promise<T>; error?: never }
     | { success?: never; error: string };
 export type Data_OR_ERROR<T = any> =
+
+    | T
     | { success: MaybePromise<T>; error?: never }
     | { success?: never; error: string };
 
@@ -102,9 +104,10 @@ export class APIInitializer {
     }
 }
 
+type error_handler_types = 'data_error' | 'throw_error';
 
 export class AutoAxiosService {
-    constructor(private baseUrl: string) { }
+    constructor(private baseUrl: string, private error_handler: error_handler_types = 'data_error') { }
 
     createService<T extends IService>(ServiceClass: new (...args: any[]) => T) {
         const instance = new ServiceClass();
@@ -126,15 +129,24 @@ export class AutoAxiosService {
                             console.log(`Making Axios request to ${url}`);
                             try {
                                 const response = await axios[methodType](url, { params: args[0] });
-                                return {
-                                    success: response.data,
-                                };
+
+                                if (this.error_handler === 'data_error') {
+                                    return {
+                                        success: response.data,
+                                    };
+                                } else {
+                                    return response.data;
+                                }
                             } catch (error) {
                                 console.error(`Axios request failed for ${url}: ${error}`);
 
-                                return {
-                                    error: `Axios request failed for ${url}: ${error}`,
-                                };
+                                if (this.error_handler === 'throw_error') {
+                                    throw new Error(`Axios request failed for ${url}: ${error}`);
+                                } else {
+                                    return {
+                                        error: `Axios request failed for ${url}: ${error}`,
+                                    };
+                                }
                             }
                         };
                     }
