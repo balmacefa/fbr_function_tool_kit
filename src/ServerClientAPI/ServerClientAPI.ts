@@ -48,6 +48,7 @@ export type Promise_OR_ERROR<T> =
 export type Data_OR_ERROR<T = any> =
 
     | T
+    | string
     | { success: MaybePromise<T>; error?: never }
     | { success?: never; error: string };
 
@@ -104,7 +105,7 @@ export class APIInitializer {
     }
 }
 
-type error_handler_types = 'data_error' | 'throw_error';
+type error_handler_types = 'data_error' | 'throw_error' | 'error_as_string';
 
 export class AutoAxiosService {
     constructor(private baseUrl: string, private error_handler: error_handler_types = 'data_error') { }
@@ -142,13 +143,21 @@ export class AutoAxiosService {
 
                                 if (this.error_handler === 'throw_error') {
                                     throw new Error(`Axios request failed for ${url}: ${error}`);
-                                } else {
+                                }
+
+                                if (this.error_handler === 'data_error') {
                                     return {
                                         error: `Axios request failed for ${url}: ${error}`,
                                     };
                                 }
+                                if (this.error_handler === 'error_as_string') {
+                                    return `Axios request failed for ${url}: ${error}`;
+                                }
+                                return '';
+
                             }
-                        };
+
+                        }
                     }
                 }
                 // For symbols or non-matching properties, fallback to the default behavior
