@@ -108,10 +108,12 @@ export class BaseToolPlugin {
         const list: DynamicStructuredTool<any>[] = [];
         this.functions.forEach(fnt => {
 
+            const schema = fnt.inputSchema ? fnt.inputSchema as any : z.object({});
+
             const tool_lang_chain = new DynamicStructuredTool({
                 name: fnt.name,
                 description: fnt.description,
-                schema: fnt.inputSchema ? fnt.inputSchema as any : z.object({}),
+                schema: schema,
                 func: async (input: unknown): Promise<string> => {
                     const output = await fnt.processRequestPlain(input);
                     return output;
