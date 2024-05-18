@@ -28,7 +28,7 @@ export interface PaginationQuery<T> {
 }
 
 
-export abstract class DatabaseSupport<T> {
+export class DatabaseSupport<T> {
     uri: string;
     dbModel!: mongoose.Model<T>;
     private has_init = false;
@@ -56,8 +56,12 @@ export abstract class DatabaseSupport<T> {
     public async disconnect() {
         await mongoose.disconnect();
     }
-    abstract get_collection_name(): MaybePromise<string>;
-    abstract get_collection_schema(): MaybePromise<mongoose.Schema<T>>;
+    public get_collection_name(): MaybePromise<string> {
+        throw new Error("Method not implemented.");
+    }
+    public get_collection_schema(): MaybePromise<mongoose.Schema<T>> {
+        throw new Error("Method not implemented.");
+    }
 
     /**
  * Fetches a document by its ID.
