@@ -129,7 +129,7 @@ export class AutoAxiosService {
                             const url = `${this.baseUrl}/${serviceName}Implementation/${propKey}`;
                             console.log(`Making Axios request to ${url}`);
                             try {
-                                const response = await axios[methodType](url, { params: args[0] });
+                                const response = await axios[methodType](url, { params: args });
 
                                 if (this.error_handler === 'data_error') {
                                     return {
