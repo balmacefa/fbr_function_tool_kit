@@ -42,8 +42,10 @@ export const InitExpress = async (redis_main_connection?: IORedis): Promise<Expr
         const app = express();
         app
             .use(morgan('dev'))
-            .use(express.json());
-        app.use(express.urlencoded({ extended: true }));
+            .use(express.json({
+                limit: '100mb',
+            }));
+        app.use(express.urlencoded({ extended: true, limit: '100mb' }));
 
 
         app.use(function (req, res, next) {
