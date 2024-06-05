@@ -7,7 +7,7 @@ import morgan from "morgan";
 import { Full_stack_Software_Architect, Tailwind_HTMX_alpine_jquery } from "../../Assistants/AssistantBase";
 import { MainUtils } from '../../HostMachine';
 import { FBR_ChatDBSupport } from "../DB/FBR_ChatDBSupport";
-import OpenAIAssistantWrapper, { AssistantManifest } from "../OpenAI/OpenAIAssistantWrapper";
+import { AssistantManifest, OpenAIAssistantWrapperV2 } from '../OpenAI/OpenAIv2';
 import { ChatHTMXViewsChatAppPath, GetChatView } from "../views/ViewsPath";
 import { ExpressBaseExporter } from "./ExpressBaseExporter";
 
@@ -85,10 +85,6 @@ export class ExpressChatExporter extends ExpressBaseExporter<RType> {
             GetChatView
         }, args.context_common_data);
         this.common_data = combinned_common_data
-    }
-
-    _getShowCaseAssistantManifest(): AssistantManifest[] {
-        return this.chat_manifests.filter(el => (el.show_case))
     }
 
     async parse_markdoc(doc: string): Promise<string> {
@@ -228,9 +224,7 @@ export class ExpressChatExporter extends ExpressBaseExporter<RType> {
                     return res.status(200).send(html);
                 }
 
-                const asistant_wrap = new OpenAIAssistantWrapper(manifest);
-
-                await asistant_wrap.get_or_create_assistant(manifest.assistantId);
+                const asistant_wrap = new OpenAIAssistantWrapperV2(manifest);
 
                 const new_session_data =
                     await this.chat_db_wrapper.create_user_session({
@@ -289,26 +283,21 @@ export class ExpressChatExporter extends ExpressBaseExporter<RType> {
                         return res.status(200).send(html);
                     }
 
-                    const asistant_wrap = new OpenAIAssistantWrapper(manifest);
-                    await asistant_wrap.get_or_create_assistant(session_data.assistantId);
+                    const asistant_wrap = new OpenAIAssistantWrapperV2({ ...manifest, threadId: session_data.threadId });
 
                     const new_message = await asistant_wrap.execute_agent(
                         content,
-                        session_data.threadId
                     );
 
                     if (!session_data.threadId) {
                         await this.chat_db_wrapper.update_session_threadId(
                             sessionId,
-                            new_message.threadId
+                            asistant_wrap.threadId
                         );
                     }
                     // load all messages and replace XD!
                     // them get messages
-                    const chat_messages =
-                        await asistant_wrap.get_chat_messages(
-                            `${new_message.threadId}`
-                        );
+                    const chat_messages = await asistant_wrap.get_chat_messages();
 
 
                     const html = await MainUtils.render_ejs_path_file(GetChatView("chat_chatlog_messages"),
@@ -359,19 +348,12 @@ export class ExpressChatExporter extends ExpressBaseExporter<RType> {
                         return res.status(200).send(html);
                     }
 
-                    const asistant_wrap = new OpenAIAssistantWrapper(manifest);
-                    await asistant_wrap.get_or_create_assistant(session_data.assistantId);
-
-                    const threadId = session_data?.threadId;
+                    const asistant_wrap = new OpenAIAssistantWrapperV2({ ...manifest, threadId: session_data.threadId });
+                    const threadId = asistant_wrap.threadId;
 
                     if (threadId) {
-                        // them load the messages
-                        await asistant_wrap.get_or_create_assistant(
-                            session_data?.assistantId
-                        );
                         // them get messages
-                        const chat_messages =
-                            await asistant_wrap.get_chat_messages(threadId);
+                        const chat_messages = await asistant_wrap.get_chat_messages();
 
                         const html = await MainUtils.render_ejs_path_file(GetChatView('index_page'),
                             {

@@ -44,7 +44,7 @@ export { APIInitializer } from './ServerClientAPI/ServerClientAPI';
 
 export * from './cms/Resource_CMS';
 
-export * from './ChatHTMX/OpenAI/OpenAIAssistantWrapper';
+export * from './ChatHTMX/OpenAI/OpenAIv2';
 export * from './cms/render_utils';
 
 export * from './ChatHTMX/DB/FBR_ChatDBSupport';
