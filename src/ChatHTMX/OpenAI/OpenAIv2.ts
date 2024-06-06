@@ -1,11 +1,14 @@
 import OpenAI from "openai";
 
+
+type myFunction = (args: any) => any;
+
 export interface AssistantManifest {
     assistantId: string;
     threadId?: string | null | undefined;
     name: string;
     description: string;
-    functions?: Map<string, Function>;
+    functions?: Map<string, myFunction>;
 }
 
 
@@ -15,12 +18,12 @@ export class OpenAIAssistantWrapperV2 {
     public open_ai_client: OpenAI;
     // private openAIFiles: OpenAIFiles;
     // this is a map of functions that can be called by the assistant
-    private functions: Map<string, Function>;
+    private functions: Map<string, myFunction>;
 
     constructor(args: AssistantManifest) {
         this.assistantId = args.assistantId;
         this.threadId = args.threadId || "";
-        this.functions = args.functions || new Map<string, Function>();
+        this.functions = args.functions || new Map<string, myFunction>();
         this.open_ai_client = new OpenAI();
     }
 
@@ -48,32 +51,51 @@ export class OpenAIAssistantWrapperV2 {
     }
 
     private async handleToolCalls(tool_calls: any[], runObject: OpenAI.Beta.Threads.Runs.Run): Promise<void> {
+
+        const toolOutputs: {
+            tool_call_id: string;
+            output: string;
+        }[] = [];
+
+        // Procesa cada llamada a herramienta
         const promises = tool_calls.map(async (tool_call) => {
-            console.log(`Tool call id: ${tool_call.id}`);
-            console.log(`Tool type: ${tool_call.type}`);
-            console.log(`Tool call function: ${tool_call.function.name}`);
-            console.log(`Tool call function arguments: ${tool_call.function.arguments}`);
+            try {
+                console.log(`Tool call id: ${tool_call.id}`);
+                console.log(`Tool type: ${tool_call.type}`);
+                console.log(`Tool call function: ${tool_call.function.name}`);
+                console.log(`Tool call function arguments: ${tool_call.function.arguments}`);
 
-            const parsedArgs = JSON.parse(tool_call.function.arguments);
-            const functionToCall: Function = this.functions.get(tool_call.function.name) || ((args: any) => {
-                console.error(`Function not found: ${tool_call.function.name}`);
-            });
-            const response = await functionToCall(parsedArgs);
-            console.log(`Function response: ${response}`);
+                const parsedArgs = JSON.parse(tool_call.function.arguments);
+                const functionToCall: myFunction = this.functions.get(tool_call.function.name) || ((args: any) => {
+                    console.error(`Function not found: ${tool_call.function.name}`);
+                });
+                const response = await functionToCall(parsedArgs);
+                console.log(`Function response: ${JSON.stringify(response)}`);
 
-            return this.open_ai_client.beta.threads.runs.submitToolOutputs(this.threadId, runObject.id, {
-                tool_outputs: [
-                    {
-                        tool_call_id: tool_call.id,
-                        output: JSON.stringify(response),
-                    },
-                ],
-                stream: false,
-            });
+                // Agrega la respuesta al array toolOutputs
+                toolOutputs.push({
+                    tool_call_id: tool_call.id,
+                    output: JSON.stringify(response),
+                });
+            } catch (error) {
+                console.error(`Error processing tool call id: ${tool_call.id}`, error);
+                toolOutputs.push({
+                    tool_call_id: tool_call.id,
+                    output: `Error processing tool call id: ${tool_call.id}, tool type: ${tool_call.type}, function: ${tool_call.function.name}, error: ${JSON.stringify(error)}`,
+                });
+            }
         });
 
+        // Espera a que todas las promesas se resuelvan
         await Promise.all(promises);
+
+        // Envía todas las salidas en una sola solicitud
+        await this.open_ai_client.beta.threads.runs.submitToolOutputs(this.threadId, runObject.id, {
+            tool_outputs: toolOutputs,
+            stream: false,
+        });
     }
+
 
     private async checkStatus(runObject: OpenAI.Beta.Threads.Runs.Run): Promise<boolean> {
         runObject = await this.open_ai_client.beta.threads.runs.retrieve(this.threadId, runObject.id);
