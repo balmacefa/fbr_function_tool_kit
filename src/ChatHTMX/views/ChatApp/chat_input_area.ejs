@@ -1,25 +1,23 @@
-<div class="w-full flex-none mt-3 bottom-0 left-0 w-full border-t md:border-t-0 border-white/20 md:border-transparent md:border-transparent md:bg-vert-light-gradient bg-gray-800 md:!bg-transparent md:bg-vert-dark-gradient pt-2">
-  <form id="chatForm" class="relative stretch flex flex-row gap-3 last:mb-2 md:mx-4 md:last:mb-6 mx-auto h-32 ">
+<div class="w-full flex-none bottom-0 left-0 border-t md:border-t-0 border-gray-200 md:border-transparent md:bg-vert-light-gradient bg-gray-300 pt-3">
+  <form id="chatForm" class="relative stretch flex flex-row gap-3 last:mb-2 md:mx-4 md:last:mb-6 mx-auto h-32">
 
-
-    <div id="loadingIndicator" class="hidden absolute z-10 top-0 left-0 right-0 bottom-0  p-4  bg-gray-900 flex justify-center items-center">
+    <div id="loadingIndicator" class="hidden absolute z-10 top-0 left-0 right-0 bottom-0  p-4  bg-gray-200 flex justify-center items-center">
       <div class="flex flex-row items-center space-y-2">
-        <svg fill='none' class="w-8 h-8 animate-spin text-white" viewBox="0 0 32 32" xmlns='http://www.w3.org/2000/svg'>
+        <svg fill='none' class="w-8 h-8 animate-spin text-gray-700" viewBox="0 0 32 32" xmlns='http://www.w3.org/2000/svg'>
           <path clip-rule='evenodd' d='M15.165 8.53a.5.5 0 01-.404.58A7 7 0 1023 16a.5.5 0 011 0 8 8 0 11-9.416-7.874.5.5 0 01.58.404z' fill='currentColor' fill-rule='evenodd' />
         </svg>
-        <div class="p text-xl text-white">Loading messages...</div>
+        <div class="p text-xl text-gray-700">Loading messages...</div>
       </div>
     </div>
     <!-- Rest of your form goes here -->
 
-
     <input type="hidden" name="sessionId" value="<%= locals.chat_data_info.sessionId  %>" />
 
     <div class="relative flex flex-col h-full flex-1 items-stretch md:flex-col">
-      <div class="flex flex-col w-full py-2 flex-grow md:py-3 md:pl-4 relative border border-black/10 border-gray-900/50 text-white bg-gray-700 rounded-md shadow-[0_0_10px_rgba(0,0,0,0.10)] shadow-[0_0_15px_rgba(0,0,0,0.10)]">
-        <textarea id="textarea_input_chat" name="content" tabindex="0" data-id="root" placeholder="Send a message..." class="m-0 w-full resize-none border-0 bg-transparent p-0 pr-7 focus:ring-0 focus-visible:ring-0 bg-transparent pl-2 md:pl-0 overflow-hidden" oninput="this.style.height = 'auto'; this.style.height = (this.scrollHeight) + 'px'; this.form.querySelector('button').disabled = !this.value;"></textarea>
+      <div class="flex flex-col w-full py-2 flex-grow md:py-3 md:pl-4 relative border border-gray-300 text-gray-900 bg-white rounded-md shadow-[0_0_10px_rgba(0,0,0,0.10)]">
+        <textarea id="textarea_input_chat" name="content" tabindex="0" data-id="root" placeholder="Send a message..." class="m-0 w-full resize-none border-0 bg-transparent p-0 pr-7 focus:ring-0 focus-visible:ring-0 pl-2 md:pl-0 overflow-hidden" oninput="this.style.height = 'auto'; this.style.height = (this.scrollHeight) + 'px'; this.form.querySelector('button').disabled = !this.value;"></textarea>
         <button type="submit" class="absolute p-1 rounded-md bottom-1.5 md:bottom-2.5 bg-transparent right-1 md:right-2">
-          <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 mr-1 text-white" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+          <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 mr-1 text-gray-700" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
             <line x1="22" y1="2" x2="11" y2="13"></line>
             <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
           </svg>
@@ -27,9 +25,8 @@
       </div>
     </div>
   </form>
-  <div class="px-3 pt-2 pb-3 text-center text-xs text-black/50 text-white/50 md:px-4 md:pt-3 md:pb-6">
-    <span>This Tool may produce inaccurate information about people, places, or
-      facts.</span>
+  <div class="px-3 pt-2 pb-3 text-center text-xs text-gray-500 md:px-4 md:pt-3 md:pb-6">
+    <span>This Tool may produce inaccurate information about people, places, or facts.</span>
   </div>
 </div>
 
