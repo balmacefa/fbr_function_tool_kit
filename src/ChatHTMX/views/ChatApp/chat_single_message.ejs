@@ -1,59 +1,44 @@
-<li class="message <%= message.role === 'user' ? 'bg-gray-700' : 'bg-gray-600' %> rounded-lg shadow shadow-md mb-4 last:mb-0" style="word-wrap: break-word;" x-data="{ activeTab: 'showMarkdown' }">
+<li class="message bg-gray-100 rounded-lg shadow shadow-md mb-4 last:mb-0" style="word-wrap: break-word;" x-data="{ activeTab: 'showMarkdown' }">
 
-  <div class="message-metadata my-4 flex items-center text-gray-400">
-    <span class="timestamp text-xs text-gray-400 mr-2">
+  <div class="message-metadata p-2 flex items-center text-white  <%= message.role === 'user' ? 'bg-red-400' : 'bg-gray-400' %>">
+    <span class="timestamp text-xs text-gray-600 mr-2">
       <span class="timestamp">
+        <%= new Date(message.created_at * 1000).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }) %>
         <%= new Date(message.created_at * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) %>
       </span>
       <span class="role font-semibold ml-1">
-        <%= message.role === 'user' ? 'User' : 'Assistant' %>
+        <%= message.role === 'user' ? 'Usuario' : 'Asistente GPT' %>
       </span>
     </span>
 
     <div class="flex justify-end space-x-2">
-
       <!-- Botón Copiar -->
-      <button x-on:click="navigator.clipboard.writeText($refs.textoParaCopiar.innerText)" class="px-4 py-2 ring-2 text-white text-xs font-semibold rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50">
+      <button x-on:click="navigator.clipboard.writeText($refs.textoParaCopiar.innerText)" class="px-4 py-2 ring-2 text-black text-xs font-semibold rounded hover:bg-green-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50">
         Copiar
       </button>
     </div>
-
-    <!-- Add other metadata if needed -->
   </div>
 
-
-
-  <div class="message-content p-4 text-gray-200">
-
+  <div class="message-content p-4 text-gray-800" style="font-family: 'Times New Roman', serif; font-size: 16px;">
     <div x-show="activeTab === 'showMarkdown'" id="results" class="tab-content">
-
-
-      <%  for (const content of message.content) { %>
+      <% for (const content of message.content) { %>
       <% if (content.type === 'text') { %>
       <div id="markdoc_<%- message.id %>" class="markdoc-content">
         <%- await R.parse_markdoc(content.text.value); %>
       </div>
       <% } %>
       <% }; %>
-
-
-
     </div>
 
     <div x-show="activeTab === 'showRaw'" id="results" class="tab-content">
       <!-- Static content for results -->
       <div class="raw-content">
-
-        <%  for (const content of message.content) { %>
+        <% for (const content of message.content) { %>
         <% if (content.type === 'text') { %>
         <article id="markdoc_<%- message.id %>" class="content" x-ref="textoParaCopiar"><%- content.text.value %></article>
         <% } %>
         <% }; %>
-
       </div>
     </div>
-
   </div>
-
-
 </li>
