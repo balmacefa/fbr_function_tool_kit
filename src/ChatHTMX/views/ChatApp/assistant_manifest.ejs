@@ -2,66 +2,37 @@
   <div class="relative top-20 mx-auto p-5 border w-3/4 shadow-lg rounded-md bg-gray-200">
     <div class="bg-gray-300 p-4">
       <div class="p-4 flex justify-between items-start">
-        <h2 class="text-2xl font-bold text-gray-900 break-words">Aistentes GPT</h2>
+        <h2 class="text-2xl font-bold text-gray-900 break-words">Asistentes GPT</h2>
 
         <button name="instructions" @click="open_asistant_manifest = false" class="modal-button text-gray-900">
           <i class="fas fa-window-close fa-3xl"></i>
           Close
         </button>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <% if (locals.chat_manifests)
-        locals.chat_manifests.forEach(function(manifest) { %>
-
-        <!-- Repeat this section for each card manifest -->
-        <div x-data="{ open: false }" class="bg-gray-100 rounded-lg overflow-hidden flex-col">
-          <img src="https://api.dicebear.com/7.x/shapes/svg?seed=<%- manifest.name %>" class="object-cover h-32 w-64" alt="avatar" />
-          <div class="p-4">
-            <h2 class="text-sm md:text-xl lg:text-2xl font-bold text-gray-900 break-words">
-              <%- manifest.name %>
-            </h2>
-
-            <button name="instructions" @click="open = !open" class="modal-button text-gray-900">
-              <i class="fas fa-info-circle fa-3xl"></i>
-            </button>
-          </div>
-          <div class="p-4">
-            <% if (manifest.description !== ''){ %>
-            <p class="text-gray-500 mb-2 text-xs">Description:</p>
-            <p class="text-gray-700"><%- manifest.description %></p>
-            <% } %>
-
-            <button hx-post="<%- locals.R.chat__post_create_session %>" hx-trigger="click" hx-vals='{"userId": "649c9e6009a907a8543f46e4",
-                "asistant_id": "<%- manifest.name %>","title": "New Chat"}' class="mt-8 bg-blue-200 text-blue-900 font-bold py-2 px-4 rounded-md hover:bg-blue-400 focus:outline-none focus:shadow-outline">
-              Iniciar Chat
-            </button>
-          </div>
-          <div x-show="open" class="fixed inset-0 bg-gray-200 bg-opacity-50 overflow-y-auto h-full w-full" x-cloak>
-            <div class="top-20 mx-auto p-5 border w-3/4 shadow-lg rounded-md bg-gray-200 z-20">
-              <div class="mt-3 text-center">
-                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-200">
-                  <i class="fas fa-check-circle text-green-900"></i>
-                </div>
-                <h3 class="text-2xl leading-6 font-medium text-gray-900">
-                  GPT Instructions
-                </h3>
-                <div class="mt-2 px-7 py-3">
-                  <p class="text-sm text-gray-700">
-                    <%- manifest.instructions %>
-                  </p>
-                </div>
-                <div class="items-center px-4 py-3">
-                  <button @click="open = false" class="px-4 py-2 bg-green-200 text-green-900 text-base font-medium rounded-md w-full shadow-sm hover:bg-green-400 focus:outline-none focus:ring-2 focus:ring-green-300">
-                    Close
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!--  -->
-        <% }); %>
-      </div>
+      <table class="w-full table-auto">
+        <thead>
+          <tr class="bg-gray-300">
+            <th class="px-4 py-2">Nombre</th>
+            <th class="px-4 py-2">Descripción</th>
+            <th class="px-4 py-2">Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (locals.chat_manifests)
+          locals.chat_manifests.forEach(function(manifest, index) { %>
+          <tr class="<%= index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200' %>">
+            <td class="border px-4 py-2 text-gray-900 font-bold break-words"><%- manifest.name %></td>
+            <td class="border px-4 py-2 text-gray-700"><%- manifest.description %></td>
+            <td class="border px-4 py-2">
+              <button hx-post="<%- locals.R.chat__post_create_session %>" hx-trigger="click" hx-vals='{"userId": "649c9e6009a907a8543f46e4",
+                  "asistant_id": "<%- manifest.name %>","title": "New Chat"}' class="bg-blue-200 text-blue-900 font-bold py-2 px-4 rounded-md hover:bg-blue-400 focus:outline-none focus:shadow-outline">
+                Iniciar Chat
+              </button>
+            </td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>
