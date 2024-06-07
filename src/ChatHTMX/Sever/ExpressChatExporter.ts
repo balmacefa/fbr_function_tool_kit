@@ -351,24 +351,49 @@ export class ExpressChatExporter extends ExpressBaseExporter<RType> {
                     const asistant_wrap = new OpenAIAssistantWrapperV2({ ...manifest, threadId: session_data.threadId });
                     const threadId = asistant_wrap.threadId;
 
+
+                    // TODO add the threadId to the session data
+                    const guided_tour = `<script src="/guided_tour/ventana_uno_GET_ver_expediente_electronico.js"></script>`;
+
+                    const breadcrumb = [
+                        {
+                            label: 'Inicio',
+                            value: '/'
+                        },
+                        {
+                            label: 'Chat App',
+                            value: '/chat_app'
+                        }
+                    ];
+
                     if (threadId) {
                         // them get messages
                         const chat_messages = await asistant_wrap.get_chat_messages();
 
-                        const html = await MainUtils.render_ejs_path_file(GetChatView('index_page'),
+                        const chat_app_html = await MainUtils.render_ejs_path_file(GetChatView('main_content'),
                             {
                                 ...this.get_ui_common_data(),
                                 chat_data_info: { chat_messages, sessionId },
                             });
 
+                        const html = this.tr.full_page_with({
+                            content: chat_app_html + guided_tour,
+                            breadcrumb: breadcrumb
+                        });
                         return res.status(200).send(html);
 
                     } else {
 
-                        const html = await MainUtils.render_ejs_path_file(GetChatView("index_page"), {
+                        const chat_app_html = await MainUtils.render_ejs_path_file(GetChatView("main_content"), {
                             ...this.get_ui_common_data(),
                             chat_data_info: { chat_messages: { data: [] }, sessionId },
                         });
+
+                        const html = this.tr.full_page_with({
+                            content: chat_app_html + guided_tour,
+                            breadcrumb: breadcrumb
+                        });
+
                         return res.status(200).send(html);
                     }
                 } catch (error) {
