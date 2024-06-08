@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 
 
-type myFunction = (args: any) => any;
+export type myFunction = (args: any) => any;
 
 export interface AssistantManifest {
     assistantId: string;
