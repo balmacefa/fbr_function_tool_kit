@@ -4,7 +4,7 @@
       <div class="p-4 flex justify-between items-start">
         <h1 class="text-xl font-bold text-gray-900 break-words">Asistentes GPT Inteligencia Artificial IIRESODH</h1>
 
-        <button name="instructions" @click="open_asistant_manifest = false" class="modal-button text-gray-900">
+        <button name="instructions" @click="open_asistant_manifest = false" class="modal-button text-gray-900 p-2 bg-red-300 hover:bg-red-400">
           <i class="fas fa-window-close fa-3xl"></i>
           Close
         </button>
@@ -24,8 +24,7 @@
             <td class="border px-4 py-2 text-gray-900 break-words"><%- manifest.name %></td>
             <td class="border px-4 py-2 text-gray-700"><%- manifest.description %></td>
             <td class="border px-4 py-2">
-              <button hx-post="<%- locals.R.chat__post_create_session %>" hx-trigger="click" hx-vals='{"userId": "649c9e6009a907a8543f46e4",
-                  "asistant_id": "<%- manifest.name %>","title": "New Chat"}' class="bg-blue-200 text-blue-900 py-2 px-4 rounded-md hover:bg-blue-400 focus:outline-none focus:shadow-outline">
+              <button hx-post="<%- locals.R.chat__post_create_session %>" hx-trigger="click" hx-vals='<%- JSON.stringify({ userId: "649c9e6009a907a8543f46e4", ...manifest, title: "New Chat" }) %>' class="bg-blue-200 text-blue-900 py-2 px-4 rounded-md hover:bg-blue-400 focus:outline-none focus:shadow-outline">
                 Iniciar Chat
               </button>
             </td>

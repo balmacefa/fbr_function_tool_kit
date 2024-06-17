@@ -124,7 +124,7 @@ export class ExpressChatExporter extends ExpressBaseExporter<RType> {
     //     return show_cases;
     // }
     get_manifest_by_assistants_id(id: string) {
-        return this.chat_manifests.find(el => el.name === id);
+        return this.chat_manifests.find(el => el.id === id);
     }
 
     async setupRoutes() {
@@ -208,9 +208,9 @@ export class ExpressChatExporter extends ExpressBaseExporter<RType> {
 
         this.app.post(R.chat__post_create_session, async (req: Request, res: Response) => {
             try {
-                const { userId, title, asistant_id } = req.body;
+                const { userId, name, id } = req.body;
 
-                const manifest = this.get_manifest_by_assistants_id(asistant_id)
+                const manifest = this.get_manifest_by_assistants_id(id);
 
                 if (!manifest) {
 
@@ -229,8 +229,8 @@ export class ExpressChatExporter extends ExpressBaseExporter<RType> {
                     await this.chat_db_wrapper.create_user_session({
                         assistantId: asistant_wrap.assistantId || '',
                         userId: userId,
-                        title,
-                        manifestId: manifest.name
+                        title: name,
+                        manifestId: manifest.id,
                     });
 
                 // R.chat__get_view_user_chat, set params to new_session_data.id
@@ -339,7 +339,6 @@ export class ExpressChatExporter extends ExpressBaseExporter<RType> {
 
                     if (!manifest) {
 
-
                         const html = await MainUtils.render_ejs_path_file(GetChatView("error_message"), {
                             error___details: 'Manifest Not Found Error',
                             message_json: "Error on R.chat__get_view_user_chat"
@@ -352,7 +351,6 @@ export class ExpressChatExporter extends ExpressBaseExporter<RType> {
 
 
                     // TODO add the threadId to the session data
-                    const guided_tour = `<script src="/guided_tour/ventana_uno_GET_ver_expediente_electronico.js"></script>`;
 
                     const breadcrumb = [
                         {
@@ -376,7 +374,7 @@ export class ExpressChatExporter extends ExpressBaseExporter<RType> {
                             });
 
                         const html = this.tr.full_page_with({
-                            content: chat_app_html + guided_tour,
+                            content: chat_app_html,
                             breadcrumb: breadcrumb
                         });
                         return res.status(200).send(html);
@@ -389,7 +387,7 @@ export class ExpressChatExporter extends ExpressBaseExporter<RType> {
                         });
 
                         const html = this.tr.full_page_with({
-                            content: chat_app_html + guided_tour,
+                            content: chat_app_html,
                             breadcrumb: breadcrumb
                         });
 

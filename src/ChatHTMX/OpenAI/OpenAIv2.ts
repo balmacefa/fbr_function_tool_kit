@@ -4,6 +4,8 @@ import OpenAI from "openai";
 export type myFunction = (args: any) => any;
 
 export interface AssistantManifest {
+
+    id: string;
     assistantId: string;
     threadId?: string | null | undefined;
     name: string;

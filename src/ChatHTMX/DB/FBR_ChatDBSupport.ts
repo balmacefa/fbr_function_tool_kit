@@ -9,6 +9,7 @@ const fbrChatDBSupportCollSchema = new mongoose.Schema({
     manifestId: { type: String, required: true },
     title: { type: String, required: false },
     threadId: { type: String, required: false },
+    created_at: { type: Date, required: false },
     // other fields as necessary
 });
 
@@ -201,11 +202,16 @@ export class FBR_ChatDBSupport extends DatabaseSupport<FBR_ChatDBSupportCollData
     }
 
     public async get_user_sessions(userId: string) {
-        const sessions = await this.dbModel.find({ userId });
-        return sessions.map(session => ({ ...session.toObject(), id: session._id.toString() }));
+        // Order by created_at so the newest sessions are returned first, so create a descending sort
+        const orderedSessions = await this.dbModel.find({ userId }).sort({ created_at: -1 });
+        // const sessions = await this.dbModel.find({ userId });
+        return orderedSessions.map(session => ({ ...session.toObject(), id: session._id.toString() }));
     }
 
     public async create_user_session(data: FBR_ChatDBSupportCollData) {
+        // at current time
+        const created_at = new Date();
+        data = { ...data, created_at };
         return await this.create_one(data);
     }
 
