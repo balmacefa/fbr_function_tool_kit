@@ -12,7 +12,6 @@ locals.
     <!-- A -->
     <%- await include(locals.GetChatView('assistant_manifest')); %>
     <!-- B -->
-    <%- await include(locals.GetChatView('sidebar')); %>
     <!-- C -->
     <% if (locals.chat_data_info) { %>
     <!-- D -->
@@ -25,5 +24,6 @@ locals.
     <%- await include(locals.GetChatView('main_content_no_chat')); %>
     <!-- G -->
     <% } %>
+    <%- await include(locals.GetChatView('sidebar')); %>
   </main>
 </div>
