@@ -57,11 +57,11 @@ const _top_html = /*template*/ `
 
 `;
 
+const user_js = `<script src="/user.js"></script>`;
 
 const _bottom_html = /*template*/ `
 
 <!-- Footer can go here -->
-
 <!-- Add your scripts here -->
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js" integrity="sha256-yPqP9Fer3NIS83oH7y8pLJmQEd/6vKpXf7Hh4Adsplg=" crossorigin="anonymous"></script>
 
@@ -73,6 +73,7 @@ const _bottom_html = /*template*/ `
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/markdown.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/ts.min.js"></script>
 
+${user_js}
 
 
 </body>

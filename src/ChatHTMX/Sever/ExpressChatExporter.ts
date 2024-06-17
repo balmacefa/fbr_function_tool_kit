@@ -166,9 +166,8 @@ export class ExpressChatExporter extends ExpressBaseExporter<RType> {
                         value: '/chat_app'
                     }
                 ];
-                const guided_tour = `<script src="/guided_tour/ventana_uno_GET_ver_expediente_electronico.js"></script>`;
                 const html = this.tr.full_page_with({
-                    content: chat_app_html + guided_tour,
+                    content: chat_app_html,
                     breadcrumb: breadcrumb
                 })
 
