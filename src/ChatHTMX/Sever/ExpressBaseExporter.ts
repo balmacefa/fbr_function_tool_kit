@@ -1,6 +1,5 @@
 // import { CreateAssistantOptions } from "../ChatHTMX";
 import express, { Express } from 'express';
-import { ExpressOAuth } from '../../OAuth/ExpressOAuth';
 
 export const replaceColonParamsPattern = (baseStr: string, subs: string): string => {
     // This regular expression looks for a pattern starting with ':' followed by any characters
@@ -85,8 +84,8 @@ export abstract class ExpressBaseExporter<Rr> {
 
     setupOAuth() {
 
-        const express_oauth = new ExpressOAuth({ app: this.app });
-        express_oauth.setupPassport(this.get_ui_common_data)
+        // const express_oauth = new ExpressOAuth({ app: this.app });
+        // express_oauth.setupPassport(this.get_ui_common_data)
     }
 
 
