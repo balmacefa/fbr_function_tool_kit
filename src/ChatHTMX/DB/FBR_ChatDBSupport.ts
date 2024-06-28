@@ -29,6 +29,18 @@ export interface PaginationQuery<T> {
 }
 
 
+// this is an unique set of grouping for dbModel and string names,
+// so we prevent this Cannot overwrite `dbmodel_modelname` model once compiled.
+// OverwriteModelError: Cannot overwrite `oauth_users` model once compiled.
+//     at Mongoose.model(D: \iiresodh\2version\SIAJ\node_modules\.pnpm\mongoose@8.2.3_socks@2.8.1\node_modules\mongoose\lib\mongoose.js: 565: 13)
+//     at UserPassportDB.init(d: \iiresodh\2version\SIAJ\packages\fbr_function_tool_kit\src\ChatHTMX\DB\FBR_ChatDBSupport.ts: 51: 43)
+//     at UserPassportDB.fetchById(d: \iiresodh\2version\SIAJ\packages\fbr_function_tool_kit\src\ChatHTMX\DB\FBR_ChatDBSupport.ts: 76: 9)
+// at<anonymous>(d: \iiresodh\2version\SIAJ\packages\siaj\src\OAuth\ExpressOAuth.ts: 154: 30)
+// So the following variable fix this.
+
+const _map_of_db_models = new Map<string, mongoose.Model<any>>();
+
+
 export class DatabaseSupport<T> {
     uri: string;
     dbModel!: mongoose.Model<T>;
@@ -48,7 +60,15 @@ export class DatabaseSupport<T> {
         if (!this.has_init) {
             await mongoose.connect(this.uri);
             const coll_name = (await this.get_collection_name());
-            this.dbModel = await mongoose.model<T>(coll_name, (await this.get_collection_schema()));
+
+            // here we prevent this Cannot overwrite `dbmodel_modelname` model once compiled.
+
+            // this.dbModel = await mongoose.model<T>(coll_name, (await this.get_collection_schema()));
+            if (!_map_of_db_models.has(coll_name)) {
+                _map_of_db_models.set(coll_name, await mongoose.model<T>(coll_name, (await this.get_collection_schema())));
+            }
+            this.dbModel = _map_of_db_models.get(coll_name) as mongoose.Model<T>;
+
             this.has_init = true;
         }
         return this;
