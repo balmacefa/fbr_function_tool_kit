@@ -19,7 +19,7 @@
     </div>
   </div>
 
-  <div class="message-content p-4 text-gray-800" style="font-family: 'Times New Roman', serif; font-size: 16px;">
+  <div class="message-content p-4 text-gray-800" style="font-size: 16px;">
     <div x-show="activeTab === 'showMarkdown'" id="results" class="tab-content">
       <% for (const content of message.content) { %>
       <% if (content.type === 'text') { %>
