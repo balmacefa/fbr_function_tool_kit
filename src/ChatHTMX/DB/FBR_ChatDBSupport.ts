@@ -208,6 +208,19 @@ export class DatabaseSupport<T> {
 
     }
 
+
+    // This func allows to get one record by a query, ordered by created_at in descending order
+    public async findMostRecentByQuery(query: FilterQuery<T>): Promise<T & { id: string } | null> {
+        await this.init();
+        const r = await this.dbModel.findOne(query).sort({ created_at: -1 }).exec();
+        if (!r) {
+            return null;
+        }
+        return { ...r.toObject(), id: (r._id as any).toString() };
+    }
+
+
+
 }
 
 
